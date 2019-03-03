@@ -3,16 +3,30 @@ package fr.noobeclair.hashcode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import fr.noobeclair.hashcode.utils.Utils;
+
 public class Main {
 	
 	private static final Logger logger = LogManager.getLogger(Main.class);
-	//1 - create à worker. 
-	//2 - workers use à reader to read input
-	//3 - worker use à solver which provide à solution
-	//4 - worker use à writer to write out
+	//1 - create ï¿½ worker. 
+	//2 - workers use ï¿½ reader to read input
+	//3 - worker use ï¿½ solver which provide ï¿½ solution
+	//4 - worker use ï¿½ writer to write out
 	//5 - Eventually provide stats informations
 	public Main() {
-		// TODO Auto-generated constructor stub
+		long start = System.currentTimeMillis();
+		logger.debug("------------------------------------------------------------------------");
+		logger.debug("--                          RuleFileRotate                            --");
+		logger.debug("------------------------------------------------------------------------");
+		
+		try {
+			//Worker.run()
+		} finally {
+			logger.info("------------------------------------------------------------------------");
+			logger.info("-- End. Total Time : "+Utils.roundMiliTime((System.currentTimeMillis() - start), 3) + "s --");
+			logger.info("------------------------------------------------------------------------");
+		}
+	
 	}
 
 }

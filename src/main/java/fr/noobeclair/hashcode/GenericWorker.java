@@ -8,11 +8,13 @@ import fr.noobeclair.hashcode.solve.Solver;
 
 public abstract class GenericWorker implements Runnable {
 	
-	private OutWriter writer;
-	private InReader reader;
-	private Solver solver;
+	
+	//Beware, maybe only solve needs to be multi threaded, first we assume that no...
+	protected OutWriter writer;
+	protected InReader reader;
+	protected Solver solver;
 
-	private GenericWorker(OutWriter writer, InReader reader, Solver solver) {
+	protected GenericWorker(OutWriter writer, InReader reader, Solver solver) {
 		this.reader = reader;
 		this.writer = writer;
 		this.solver = solver;
