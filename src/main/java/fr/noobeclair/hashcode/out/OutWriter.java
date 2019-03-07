@@ -11,7 +11,7 @@ public abstract class OutWriter {
 
 	private static final Logger logger = LogManager.getLogger(OutWriter.class);
 	
-	private OutWriter() {
+	public OutWriter() {
 		// useless constructor
 	}
 	

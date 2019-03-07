@@ -10,7 +10,7 @@ public abstract class InReader {
 	
 	private static final Logger logger = LogManager.getLogger(InReader.class);
 	
-	private InReader() {
+	public InReader() {
 		//useless constructor
 	}
 	
@@ -20,7 +20,7 @@ public abstract class InReader {
 		try {
 			return readFile(in);
 		} finally {
-			logger.debug("-- End. Total Time : {}s --",Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
+			logger.debug("-- Read End. Total Time : {}s --",Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		}
 	}
 	

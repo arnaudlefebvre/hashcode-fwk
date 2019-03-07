@@ -13,7 +13,7 @@ public abstract class Solver {
 	
 	private String name;
 	
-	private Solver() {
+	public Solver() {
 		//useless constructor
 	}
 	
@@ -27,6 +27,6 @@ public abstract class Solver {
 		}
 	}
 	
-	public abstract BeanContainer run(BeanContainer data);
+	protected abstract BeanContainer run(BeanContainer data);
 
 }

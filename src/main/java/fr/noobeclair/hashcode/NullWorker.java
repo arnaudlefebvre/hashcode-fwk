@@ -6,7 +6,7 @@ import fr.noobeclair.hashcode.solve.Solver;
 
 public class NullWorker extends GenericWorker {
 
-	protected NullWorker(OutWriter writer, InReader reader, Solver solver) {
+	protected NullWorker(InReader reader,  Solver solver, OutWriter writer) {
 		super(writer, reader, solver);
 	}
 
@@ -19,7 +19,7 @@ public class NullWorker extends GenericWorker {
 	@Override
 	public void run() {
 		
-		this.writer.write(this.solver.run(this.reader.read(null)),null);
+		this.writer.write(this.solver.solve(this.reader.read(null)),null);
 		
 	}
 
