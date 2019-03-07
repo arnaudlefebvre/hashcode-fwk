@@ -16,10 +16,13 @@ public class Main {
 	//3 - worker use ï¿½ solver which provide ï¿½ solution
 	//4 - worker use ï¿½ writer to write out
 	//5 - Eventually provide stats informations
+	
+	//TODO - Voir pour creer une tache maven Zipator (ie : prends les sources, les zip et ajoute les fichiers de résultats dans un dossier spécifique)
+	// Comment on peut automatiser l'upload
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
 		logger.debug("------------------------------------------------------------------------");
-		logger.debug("--                          RuleFileRotate                            --");
+		logger.debug("--                        Hascode Noobeclair                          --");
 		logger.debug("------------------------------------------------------------------------");
 		
 		try {
