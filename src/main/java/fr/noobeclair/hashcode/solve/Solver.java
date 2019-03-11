@@ -9,7 +9,7 @@ import fr.noobeclair.hashcode.utils.Utils;
 
 public abstract class Solver {
 	
-	private static final Logger logger = LogManager.getLogger(InReader.class);
+	protected static final Logger logger = LogManager.getLogger(Solver.class);
 	
 	private String name;
 	

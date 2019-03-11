@@ -8,7 +8,7 @@ import fr.noobeclair.hashcode.utils.Utils;
 
 public abstract class InReader {
 	
-	private static final Logger logger = LogManager.getLogger(InReader.class);
+	protected static final Logger logger = LogManager.getLogger(InReader.class);
 	
 	public InReader() {
 		//useless constructor
@@ -24,6 +24,6 @@ public abstract class InReader {
 		}
 	}
 	
-	public abstract BeanContainer readFile(String in);
+	protected abstract BeanContainer readFile(String in);
 
 }

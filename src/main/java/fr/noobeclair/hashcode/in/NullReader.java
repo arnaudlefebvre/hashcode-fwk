@@ -9,7 +9,7 @@ public class NullReader extends InReader {
 	}
 
 	@Override
-	public BeanContainer readFile(String in) {
+	protected BeanContainer readFile(String in) {
 		try {
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {

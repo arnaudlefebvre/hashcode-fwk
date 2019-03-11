@@ -9,7 +9,7 @@ import fr.noobeclair.hashcode.utils.Utils;
 
 public abstract class OutWriter {
 
-	private static final Logger logger = LogManager.getLogger(OutWriter.class);
+	protected static final Logger logger = LogManager.getLogger(OutWriter.class);
 	
 	public OutWriter() {
 		// useless constructor
