@@ -11,26 +11,26 @@ public class SlideShow extends Bean {
 	public SlideShow() {
 		// TODO Auto-generated constructor stub
 	}
-
+	
 	public SlideShow(List<Slide> slides) {
 		super();
 		this.slides = slides;
 	}
-
+	
 	public List<Slide> getSlides() {
 		return slides;
 	}
-
+	
 	public void setSlides(List<Slide> slides) {
 		this.slides = slides;
 	}
-
+	
 	@Override
 	public double realdistance(Bean b) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
+	
 	@Override
 	public int realhashCode() {
 		final int prime = 31;
@@ -38,7 +38,7 @@ public class SlideShow extends Bean {
 		result = prime * result + ((slides == null) ? 0 : slides.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public boolean realequals(Object obj) {
 		if (this == obj)
@@ -61,5 +61,4 @@ public class SlideShow extends Bean {
 		throw new UnsupportedOperationException();
 	}
 	
-
 }

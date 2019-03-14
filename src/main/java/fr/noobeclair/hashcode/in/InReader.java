@@ -11,19 +11,19 @@ public abstract class InReader {
 	protected static final Logger logger = LogManager.getLogger(InReader.class);
 	
 	public InReader() {
-		//useless constructor
+		// useless constructor
 	}
 	
 	public BeanContainer read(String in) {
 		long start = System.currentTimeMillis();
-		logger.info("-- Read start : {}",in);
+		logger.info("-- Read start : {}", in);
 		try {
 			return readFile(in);
 		} finally {
-			logger.info("-- Read End. Total Time : {}s --",Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
+			logger.info("-- Read End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		}
 	}
 	
 	protected abstract BeanContainer readFile(String in);
-
+	
 }

@@ -13,44 +13,44 @@ public class Photo extends Bean {
 	public Photo() {
 		// TODO Auto-generated constructor stub
 	}
-
+	
 	public int getId() {
 		return id;
 	}
-
+	
 	public void setId(int id) {
 		this.id = id;
 	}
-
+	
 	public String getSens() {
 		return sens;
 	}
-
+	
 	public void setSens(String sens) {
 		this.sens = sens;
 	}
-
+	
 	public List<String> getTags() {
 		return tags;
 	}
-
+	
 	public void setTags(List<String> tags) {
 		this.tags = tags;
 	}
-
+	
 	public Photo(int id, String sens, List<String> tags) {
 		super();
 		this.id = id;
 		this.sens = sens;
 		this.tags = tags;
 	}
-
+	
 	@Override
 	public double realdistance(Bean b) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
+	
 	@Override
 	public int realhashCode() {
 		final int prime = 31;
@@ -60,7 +60,7 @@ public class Photo extends Bean {
 		result = prime * result + ((tags == null) ? 0 : tags.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public boolean realequals(Object obj) {
 		if (this == obj)
@@ -84,14 +84,10 @@ public class Photo extends Bean {
 			return false;
 		return true;
 	}
-
+	
 	@Override
 	public int realcompareTo(Bean b) {
 		throw new UnsupportedOperationException();
 	}
-	
-	
-	
-	
 	
 }

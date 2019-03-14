@@ -12,14 +12,14 @@ public abstract class AbstractStep<T extends BeanContainer> implements Step<T> {
 	@Override
 	public T run(T solver) {
 		long start = System.currentTimeMillis();
-		logger.info("-- AbstractStep {} start : {}",id);
+		logger.info("-- AbstractStep {} start : {}", id);
 		try {
 			return runStep(solver);
 		} finally {
-			logger.info("--AbstractStep {} End. Total Time : {}s --",id,Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
+			logger.info("--AbstractStep {} End. Total Time : {}s --", id, Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		}
 	}
-
+	
 	protected static final Logger logger = LogManager.getLogger(AbstractStep.class);
 	protected String id;
 	protected T solver;
@@ -29,7 +29,7 @@ public abstract class AbstractStep<T extends BeanContainer> implements Step<T> {
 		this.id = id;
 		this.solver = solver;
 	}
-
+	
 	protected abstract T runStep(T solver);
 	
 	protected void halt(Long milli) {
@@ -37,7 +37,7 @@ public abstract class AbstractStep<T extends BeanContainer> implements Step<T> {
 			try {
 				Thread.sleep(milli);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 		}

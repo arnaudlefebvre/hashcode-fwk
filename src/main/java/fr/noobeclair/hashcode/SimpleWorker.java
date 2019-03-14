@@ -11,26 +11,25 @@ public class SimpleWorker extends GenericWorker {
 		this.in = in;
 		this.out = out;
 	}
-
+	
 	protected String in;
 	protected String out;
-
-
+	
 	@Override
 	public Boolean configure(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 	@Override
 	public void run() {
-		this.writer.write(this.solver.solve(this.reader.read(in)),out);
+		this.writer.write(this.solver.solve(this.reader.read(in)), out);
 		
 	}
 	
 	public void runSteps() {
-		this.writer.write(this.solver.solveSteps(this.reader.read(in)),out);
+		this.writer.write(this.solver.solveSteps(this.reader.read(in)), out);
 		
 	}
-
+	
 }

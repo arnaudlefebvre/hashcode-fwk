@@ -26,35 +26,35 @@ public class Slide extends Bean {
 		
 		return tags;
 	}
-
+	
 	public Photo getPhoto1() {
 		return photo1;
 	}
-
+	
 	public void setPhoto1(Photo photo1) {
 		this.photo1 = photo1;
 	}
-
+	
 	public Photo getPhoto2() {
 		return photo2;
 	}
-
+	
 	public void setPhoto2(Photo photo2) {
 		this.photo2 = photo2;
 	}
-
+	
 	public Slide(Photo photo1, Photo photo2) {
 		super();
 		this.photo1 = photo1;
 		this.photo2 = photo2;
 	}
-
+	
 	@Override
 	public double realdistance(Bean b) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
+	
 	@Override
 	public int realhashCode() {
 		final int prime = 31;
@@ -63,7 +63,7 @@ public class Slide extends Bean {
 		result = prime * result + ((photo2 == null) ? 0 : photo2.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public boolean realequals(Object obj) {
 		if (this == obj)
@@ -85,27 +85,20 @@ public class Slide extends Bean {
 			return false;
 		return true;
 	}
-
-
+	
 	@Override
 	public int realcompareTo(Bean b) {
 		if (getClass() != b.getClass()) {
-			throw new RuntimeException("this("+this+") is not same class as b"+b);
+			throw new RuntimeException("this(" + this + ") is not same class as b" + b);
 		} else {
 			Slide s = (Slide) b;
 			return this.getTags().size() < s.getTags().size() ? 0 : 1;
 		}
 	}
-
+	
 	@Override
 	public String toString() {
-		return new StringBuilder(photo1.getId()).append(photo2 != null ?photo2.getId() : StringUtils.EMPTY).append(StringUtils.CR).toString();
+		return new StringBuilder(photo1.getId()).append(photo2 != null ? photo2.getId() : StringUtils.EMPTY).append(StringUtils.CR).toString();
 	}
 	
-	
-
-	
-	
-	
-
 }
