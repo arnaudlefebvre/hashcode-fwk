@@ -1,29 +1,23 @@
 package fr.noobeclair.hashcode.solve;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import fr.noobeclair.hashcode.bean.BeanContainer;
-import fr.noobeclair.hashcode.in.InReader;
-import fr.noobeclair.hashcode.interfaces.Step;
 import fr.noobeclair.hashcode.utils.Utils;
 
-public abstract class Solver {
+public abstract class Solver<T extends BeanContainer>  {
 	
 	protected static final Logger logger = LogManager.getLogger(Solver.class);
 	
 	protected String name;
-	protected List<Step> steps;
-	protected BeanContainer data;
+	protected T data;
 	
 	public Solver() {
-		this.steps = new ArrayList<>();
+		
 	}
 	
-	public BeanContainer solve(BeanContainer data) {
+	public BeanContainer solve(T data) {
 		long start = System.currentTimeMillis();
 		logger.info("-- Solve start : {}",name);
 		try {
@@ -33,10 +27,10 @@ public abstract class Solver {
 		}
 	}		
 	
-	protected abstract BeanContainer run(BeanContainer data);
+	protected abstract T run(T data);
 	
 	
-	public BeanContainer solveSteps(BeanContainer data) {
+	public T solveSteps(T data) {
 		long start = System.currentTimeMillis();
 		logger.info("-- Solve start : {}",name);
 		try {
@@ -46,6 +40,14 @@ public abstract class Solver {
 		}
 	}		
 	
-	protected abstract BeanContainer runSteps(BeanContainer data);
+	protected abstract T runSteps(T data);
+
+	protected T getData() {
+		return data;
+	}
+
+	protected void setData(T data) {
+		this.data = data;
+	}		
 
 }

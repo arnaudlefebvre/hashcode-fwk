@@ -18,14 +18,21 @@ import fr.noobeclair.hashcode.utils.ProgressBar;
 import fr.noobeclair.hashcode.utils.Utils;
 import fr.noobeclair.hashcode.utils.dto.DistanceResultDto;
 
-public class HashCode2019Solver extends Solver {
-		
+public class HashCode2019Solver extends Solver<HashCode2019BeanContainer> {
+	
+	//private List<? extends AbstractStep<HashCode2019Solver>> steps;
+	
+	private static final Long WAIT = 0L;
+	// private static final Long WAIT = 10L;
+	// private static final Long WAIT = 100L;
+	// private static final Long WAIT = 1000L;
+
 	public HashCode2019Solver() {
 		super();
 	}
 
 	@Override
-	protected BeanContainer run(BeanContainer data) {
+	protected HashCode2019BeanContainer run(HashCode2019BeanContainer data) {
 		HashCode2019BeanContainer datas = (HashCode2019BeanContainer) data;
 		// 1 - Extraction des photos verticales pour les positionner ensembles
 		long start = System.currentTimeMillis();
@@ -86,97 +93,127 @@ public class HashCode2019Solver extends Solver {
 		datas.setSlideshow(new SlideShow(slideshow));
 		return datas;
 	}
+	
+	private AbstractStep<HashCode2019BeanContainer> step1() {
+		return new Step1("1", this.data);
+	}
+	private AbstractStep<HashCode2019BeanContainer> step2() {
+		return new Step2("2", this.data);
+	}
+	private AbstractStep<HashCode2019BeanContainer> step3() {
+		return new Step3("3", this.data);
+	}
+	private AbstractStep<HashCode2019BeanContainer> step4() {
+		return new Step4("4", this.data);
+	}
+	
+	private class Step1 extends AbstractStep<HashCode2019BeanContainer> {
+
+		public Step1(String id, HashCode2019BeanContainer solver) {
+			super(id, solver);
+		}
+
+		@Override
+		protected HashCode2019BeanContainer runStep(HashCode2019BeanContainer datas) {
+			List<Bean> listPhotosVertical = datas.getPhotos().stream()
+					.filter(photo -> photo.getSens().equalsIgnoreCase("V")).collect(Collectors.toList());
+			datas.setListVerticalPhoto(listPhotosVertical);
+			return datas;
+		}
+	}
+	
+	private class Step2 extends AbstractStep<HashCode2019BeanContainer> {
+
+		public Step2(String id, HashCode2019BeanContainer solver) {
+			super(id, solver);
+		}
+
+		@Override
+		protected HashCode2019BeanContainer runStep(HashCode2019BeanContainer datas) {
+			HashMap<Integer, Bean> processed = new HashMap<Integer, Bean>();
+			List<Bean> slides = new ArrayList<>();
+			for (Bean b : datas.getListVerticalPhoto()) {
+				Photo p = (Photo) b;
+				// We add current to processed has we do not want to compute distance against
+				// itself.
+				// We do not need the object as the id is unique in our case
+				processed.put(p.hashCode(), null);
+				DistanceResultDto res = AlgoUtils.farthestSibling(p, datas.getListVerticalPhoto(), processed);
+				if (res.getObject() != null) {
+					Slide s = new Slide(p, (Photo) res.getObject());
+					processed.put(res.getObject().hashCode(), null);
+					slides.add(s);
+				}
+			}
+			datas.setSlides(slides);
+			return datas;
+		}
+	}
+	
+	private class Step3 extends AbstractStep<HashCode2019BeanContainer> {
+
+		public Step3(String id, HashCode2019BeanContainer solver) {
+			super(id, solver);
+		}
+
+		@Override
+		protected HashCode2019BeanContainer runStep(HashCode2019BeanContainer datas) {
+			List<Bean> slides = datas.getSlides();
+			slides.addAll(datas.getPhotos().stream().filter(photo -> photo.getSens().equalsIgnoreCase("H"))
+					.map(p -> new Slide(p, null)).collect(Collectors.toList()));
+			datas.setSlides(slides);
+			return datas;
+		}
+	}
+	
+	
+	private class Step4 extends AbstractStep<HashCode2019BeanContainer> {
+
+		public Step4(String id, HashCode2019BeanContainer solver) {
+			super(id, solver);
+		}
+
+		@Override
+		protected HashCode2019BeanContainer runStep(HashCode2019BeanContainer datas) {
+			HashMap<Integer, Bean> processed = new HashMap<Integer, Bean>();
+			Collections.sort(datas.getSlides());
+			List<Slide> slideshow = new ArrayList<>();
+			// AbstractStep 4 - Construction du slideshow
+			int i = 1;
+			int j = datas.getSlides().size();
+			ProgressBar bar = new ProgressBar(j, 100, "|", "|", "=", "=>", "Done!");
+			for (Bean b : datas.getSlides()) {
+				Slide s = (Slide) b;
+				processed.put(s.hashCode(), null);
+				slideshow.add(s);
+				DistanceResultDto res = AlgoUtils.farthestSibling(s, datas.getSlides(), processed);
+				if (res.getObject() != null) {
+					slideshow.add((Slide) res.getObject());
+				}
+				halt(WAIT);
+				bar.show(System.out, i);
+				i = i + 1;
+			}
+			datas.setSlideshow(new SlideShow(slideshow));
+			return datas;
+		}
+	}
+
 
 	@Override
-	protected BeanContainer runSteps(BeanContainer data) {
+	protected HashCode2019BeanContainer runSteps(HashCode2019BeanContainer data) {
+		List<AbstractStep<HashCode2019BeanContainer>> steps = new ArrayList<>();
 		this.data = data;
-		Step step1 = new AbstractStep("1") {
-
-			@Override
-			protected BeanContainer runStep(BeanContainer data) {
-				HashCode2019BeanContainer datas = (HashCode2019BeanContainer) data;
-
-				List<Bean> listPhotosVertical = datas.getPhotos().stream()
-						.filter(photo -> photo.getSens().equalsIgnoreCase("V")).collect(Collectors.toList());
-				datas.setListVerticalPhoto(listPhotosVertical);
-				return datas;
-			}
-		};
-		this.steps.add(step1);
-		Step step2 = new AbstractStep("2") {
-
-			@Override
-			protected BeanContainer runStep(BeanContainer data) {
-				HashCode2019BeanContainer datas = (HashCode2019BeanContainer) data;
-				HashMap<Integer, Bean> processed = new HashMap<Integer, Bean>();
-				List<Bean> slides = new ArrayList<>();
-				for (Bean b : datas.getListVerticalPhoto()) {
-					Photo p = (Photo) b;
-					// We add current to processed has we do not want to compute distance against
-					// itself.
-					// We do not need the object as the id is unique in our case
-					processed.put(p.hashCode(), null);
-					DistanceResultDto res = AlgoUtils.farthestSibling(p, datas.getListVerticalPhoto(), processed);
-					if (res.getObject() != null) {
-						Slide s = new Slide(p, (Photo) res.getObject());
-						processed.put(res.getObject().hashCode(), null);
-						slides.add(s);
-					}
-				}
-				datas.setSlides(slides);
-				return datas;
-			}
-		};
-		this.steps.add(step2);
-
-		Step step3 = new AbstractStep("3") {
-
-			@Override
-			protected BeanContainer runStep(BeanContainer data) {
-				HashCode2019BeanContainer datas = (HashCode2019BeanContainer) data;
-				List<Bean> slides = datas.getSlides();
-				slides.addAll(datas.getPhotos().stream().filter(photo -> photo.getSens().equalsIgnoreCase("H"))
-								.map(p -> new Slide(p, null)).collect(Collectors.toList()));
-				datas.setSlides(slides);
-				return datas;
-			}
-		};
-		
-		this.steps.add(step3);
-		Step step4 = new AbstractStep("4") {
-
-			@Override
-			protected BeanContainer runStep(BeanContainer data) {
-				HashCode2019BeanContainer datas = (HashCode2019BeanContainer) data;
-				HashMap<Integer, Bean> processed = new HashMap<Integer, Bean>();
-				Collections.sort(datas.getSlides());
-				List<Slide> slideshow = new ArrayList<>();
-				// AbstractStep 4 - Construction du slideshow
-				int i = 0;
-				int j = datas.getSlides().size();
-				ProgressBar bar = new ProgressBar(j, 100, "|", "|", "=", "=>", "Done!");
-				for (Bean b : datas.getSlides()) {
-					bar.show(System.out, i);
-					Slide s = (Slide) b;
-					processed.put(s.hashCode(), null);
-					slideshow.add(s);
-					DistanceResultDto res = AlgoUtils.farthestSibling(s, datas.getSlides(), processed);
-					if (res.getObject() != null) {
-						slideshow.add((Slide) res.getObject());
-					}
-					i = i+1;
-				}
-				datas.setSlideshow(new SlideShow(slideshow));
-				return datas;
-			}
-		};
-		this.steps.add(step4);
-
-		for (Step s : this.steps) {
+		steps.add(step1());
+		steps.add(step2());
+		steps.add(step3());
+		steps.add(step4());
+		for (AbstractStep<HashCode2019BeanContainer> s : steps) {
 			this.data = s.run(this.data);
 		}
-		return data;
-
+		return this.data;
 	}
+
+	
 
 }

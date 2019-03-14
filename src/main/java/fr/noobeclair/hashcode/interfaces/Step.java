@@ -1,10 +1,11 @@
 package fr.noobeclair.hashcode.interfaces;
 
 import fr.noobeclair.hashcode.bean.BeanContainer;
+import fr.noobeclair.hashcode.solve.Solver;
 
 @FunctionalInterface
-public interface Step {
+public interface Step<T extends BeanContainer> {
 	
-	public BeanContainer run(BeanContainer data);
+	public T run(T solver);
 
 }

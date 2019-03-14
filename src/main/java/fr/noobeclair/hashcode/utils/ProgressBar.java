@@ -1,6 +1,10 @@
 package fr.noobeclair.hashcode.utils;
 
 import java.io.PrintStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+import javax.swing.ButtonGroup;
 
 public class ProgressBar {
 	
@@ -11,7 +15,7 @@ public class ProgressBar {
 	private String progressFill;
 	private String progressHead;
 	private String progressDone;
-	private Long progressMeanTime;
+	private BigDecimal progressMeanTime;
 	private Long currentStepTime;
 	private Integer step;
 	private Integer stepsize;
@@ -26,8 +30,12 @@ public class ProgressBar {
 	public static final Integer BAR_PERCENT = 10;
 	public static final Integer BAR_COUNT = 20;
 	public static final Integer BAR_ALL = 30;
+	public static final Integer BAR_ETA = 20;
 	
-	public static final Long REFRESH_MS = 5000L;
+	public Long REFRESH_MS = 10L;
+	public static final BigDecimal MIN  = new BigDecimal("5");
+	public static final BigDecimal MAX  = new BigDecimal("5000");
+	public static final BigDecimal MIN_DISPLAY = new BigDecimal("10");
 	
 	public static final String PAD_STR = " ";
 	public static final String REMAIN_FILL_STR = " ";
@@ -46,7 +54,7 @@ public class ProgressBar {
 		this.progressFill = progressFill;
 		this.progressHead = progressHead;
 		this.progressDone = progressDone;
-		this.progressMeanTime = 0L;
+		this.progressMeanTime = new BigDecimal("0");
 		this.step = 0;
 		this.stepsize = 0;
 		this.lpad = 0;
@@ -69,7 +77,7 @@ public class ProgressBar {
 		this.progressFill = progressFill;
 		this.progressHead = progressHead;
 		this.progressDone = progressDone;
-		this.progressMeanTime = 0L;
+		this.progressMeanTime = new BigDecimal("0");
 		this.step = 0;
 		this.stepsize = 0;
 		this.lpad = 0;
@@ -92,7 +100,7 @@ public class ProgressBar {
 		this.progressFill = progressFill;
 		this.progressHead = progressHead;
 		this.progressDone = progressDone;
-		this.progressMeanTime = 0L;
+		this.progressMeanTime = new BigDecimal("0");
 		this.step = 0;
 		this.stepsize = 0;
 		this.lpad = lpad;
@@ -115,7 +123,7 @@ public class ProgressBar {
 		this.progressFill = progressFill;
 		this.progressHead = progressHead;
 		this.progressDone = progressDone;
-		this.progressMeanTime = 0L;
+		this.progressMeanTime = new BigDecimal("0");
 		this.step = 0;
 		this.stepsize = 0;
 		this.lpad = lpad;
@@ -128,7 +136,7 @@ public class ProgressBar {
 	private void reset() {
 		this.startTime = 0L;
 		this.lastRefresh = 0L;
-		this.progressMeanTime = 0L;
+		this.progressMeanTime = new BigDecimal("0");
 		this.step = 0;
 		this.currentStepTime = System.currentTimeMillis();
 	}
@@ -137,7 +145,7 @@ public class ProgressBar {
 		this.startTime = 0L;
 		this.lastRefresh = 0L;
 		this.step = 0;
-		this.progressMeanTime = 0L;
+		this.progressMeanTime = new BigDecimal("0");
 		this.end = count;
 		prepare();
 		this.currentStepTime = System.currentTimeMillis();
@@ -146,7 +154,8 @@ public class ProgressBar {
 	private void prepare() {
 		int percentsize = 0;
 		int countsize = 0;
-		int queuesize = 0;
+		int etasize = 0;
+		int queuesize = 0;		
 		if (BAR_PERCENT.equals(this.progressOption) || BAR_ALL.equals(this.progressOption)) {
 			//- xxx% 
 			percentsize = "xxx%".length();
@@ -155,12 +164,18 @@ public class ProgressBar {
 			//- end/end 
 			countsize = "/".length()+(end.toString().length()*2);
 		}
-		if (BAR_COUNT.equals(this.progressOption) || BAR_ALL.equals(this.progressOption) || BAR_PERCENT.equals(this.progressOption)) {
+		if (BAR_ETA.equals(this.progressOption) || BAR_ALL.equals(this.progressOption)) {
+			//- 00h00m00s
+			etasize = "00h00m00s".length();
+		}
+		if (BAR_COUNT.equals(this.progressOption) || BAR_ALL.equals(this.progressOption) || BAR_PERCENT.equals(this.progressOption) || BAR_ETA.equals(this.progressOption)) {
 			queuesize = " [  ] ".length();
-			if (countsize > 0 && percentsize > 0) {
+			if (countsize > 0 && percentsize > 0 && etasize > 0) {
+				queuesize = queuesize + (" - ".length()*2);
+			} else if ( (countsize > 0 && percentsize > 0) || (countsize > 0 && etasize > 0) || (etasize > 0 && percentsize > 0)) {
 				queuesize = queuesize + " - ".length();
 			}
-			queuesize = queuesize + countsize + percentsize;
+			queuesize = queuesize + countsize + percentsize + etasize;
 		}		
 		//Taille de la zone de chargement, si maxwidth = 100, 96
 		this.progressWidth = this.maxwidth - (this.lpad+this.rpad+this.progressStart.length()+this.progressEnd.length()+queuesize);
@@ -191,26 +206,26 @@ public class ProgressBar {
 	
 	private String getQueue(int step) {
 		StringBuffer buf = new StringBuffer();
-		if (BAR_COUNT.equals(this.progressOption) || BAR_ALL.equals(this.progressOption) || BAR_PERCENT.equals(this.progressOption)) {
+		if (BAR_COUNT.equals(this.progressOption) || BAR_ALL.equals(this.progressOption) || BAR_PERCENT.equals(this.progressOption)|| BAR_ETA.equals(this.progressOption)) {
 			buf.append(" [ ");
 			if (BAR_COUNT.equals(this.progressOption) || BAR_ALL.equals(this.progressOption)) {
 				buf.append(""+pad(""+step,""+end)+"/"+end);
 			}
-			if ((BAR_COUNT.equals(this.progressOption) && BAR_PERCENT.equals(this.progressOption)) || BAR_ALL.equals(this.progressOption)) {
+			if ((BAR_COUNT.equals(this.progressOption) && BAR_PERCENT.equals(this.progressOption))  || (BAR_COUNT.equals(this.progressOption) && BAR_ETA.equals(this.progressOption)) || BAR_ALL.equals(this.progressOption)) {
 				buf.append(" - ");
 			}
 			if (BAR_PERCENT.equals(this.progressOption) || BAR_ALL.equals(this.progressOption)) {
 				buf.append(""+(pad(""+step*100/this.end,"100"))+"%");
 			}
-			if (step != 0 ) {
-				this.progressMeanTime = (((this.progressMeanTime/ (end - step)) + ((System.currentTimeMillis() - this.currentStepTime )/1000)) / step+1) * (end - step);
-				Utils.roundMiliTime(this.progressMeanTime,3);
-			} else {
-				this.progressMeanTime =  (System.currentTimeMillis() - this.currentStepTime )/1000 ;
+			//|| (BAR_PERCENT.equals(this.progressOption) && BAR_ETA.equals(this.progressOption))
+			if ((BAR_PERCENT.equals(this.progressOption) && BAR_ETA.equals(this.progressOption))  || BAR_ALL.equals(this.progressOption)) {
+				buf.append(" - ");
 			}
-			buf.append(" - ETA "+Utils.roundMiliTime(this.progressMeanTime/1000 * (end - step),3)+" ss ");
+			if (BAR_ETA.equals(this.progressOption) || BAR_ALL.equals(this.progressOption)) {							
+				buf.append("ETA "+Utils.formatToHHMMSS(this.progressMeanTime.multiply(new BigDecimal(end - step)).longValue()));
+			}
 			buf.append(" ] ");
-			this.currentStepTime = System.currentTimeMillis();
+			
 		}
 		return buf.toString();
 	}
@@ -275,9 +290,11 @@ public class ProgressBar {
 			reset();
 		} else //if (step % stepsize == 0) { 
 		{
+			calcMeanTime(step);
 			if (isRefresh()) {
 				out.print(getProgress(step));
 			}
+			updateRefreshTime(step);
 		}
 	}
 	
@@ -287,6 +304,35 @@ public class ProgressBar {
 		 res = PAD_NB_STR + res;
 		}
 		return res;
+	}
+	
+	private void calcMeanTime(int step) {
+		if (BAR_ETA.equals(this.progressOption) || BAR_ALL.equals(this.progressOption)) {
+			BigDecimal currSec = new BigDecimal(""+(System.currentTimeMillis() - this.currentStepTime )).divide(new BigDecimal("1000"));
+			if (step != 0 ) {
+				// (moy * stepdone + currtime) / stepdone + 1
+				//this.progressMeanTime = ((this.progressMeanTime * step +currSec) / (step+1));	
+				this.progressMeanTime = this.progressMeanTime.multiply(new BigDecimal(step)).add(currSec).divide(new BigDecimal(step+1),3, RoundingMode.HALF_UP);
+			} else {
+				this.progressMeanTime =  currSec;
+			}
+			this.currentStepTime = System.currentTimeMillis();
+		}
+	}
+	
+	private void updateRefreshTime(int step) {
+		long per = step*100/this.end;
+		if (per % 3 == 0) {
+			BigDecimal nbRefresh = new BigDecimal(this.REFRESH_MS);
+			BigDecimal meanMs = this.progressMeanTime.multiply(new BigDecimal("1000"));
+			BigDecimal totalEstimatedTime  = meanMs.multiply(new BigDecimal(end - step)).add(new BigDecimal(System.currentTimeMillis() - this.startTime));
+			nbRefresh = totalEstimatedTime.divide(totalEstimatedTime, 2, RoundingMode.HALF_UP);
+			if (nbRefresh.compareTo(MIN) > 0) {
+				this.REFRESH_MS = totalEstimatedTime.divide(MIN_DISPLAY).longValue();
+			} else if (meanMs.compareTo(new BigDecimal(REFRESH_MS))> 0) {
+				this.REFRESH_MS = meanMs.max(MAX).longValue();
+			}
+		}
 	}
 	
 	public Long getStartTime() {
