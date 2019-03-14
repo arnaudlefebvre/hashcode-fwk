@@ -3,9 +3,11 @@ package fr.noobeclair.hashcode.bean.hashcode2019;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fr.noobeclair.hashcode.bean.Bean;
 
-public class Slide extends Bean implements Comparable<Slide> {
+public class Slide extends Bean {
 	
 	private Photo photo1;
 	private Photo photo2;
@@ -48,13 +50,13 @@ public class Slide extends Bean implements Comparable<Slide> {
 	}
 
 	@Override
-	public double distance(Bean b) {
+	public double realdistance(Bean b) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public int hashCode() {
+	public int realhashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((photo1 == null) ? 0 : photo1.hashCode());
@@ -63,7 +65,7 @@ public class Slide extends Bean implements Comparable<Slide> {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean realequals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -83,11 +85,24 @@ public class Slide extends Bean implements Comparable<Slide> {
 			return false;
 		return true;
 	}
-	
-	
-	public int compareTo(Slide o) {
-		return this.getTags().size() < o.getTags().size() ? 0 : 1;
+
+
+	@Override
+	public int realcompareTo(Bean b) {
+		if (getClass() != b.getClass()) {
+			throw new RuntimeException("this("+this+") is not same class as b"+b);
+		} else {
+			Slide s = (Slide) b;
+			return this.getTags().size() < s.getTags().size() ? 0 : 1;
+		}
 	}
+
+	@Override
+	public String toString() {
+		return new StringBuilder(photo1.getId()).append(photo2 != null ?photo2.getId() : StringUtils.EMPTY).append(StringUtils.CR).toString();
+	}
+	
+	
 
 	
 	

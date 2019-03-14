@@ -17,14 +17,14 @@ public abstract class OutWriter {
 	
 	public void write(BeanContainer out, String path) {
 		long start = System.currentTimeMillis();
-		logger.debug("-- Write start : {}",path);
+		logger.info("-- Write start : {}",path);
 		try {
 			writeFile(out, path);
 		} finally {
-			logger.debug("-- Write End. Total Time : {}s --",Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
+			logger.info("-- Write End. Total Time : {}s --",Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		}
 	}
 	
-	public abstract void writeFile(BeanContainer out, String path);
+	protected abstract void writeFile(BeanContainer out, String path);
 
 }

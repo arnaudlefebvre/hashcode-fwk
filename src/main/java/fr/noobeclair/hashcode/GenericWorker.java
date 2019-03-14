@@ -14,7 +14,7 @@ public abstract class GenericWorker implements Runnable {
 	protected InReader reader;
 	protected Solver solver;
 
-	protected GenericWorker(OutWriter writer, InReader reader, Solver solver) {
+	protected GenericWorker (InReader reader, Solver solver, OutWriter writer) {
 		this.reader = reader;
 		this.writer = writer;
 		this.solver = solver;

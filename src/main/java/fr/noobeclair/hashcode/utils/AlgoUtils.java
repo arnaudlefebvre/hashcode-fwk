@@ -3,12 +3,16 @@ package fr.noobeclair.hashcode.utils;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import fr.noobeclair.hashcode.bean.Bean;
-import fr.noobeclair.hashcode.interfaces.Distanceable;
 import fr.noobeclair.hashcode.utils.dto.DistanceResultDto;
 
 public class AlgoUtils {
-
+	
+	private static final Logger logger = LogManager.getLogger(AlgoUtils.class);
+	
 	private AlgoUtils() {
 		// TODO Auto-generated constructor stub
 	}
@@ -20,6 +24,8 @@ public class AlgoUtils {
 	 * @return nearest object of ref in list
 	 */
 	public static DistanceResultDto nearestSibling(Bean ref,List<Bean> list) {
+		long start = System.currentTimeMillis();
+		logger.debug("-- nearestSibling start");
 		double max = Double.MAX_VALUE;
 		int idx = 0,resIdx = 0;
 		Bean tmp = null;
@@ -32,6 +38,7 @@ public class AlgoUtils {
 			}
 			idx = idx++;
 		}
+		logger.debug("-- nearestSibling End. Total Time : {}s --",Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		return new DistanceResultDto(resIdx, tmp, max);
 	}
 	
@@ -43,6 +50,8 @@ public class AlgoUtils {
 	 * @return nearest object of ref in list
 	 */
 	public static DistanceResultDto nearestSibling(Bean ref,List<Bean> list, HashMap<Integer, Bean> exclude) {
+		long start = System.currentTimeMillis();
+		logger.debug("-- nearestSibling start");
 		double max = Double.MAX_VALUE;
 		int idx = 0,resIdx = 0;
 		Bean tmp = null;
@@ -57,6 +66,7 @@ public class AlgoUtils {
 			}
 			idx = idx++;
 		}
+		logger.debug("-- nearestSibling End. Total Time : {}s --",Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		return new DistanceResultDto(resIdx, tmp, max);
 	}
 	
@@ -67,6 +77,8 @@ public class AlgoUtils {
 	 * @return farthest object of ref in list
 	 */
 	public static DistanceResultDto farthestSibling(Bean ref,List<Bean> list) {
+		long start = System.currentTimeMillis();
+		logger.debug("-- farthestSibling start");
 		double max = 0;
 		int idx = 0,resIdx = 0;
 		Bean tmp = null;
@@ -79,6 +91,7 @@ public class AlgoUtils {
 			}
 			idx = idx++;
 		}
+		logger.debug("-- farthestSibling End. Total Time : {}s --",Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		return new DistanceResultDto(resIdx, tmp, max);
 	}
 	
@@ -91,6 +104,8 @@ public class AlgoUtils {
 	 * @return farthest object of ref in list
 	 */
 	public static DistanceResultDto farthestSibling(Bean ref,List<Bean> list, HashMap<Integer, Bean> exclude) {
+		long start = System.currentTimeMillis();
+		logger.debug("-- farthestSibling start");
 		double max = 0;
 		int idx = 0,resIdx = 0;
 		Bean tmp = null;
@@ -105,6 +120,7 @@ public class AlgoUtils {
 			}
 			idx = idx++;
 		}
+		logger.debug("-- farthestSibling End. Total Time : {}s --",Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		return new DistanceResultDto(resIdx, tmp, max);
 	}
 

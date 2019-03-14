@@ -6,8 +6,9 @@ import fr.noobeclair.hashcode.solve.Solver;
 
 public class NullWorker extends GenericWorker {
 
-	protected NullWorker(InReader reader,  Solver solver, OutWriter writer) {
-		super(writer, reader, solver);
+	protected NullWorker(InReader reader, Solver solver, OutWriter writer) {
+		super(reader, solver, writer);
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override

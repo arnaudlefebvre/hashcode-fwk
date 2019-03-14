@@ -46,13 +46,13 @@ public class Photo extends Bean {
 	}
 
 	@Override
-	public double distance(Bean b) {
+	public double realdistance(Bean b) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public int hashCode() {
+	public int realhashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + id;
@@ -62,7 +62,7 @@ public class Photo extends Bean {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean realequals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -83,6 +83,11 @@ public class Photo extends Bean {
 		} else if (!tags.equals(other.tags))
 			return false;
 		return true;
+	}
+
+	@Override
+	public int realcompareTo(Bean b) {
+		throw new UnsupportedOperationException();
 	}
 	
 	

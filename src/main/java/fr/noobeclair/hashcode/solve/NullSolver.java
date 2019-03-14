@@ -14,4 +14,10 @@ public class NullSolver extends Solver {
 		return null;
 	}
 
+	@Override
+	protected BeanContainer runSteps(BeanContainer data) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

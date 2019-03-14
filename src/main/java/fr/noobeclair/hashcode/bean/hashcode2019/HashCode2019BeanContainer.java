@@ -2,6 +2,7 @@ package fr.noobeclair.hashcode.bean.hashcode2019;
 
 import java.util.List;
 
+import fr.noobeclair.hashcode.bean.Bean;
 import fr.noobeclair.hashcode.bean.BeanContainer;
 
 public class HashCode2019BeanContainer extends BeanContainer {
@@ -12,7 +13,8 @@ public class HashCode2019BeanContainer extends BeanContainer {
 	
 	private int totalPhotos;
 	private List<Photo> photos;
-	private List<Slide> slides;
+	private List<Bean> listVerticalPhoto;
+	private List<Bean> slides;
 	private SlideShow slideshow;
 	public int getTotalPhotos() {
 		return totalPhotos;
@@ -26,10 +28,10 @@ public class HashCode2019BeanContainer extends BeanContainer {
 	public void setPhotos(List<Photo> photos) {
 		this.photos = photos;
 	}
-	public List<Slide> getSlides() {
+	public List<Bean> getSlides() {
 		return slides;
 	}
-	public void setSlides(List<Slide> slides) {
+	public void setSlides(List<Bean> slides) {
 		this.slides = slides;
 	}
 	public SlideShow getSlideshow() {
@@ -38,5 +40,11 @@ public class HashCode2019BeanContainer extends BeanContainer {
 	public void setSlideshow(SlideShow slideshow) {
 		this.slideshow = slideshow;
 	}
-
+	public List<Bean> getListVerticalPhoto() {
+		return listVerticalPhoto;
+	}
+	public void setListVerticalPhoto(List<Bean> listVerticalPhoto) {
+		this.listVerticalPhoto = listVerticalPhoto;
+	}
+	
 }
