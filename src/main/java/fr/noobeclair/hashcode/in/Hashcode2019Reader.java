@@ -42,7 +42,7 @@ public class Hashcode2019Reader extends InReader {
 			if (index != 0) {
 				String[] linePhoto = ReadFileUtil.getTabFromLineSpace(lines, index);
 				String sens = linePhoto[0];
-				int nbTag = Integer.valueOf(linePhoto[1]);
+				long nbTag = Integer.valueOf(linePhoto[1]);
 				List<String> tags = new ArrayList<>();
 				
 				for (int tagIndex = 2; tagIndex < nbTag + 2; tagIndex++) {
