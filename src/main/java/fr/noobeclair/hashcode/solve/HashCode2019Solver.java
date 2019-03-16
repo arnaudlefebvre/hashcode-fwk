@@ -21,7 +21,8 @@ public class HashCode2019Solver extends Solver<HashCode2019BeanContainer> {
 	// private List<? extends AbstractStep<HashCode2019Solver>> steps;
 	
 	private static final Long WAIT = 0L;
-	// private static final Long WAIT = 10L;
+	//private static final Long WAIT = 1L;
+	 //private static final Long WAIT = 10L;
 	// private static final Long WAIT = 100L;
 	// private static final Long WAIT = 1000L;
 	
@@ -190,6 +191,7 @@ public class HashCode2019Solver extends Solver<HashCode2019BeanContainer> {
 				bar.show(System.out, i);
 				i = i + 1;
 			}
+			bar.end(System.out);
 			datas.setSlideshow(new SlideShow(slideshow));
 			return datas;
 		}

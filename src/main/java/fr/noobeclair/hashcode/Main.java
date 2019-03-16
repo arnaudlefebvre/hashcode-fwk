@@ -36,10 +36,10 @@ public class Main {
 			// simpleWorker.run();
 			SimpleWorker simpleWorker2 = new SimpleWorker(new Hashcode2019Reader(), new HashCode2019Solver(), new Hashcode2019Writer(),
 					"src/main/resources/in/b_lovely_landscapes.txt", "src/main/resources/out/b_example.out.txt");
-			// simpleWorker2.runSteps();
+			 simpleWorker2.runSteps();
 			SimpleWorker simpleWorker3 = new SimpleWorker(new Hashcode2019Reader(), new HashCode2019Solver(), new Hashcode2019Writer(),
 					"src/main/resources/in/c_memorable_moments.txt", "src/main/resources/out/c_example.out.txt");
-			simpleWorker3.runSteps();
+			//simpleWorker3.runSteps();
 		} finally {
 			logger.debug("------------------------------------------------------------------------");
 			logger.debug("-- End. Total Time : " + Utils.roundMiliTime((System.currentTimeMillis() - start), 3) + "s --");
