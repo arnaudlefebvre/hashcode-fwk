@@ -9,12 +9,12 @@ import org.apache.logging.log4j.Logger;
 import fr.noobeclair.hashcode.bean.Bean;
 import fr.noobeclair.hashcode.utils.dto.DistanceResultDto;
 
-public class AlgoUtils {
+public class AlgoUtils<T extends Bean> {
 	
 	private static final Logger logger = LogManager.getLogger(AlgoUtils.class);
 	
-	private AlgoUtils() {
-		// TODO Auto-generated constructor stub
+	public AlgoUtils() {
+		
 	}
 	
 	/**
@@ -27,13 +27,13 @@ public class AlgoUtils {
 	 *            list
 	 * @return nearest object of ref in list
 	 */
-	public static DistanceResultDto nearestSibling(Bean ref, List<Bean> list) {
+	public DistanceResultDto<T> nearestSibling(T ref, List<T> list) {
 		long start = System.currentTimeMillis();
-		logger.debug("-- nearestSibling start");
+		logger.trace("-- nearestSibling start");
 		double max = Double.MAX_VALUE;
 		int idx = 0, resIdx = 0;
-		Bean tmp = null;
-		for (Bean d : list) {
+		T tmp = null;
+		for (T d : list) {
 			double cur = ref.distance(d);
 			if (max > cur) {
 				tmp = d;
@@ -42,8 +42,8 @@ public class AlgoUtils {
 			}
 			idx = idx++;
 		}
-		logger.debug("-- nearestSibling End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
-		return new DistanceResultDto(resIdx, tmp, max);
+		logger.trace("-- nearestSibling End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
+		return new DistanceResultDto<T>(resIdx, tmp, max);
 	}
 	
 	/**
@@ -58,15 +58,17 @@ public class AlgoUtils {
 	 *            comparison
 	 * @return nearest object of ref in list
 	 */
-	public static DistanceResultDto nearestSibling(Bean ref, List<Bean> list, HashMap<Integer, Bean> exclude) {
+	public DistanceResultDto<T> nearestSibling(T ref, List<T> list, HashMap<Integer, T> exclude) {
 		long start = System.currentTimeMillis();
-		logger.debug("-- nearestSibling start");
+		logger.trace("-- nearestSibling start");
 		double max = Double.MAX_VALUE;
 		int idx = 0, resIdx = 0;
-		Bean tmp = null;
-		for (Bean d : list) {
-			if (!exclude.containsKey(d.hashCode())) {
+		T tmp = null;
+		for (T d : list) {
+			
 				double cur = ref.distance(d);
+				logger.debug("nearestSibling ref {}, max dist {}, current {} from distance {}",ref,max,d,cur);
+				if (!exclude.containsKey(d.hashCode())) {
 				if (max > cur) {
 					tmp = d;
 					max = cur;
@@ -75,8 +77,9 @@ public class AlgoUtils {
 			}
 			idx = idx++;
 		}
-		logger.debug("-- nearestSibling End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
-		return new DistanceResultDto(resIdx, tmp, max);
+		logger.debug("nearestSibling ref {}, selected {} from distance {}",ref,tmp,max);
+		logger.trace("-- nearestSibling End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
+		return new DistanceResultDto<T>(resIdx, tmp, max);
 	}
 	
 	/**
@@ -89,13 +92,13 @@ public class AlgoUtils {
 	 *            list
 	 * @return farthest object of ref in list
 	 */
-	public static DistanceResultDto farthestSibling(Bean ref, List<Bean> list) {
+	public DistanceResultDto<T> farthestSibling(T ref, List<T> list) {
 		long start = System.currentTimeMillis();
-		logger.debug("-- farthestSibling start");
+		logger.trace("-- farthestSibling start");
 		double max = 0;
 		int idx = 0, resIdx = 0;
-		Bean tmp = null;
-		for (Bean d : list) {
+		T tmp = null;
+		for (T d : list) {
 			double cur = ref.distance(d);
 			if (max < cur) {
 				tmp = d;
@@ -104,8 +107,8 @@ public class AlgoUtils {
 			}
 			idx = idx++;
 		}
-		logger.debug("-- farthestSibling End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
-		return new DistanceResultDto(resIdx, tmp, max);
+		logger.trace("-- farthestSibling End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
+		return new DistanceResultDto<T>(resIdx, tmp, max);
 	}
 	
 	/**
@@ -121,13 +124,13 @@ public class AlgoUtils {
 	 *            comparison
 	 * @return farthest object of ref in list
 	 */
-	public static DistanceResultDto farthestSibling(Bean ref, List<Bean> list, HashMap<Integer, Bean> exclude) {
+	public DistanceResultDto<T> farthestSibling(T ref, List<T> list, HashMap<Integer, T> exclude) {
 		long start = System.currentTimeMillis();
-		logger.debug("-- farthestSibling start");
+		logger.trace("-- farthestSibling start");
 		double max = 0;
 		int idx = 0, resIdx = 0;
-		Bean tmp = null;
-		for (Bean d : list) {
+		T tmp = null;
+		for (T d : list) {
 			if (!exclude.containsKey(d.hashCode())) {
 				double cur = ref.distance(d);
 				if (max < cur) {
@@ -138,8 +141,8 @@ public class AlgoUtils {
 			}
 			idx = idx++;
 		}
-		logger.debug("-- farthestSibling End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
-		return new DistanceResultDto(resIdx, tmp, max);
+		logger.trace("-- farthestSibling End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
+		return new DistanceResultDto<T>(resIdx, tmp, max);
 	}
 	
 }

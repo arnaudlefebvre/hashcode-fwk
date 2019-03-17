@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 import fr.noobeclair.hashcode.bean.BeanContainer;
 import fr.noobeclair.hashcode.utils.Utils;
 
-public abstract class OutWriter {
+public abstract class OutWriter<T extends BeanContainer> {
 	
 	protected static final Logger logger = LogManager.getLogger(OutWriter.class);
 	
@@ -14,16 +14,17 @@ public abstract class OutWriter {
 		// useless constructor
 	}
 	
-	public void write(BeanContainer out, String path) {
+	public T write(T out, String path) {
 		long start = System.currentTimeMillis();
 		logger.info("-- Write start : {}", path);
 		try {
 			writeFile(out, path);
+			return out;
 		} finally {
 			logger.info("-- Write End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		}
 	}
 	
-	protected abstract void writeFile(BeanContainer out, String path);
+	protected abstract void writeFile(T out, String path);
 	
 }

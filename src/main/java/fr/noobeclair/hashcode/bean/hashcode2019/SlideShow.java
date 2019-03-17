@@ -1,15 +1,17 @@
 package fr.noobeclair.hashcode.bean.hashcode2019;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import fr.noobeclair.hashcode.bean.Bean;
+import fr.noobeclair.hashcode.bean.Scorable;
 
 public class SlideShow extends Bean {
 	
 	private List<Slide> slides;
 	
 	public SlideShow() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	public SlideShow(List<Slide> slides) {
@@ -60,5 +62,14 @@ public class SlideShow extends Bean {
 	public int realcompareTo(Bean b) {
 		throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public String toString() {
+		return "SlideShow [slides=" + (slides != null ? slides.stream().map(s -> s.toString()).collect(Collectors.joining(",")):"Null") + "]";
+	}
+	
+	
+	
+	
 	
 }

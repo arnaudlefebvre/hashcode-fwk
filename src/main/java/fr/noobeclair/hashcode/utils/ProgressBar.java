@@ -444,7 +444,7 @@ public class ProgressBar {
 				nbRefresh = totalEstimatedTime.divide(nbRefresh, 2, RoundingMode.HALF_UP);
 			}
 			if (nbRefresh.compareTo(MIN) < 0) {
-				this.REFRESH_MS = totalEstimatedTime.divide(MIN_DISPLAY).longValue();
+				this.REFRESH_MS = totalEstimatedTime.divide(MIN_DISPLAY, 3, RoundingMode.HALF_UP).longValue();
 			} else if (meanMs.compareTo(new BigDecimal(REFRESH_MS)) > 0) {
 				this.REFRESH_MS = meanMs.min(MAX).longValue();
 			}else  {

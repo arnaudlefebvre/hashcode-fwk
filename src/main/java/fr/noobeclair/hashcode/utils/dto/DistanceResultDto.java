@@ -2,17 +2,17 @@ package fr.noobeclair.hashcode.utils.dto;
 
 import fr.noobeclair.hashcode.bean.Bean;
 
-public class DistanceResultDto {
+public class DistanceResultDto<T extends Bean> {
 	
 	private int index;
-	private Bean object;
+	private T object;
 	private double distance;
 	
 	public DistanceResultDto() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	
-	public DistanceResultDto(int index, Bean object, double distance) {
+	public DistanceResultDto(int index, T object, double distance) {
 		super();
 		this.index = index;
 		this.object = object;
@@ -27,11 +27,11 @@ public class DistanceResultDto {
 		this.index = index;
 	}
 	
-	public Bean getObject() {
+	public T getObject() {
 		return object;
 	}
 	
-	public void setObject(Bean object) {
+	public void setObject(T object) {
 		this.object = object;
 	}
 	

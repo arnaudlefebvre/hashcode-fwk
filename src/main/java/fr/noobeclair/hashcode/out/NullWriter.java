@@ -6,7 +6,7 @@ public class NullWriter extends OutWriter {
 	
 	public NullWriter() {
 		
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	@Override

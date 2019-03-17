@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 import fr.noobeclair.hashcode.bean.BeanContainer;
 import fr.noobeclair.hashcode.utils.Utils;
 
-public abstract class InReader {
+public abstract class InReader<T extends BeanContainer> {
 	
 	protected static final Logger logger = LogManager.getLogger(InReader.class);
 	
@@ -14,7 +14,7 @@ public abstract class InReader {
 		// useless constructor
 	}
 	
-	public BeanContainer read(String in) {
+	public T read(String in) {
 		long start = System.currentTimeMillis();
 		logger.info("-- Read start : {}", in);
 		try {
@@ -24,6 +24,6 @@ public abstract class InReader {
 		}
 	}
 	
-	protected abstract BeanContainer readFile(String in);
+	protected abstract T readFile(String in);
 	
 }

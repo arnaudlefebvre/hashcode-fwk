@@ -1,29 +1,34 @@
 package fr.noobeclair.hashcode.bean.hashcode2019;
 
+import java.math.BigDecimal;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 
 import fr.noobeclair.hashcode.bean.Bean;
+import fr.noobeclair.hashcode.bean.Scorable;
 
-public class Slide extends Bean {
+public class Slide extends Bean implements Scorable<Slide> {
 	
 	private Photo photo1;
 	private Photo photo2;
+	private Set<String> tags;
 	
 	public Slide() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	public Set<String> getTags() {
-		Set<String> tags = new TreeSet<>();
-		tags.addAll(this.photo1.getTags());
-		
-		if (this.photo2 != null) {
-			tags.addAll(this.photo2.getTags());
-		}
-		
+		if (tags == null) {
+			tags = new TreeSet<>();
+			tags.addAll(this.photo1.getTags());
+			
+			if (this.photo2 != null) {
+				tags.addAll(this.photo2.getTags());
+			}
+			
+		}		
 		return tags;
 	}
 	
@@ -51,8 +56,11 @@ public class Slide extends Bean {
 	
 	@Override
 	public double realdistance(Bean b) {
-		// TODO Auto-generated method stub
-		return 0;
+		BigDecimal s = score((Slide)b);
+		if (BigDecimal.ZERO.equals(s)) {
+			return 1;
+		}
+		return BigDecimal.ONE.divide(s).doubleValue();
 	}
 	
 	@Override
@@ -98,7 +106,32 @@ public class Slide extends Bean {
 	
 	@Override
 	public String toString() {
-		return new StringBuilder(photo1.getId()).append(photo2 != null ? photo2.getId() : StringUtils.EMPTY).append(StringUtils.CR).toString();
+		//return new StringBuilder(photo1.getId()).append(photo2 != null ? photo2.getId() : StringUtils.EMPTY).append(StringUtils.CR).toString();
+		return "S["+photo1.toString()+"-"+photo2+"]";
+	}
+
+	@Override
+	public BigDecimal score(Slide in) {
+		int onlyInThis = 0;
+		int onlyInIn = 0;
+		int common = 0;
+		
+		for (String tag : this.getTags()) {
+			if (in.getTags().contains(tag)) {
+				common = common +1;
+			} else {
+				onlyInThis = onlyInThis +1;
+			}
+		}
+		
+		for (String tag : in.getTags()) {
+			if (!this.getTags().contains(tag)) {
+				onlyInIn = onlyInIn + 1;
+			}
+		}
+		
+		
+		return new BigDecimal(Math.min(onlyInThis,  Math.min(onlyInIn, common)));
 	}
 	
 }

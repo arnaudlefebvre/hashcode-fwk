@@ -1,24 +1,31 @@
 package fr.noobeclair.hashcode.score;
 
-import java.io.InputStream;
+import java.math.BigDecimal;
 
-public abstract class ScoreCalculator {
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import fr.noobeclair.hashcode.bean.BeanContainer;
+import fr.noobeclair.hashcode.utils.Utils;
+
+public abstract class ScoreCalculator<T extends BeanContainer> {
 	
-	public ScoreCalculator() {
-		// TODO Auto-generated constructor stub
+	protected static final Logger logger = LogManager.getLogger(ScoreCalculator.class);
+	
+	public ScoreCalculator() {		
 	}
 	
-	protected abstract void run();
+	protected abstract BigDecimal run(T in);
 	
-	public void score(InputStream in) {
+	public BigDecimal score(T in) {
 		
-		// TODO
-		// 1 - read � file (a voir si pas plus int�ressant d'avoir une "Solution" mais
-		// n�cessite d'�tre plus sp�cifique
-		// 2 - Eventuellement lire tous les fichiers de solutions g�n�rer pour ainsi
-		// faire un comparo des r�sultats de chacun des Solver
-		// 3 - Ecrire des stats et les persister pour comparer entre les ex�cutions
-		
+		long start = System.currentTimeMillis();
+		logger.info("-- Score start : {}",in);
+		try {
+			return run(in);
+		} finally {
+			logger.info("--Score End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
+		}
 	}
 	
 }

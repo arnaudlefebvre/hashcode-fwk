@@ -8,13 +8,13 @@ import fr.noobeclair.hashcode.bean.BeanContainer;
 public class HashCode2019BeanContainer extends BeanContainer {
 	
 	public HashCode2019BeanContainer() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	private int totalPhotos;
 	private List<Photo> photos;
-	private List<Bean> listVerticalPhoto;
-	private List<Bean> slides;
+	private List<Photo> listVerticalPhoto;
+	private List<Slide> slides;
 	private SlideShow slideshow;
 	
 	public int getTotalPhotos() {
@@ -33,11 +33,11 @@ public class HashCode2019BeanContainer extends BeanContainer {
 		this.photos = photos;
 	}
 	
-	public List<Bean> getSlides() {
+	public List<Slide> getSlides() {
 		return slides;
 	}
 	
-	public void setSlides(List<Bean> slides) {
+	public void setSlides(List<Slide> slides) {
 		this.slides = slides;
 	}
 	
@@ -49,12 +49,17 @@ public class HashCode2019BeanContainer extends BeanContainer {
 		this.slideshow = slideshow;
 	}
 	
-	public List<Bean> getListVerticalPhoto() {
+	public List<Photo> getListVerticalPhoto() {
 		return listVerticalPhoto;
 	}
 	
-	public void setListVerticalPhoto(List<Bean> listVerticalPhoto) {
+	public void setListVerticalPhoto(List<Photo> listVerticalPhoto) {
 		this.listVerticalPhoto = listVerticalPhoto;
+	}
+
+	@Override
+	public String toString() {
+		return "HashCode2019BeanContainer [slides=" + slides + ", slideshow=" + slideshow + "]";
 	}
 	
 }

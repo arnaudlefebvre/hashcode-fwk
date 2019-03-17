@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 import fr.noobeclair.hashcode.in.InReader;
 import fr.noobeclair.hashcode.utils.Utils;
 
-public abstract class Bean implements Comparable<Bean> {
+public abstract class Bean implements Comparable<Bean>{
 	
 	protected static final Logger logger = LogManager.getLogger(InReader.class);
 	

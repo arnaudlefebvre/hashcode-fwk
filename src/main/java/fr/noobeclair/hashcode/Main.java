@@ -1,12 +1,25 @@
 package fr.noobeclair.hashcode;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections4.MapUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import fr.noobeclair.hashcode.in.Hashcode2019Reader;
-import fr.noobeclair.hashcode.out.Hashcode2019Writer;
-import fr.noobeclair.hashcode.solve.HashCode2019Solver;
+import fr.noobeclair.hashcode.bean.hashcode2019.HashCode2019BeanContainer;
+import fr.noobeclair.hashcode.in.hashcode2019.Hashcode2019Reader;
+import fr.noobeclair.hashcode.out.hashcode2019.Hashcode2019Writer;
+import fr.noobeclair.hashcode.score.hashcode2019.Hashcode2019ScoreCalculator;
+import fr.noobeclair.hashcode.solve.hashcode2019.HashCode2019DummyStepSolver;
+import fr.noobeclair.hashcode.solve.hashcode2019.HashCode2019StepSolver;
 import fr.noobeclair.hashcode.utils.Utils;
+import fr.noobeclair.hashcode.worker.InOut;
+import fr.noobeclair.hashcode.worker.MultipleFileWorker;
+import fr.noobeclair.hashcode.worker.MultipleSolverWorker;
+import fr.noobeclair.hashcode.worker.SimpleWorker;
 
 public class Main {
 	
@@ -22,28 +35,47 @@ public class Main {
 	// Comment on peut automatiser l'upload
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
-		logger.debug("------------------------------------------------------------------------");
-		logger.debug("--                        Hascode Noobeclair                          --");
-		logger.debug("------------------------------------------------------------------------");
+		logger.info("------------------------------------------------------------------------");
+		logger.info("--                        Hascode Noobeclair                          --");
+		logger.info("------------------------------------------------------------------------");
 		
 		try {
-			// NullWorker worker = new NullWorker(new NullReader(), new NullSolver(), new
-			// NullWriter());
-			// worker.run();
-			// SimpleWorker simpleWorker = new SimpleWorker(new Hashcode2019Reader(), new
-			// HashCode2019Solver(), new Hashcode2019Writer(),
-			// "src/main/resources/hascode2019/in/b_lovely_landscapes.txt","src/main/resources/hascode2019/out/b_example.out.txt");
-			// simpleWorker.run();
-			SimpleWorker simpleWorker2 = new SimpleWorker(new Hashcode2019Reader(), new HashCode2019Solver(), new Hashcode2019Writer(),
-					"src/main/resources/in/b_lovely_landscapes.txt", "src/main/resources/out/b_example.out.txt");
-			 simpleWorker2.runSteps();
-			SimpleWorker simpleWorker3 = new SimpleWorker(new Hashcode2019Reader(), new HashCode2019Solver(), new Hashcode2019Writer(),
-					"src/main/resources/in/c_memorable_moments.txt", "src/main/resources/out/c_example.out.txt");
-			//simpleWorker3.runSteps();
+			//Simple worker - 1 file in/out - 1 Algorithm - Optionnal : scorer  
+			Hashcode2019Reader reader = new Hashcode2019Reader();
+			//HashCode2019StepSolver solver = new HashCode2019StepSolver(TimeUnit.MINUTES.toSeconds(1));
+			HashCode2019StepSolver solver = new HashCode2019StepSolver(20L);
+			Hashcode2019Writer writer = new Hashcode2019Writer();
+			Hashcode2019ScoreCalculator scorer = new Hashcode2019ScoreCalculator();
+			SimpleWorker<HashCode2019BeanContainer> sw = new SimpleWorker<>(reader, solver, writer, "src/main/resources/in/c_memorable_moments.txt", "src/main/resources/out/c_example.out.txt");
+			//sw.run();
+			
+			
+			//Mutiple File Worker - n files in/out - 1 algorithm
+			MultipleFileWorker<HashCode2019BeanContainer> mfw = new MultipleFileWorker<>(reader, writer, scorer, solver);
+			List<InOut> files = new ArrayList<>();
+			files.add(new InOut("src/main/resources/in/a_example.txt", "src/main/resources/out/a_example.out.txt"));
+			//files.add(new InOut("src/main/resources/in/b_lovely_landscapes.txt", "src/main/resources/out/b_example.out.txt"));
+			//files.add(new InOut("src/main/resources/in/c_memorable_moments.txt", "src/main/resources/out/c_example.out.txt"));
+			mfw.addFiles(files);
+			Map<String, BigDecimal> scores = mfw.run();
+			if(MapUtils.isNotEmpty(scores)) {
+				MapUtils.verbosePrint(System.out, mfw.getClass() +"-"+solver.getClass()+ " : Score de chaque fichier ", scores);
+			}
+			
+			HashCode2019DummyStepSolver dummySolver = new HashCode2019DummyStepSolver();
+			MultipleSolverWorker<HashCode2019BeanContainer> msw = new MultipleSolverWorker<>(reader, writer, scorer, new InOut("src/main/resources/in/a_example.txt", "src/main/resources/out/a_example.out.txt"));
+			msw.addSolver(solver);
+			msw.addSolver(dummySolver);
+			//scores = msw.run();
+			if(MapUtils.isNotEmpty(scores)) {
+				//MapUtils.verbosePrint(System.out, msw.getClass().getSimpleName() + " : Score du fichier "+msw.getInOut().in, scores);
+			}
+			
+
 		} finally {
-			logger.debug("------------------------------------------------------------------------");
-			logger.debug("-- End. Total Time : " + Utils.roundMiliTime((System.currentTimeMillis() - start), 3) + "s --");
-			logger.debug("------------------------------------------------------------------------");
+			logger.info("------------------------------------------------------------------------");
+			logger.info("-- End. Total Time : " + Utils.roundMiliTime((System.currentTimeMillis() - start), 3) + "s --");
+			logger.info("------------------------------------------------------------------------");
 		}
 		
 	}

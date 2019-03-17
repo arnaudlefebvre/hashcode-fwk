@@ -11,7 +11,7 @@ public class Photo extends Bean {
 	private List<String> tags;
 	
 	public Photo() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	public int getId() {
@@ -47,8 +47,41 @@ public class Photo extends Bean {
 	
 	@Override
 	public double realdistance(Bean b) {
-		// TODO Auto-generated method stub
+		Photo p = (Photo) b;
+		int onlyInThis = 0;
+		int onlyInIn = 0;
+		int common = 0;
+		
+		for (String tag : this.getTags()) {
+			if (p.getTags().contains(tag)) {
+				common = common +1;
+			} else {
+				onlyInThis = onlyInThis +1;
+			}
+		}
+		
+		for (String tag : p.getTags()) {
+			if (!this.getTags().contains(tag)) {
+				onlyInIn = onlyInIn + 1;
+			}
+		}
+		int n = Math.min(onlyInIn,Math.min(onlyInThis,common));
+		if (n!= 0) {
+			return 1/n;
+		}
 		return 0;
+	}
+	
+	public int getTagEnCommun(Photo photo) {
+		int res = 0;
+		for (String tag : tags) {
+			for (String otherTag : photo.tags) {
+				if (tag.equals(otherTag)) {
+					res = res + 1;
+				}
+			}
+		}
+		return res;
 	}
 	
 	@Override
@@ -89,5 +122,11 @@ public class Photo extends Bean {
 	public int realcompareTo(Bean b) {
 		throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public String toString() {
+		return "P[id=" + id + ",s=" + sens + ",tags=" + tags + "]";
+	}
+	
 	
 }

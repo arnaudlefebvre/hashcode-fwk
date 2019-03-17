@@ -1,4 +1,6 @@
-package fr.noobeclair.hashcode;
+package fr.noobeclair.hashcode.worker;
+
+import java.math.BigDecimal;
 
 import fr.noobeclair.hashcode.in.InReader;
 import fr.noobeclair.hashcode.out.OutWriter;
@@ -8,20 +10,14 @@ public class NullWorker extends GenericWorker {
 	
 	protected NullWorker(InReader reader, Solver solver, OutWriter writer) {
 		super(reader, solver, writer);
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	@Override
-	public Boolean configure(String[] args) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public void run() {
+	public BigDecimal run() {
 		
 		this.writer.write(this.solver.solve(this.reader.read(null)), null);
-		
+		return BigDecimal.ZERO;
 	}
 	
 }

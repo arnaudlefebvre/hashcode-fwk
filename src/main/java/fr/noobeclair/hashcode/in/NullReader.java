@@ -5,7 +5,7 @@ import fr.noobeclair.hashcode.bean.BeanContainer;
 public class NullReader extends InReader {
 	
 	public NullReader() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	@Override

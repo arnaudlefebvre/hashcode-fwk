@@ -1,4 +1,4 @@
-package fr.noobeclair.hashcode.interfaces;
+package fr.noobeclair.hashcode.solve.step;
 
 import fr.noobeclair.hashcode.bean.BeanContainer;
 
