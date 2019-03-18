@@ -30,6 +30,7 @@ public class Main {
 	// 4 - worker use ï¿½ writer to write out
 	// 5 - Eventually provide stats informations
 	
+	// TODO - Ajouter un test unitaire pour la distance ? si ce calcul est faux et utilisé, c'est chaud...
 	// TODO - Voir pour creer une tache maven Zipator (ie : prends les sources, les
 	// zip et ajoute les fichiers de rï¿½sultats dans un dossier spï¿½cifique)
 	// Comment on peut automatiser l'upload
@@ -44,10 +45,11 @@ public class Main {
 			Hashcode2019Reader reader = new Hashcode2019Reader();
 			//HashCode2019StepSolver solver = new HashCode2019StepSolver(TimeUnit.MINUTES.toSeconds(1));
 			HashCode2019StepSolver solver = new HashCode2019StepSolver(20L);
+			HashCode2019DummyStepSolver dummySolver = new HashCode2019DummyStepSolver();
 			Hashcode2019Writer writer = new Hashcode2019Writer();
 			Hashcode2019ScoreCalculator scorer = new Hashcode2019ScoreCalculator();
-			SimpleWorker<HashCode2019BeanContainer> sw = new SimpleWorker<>(reader, solver, writer, "src/main/resources/in/c_memorable_moments.txt", "src/main/resources/out/c_example.out.txt");
-			//sw.run();
+			SimpleWorker<HashCode2019BeanContainer> sw = new SimpleWorker<>(reader, dummySolver,scorer, writer, "src/main/resources/in/b_lovely_landscapes.txt", "src/main/resources/out/b_example.out.txt");
+			logger.info("Dummy solver on bigfile b {}", sw.run());
 			
 			
 			//Mutiple File Worker - n files in/out - 1 algorithm
@@ -62,8 +64,15 @@ public class Main {
 				MapUtils.verbosePrint(System.out, mfw.getClass() +"-"+solver.getClass()+ " : Score de chaque fichier ", scores);
 			}
 			
-			HashCode2019DummyStepSolver dummySolver = new HashCode2019DummyStepSolver();
 			MultipleSolverWorker<HashCode2019BeanContainer> msw = new MultipleSolverWorker<>(reader, writer, scorer, new InOut("src/main/resources/in/a_example.txt", "src/main/resources/out/a_example.out.txt"));
+			msw.addSolver(solver);
+			msw.addSolver(dummySolver);
+			scores = msw.run();
+			if(MapUtils.isNotEmpty(scores)) {
+				MapUtils.verbosePrint(System.out, msw.getClass().getSimpleName() + " : Score du fichier "+msw.getInOut().in, scores);
+			}
+			
+			msw = new MultipleSolverWorker<>(reader, writer, scorer, new InOut("src/main/resources/in/c_memorable_moments.txt", "src/main/resources/out/c_example.out.txt"));
 			msw.addSolver(solver);
 			msw.addSolver(dummySolver);
 			scores = msw.run();

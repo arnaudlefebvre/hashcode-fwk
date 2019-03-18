@@ -18,7 +18,7 @@ import fr.noobeclair.hashcode.utils.Utils;
 public abstract class Solver<T extends BeanContainer> {
 	
 	protected static final Logger logger = LogManager.getLogger(Solver.class);
-	private static final Long DEFAULT_TIMEOUT = 1800L;
+	private static final Long DEFAULT_TIMEOUT = 3600L;
 	
 	protected String name;
 	protected T data;
