@@ -1,12 +1,10 @@
 package fr.noobeclair.hashcode.solve.hashcode2019;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import fr.noobeclair.hashcode.bean.Bean;
 import fr.noobeclair.hashcode.bean.hashcode2019.HashCode2019BeanContainer;
 import fr.noobeclair.hashcode.bean.hashcode2019.Photo;
 import fr.noobeclair.hashcode.bean.hashcode2019.Slide;
@@ -15,7 +13,6 @@ import fr.noobeclair.hashcode.solve.Solver;
 import fr.noobeclair.hashcode.solve.step.AbstractStep;
 import fr.noobeclair.hashcode.utils.AlgoUtils;
 import fr.noobeclair.hashcode.utils.ProgressBar;
-import fr.noobeclair.hashcode.utils.Utils;
 import fr.noobeclair.hashcode.utils.dto.DistanceResultDto;
 
 public class HashCode2019StepSolver extends Solver<HashCode2019BeanContainer> {

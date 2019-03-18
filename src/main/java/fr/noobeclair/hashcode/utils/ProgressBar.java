@@ -4,8 +4,6 @@ import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import fr.noobeclair.hashcode.utils.Utils;
-
 public class ProgressBar {
 	
 	private Long end;

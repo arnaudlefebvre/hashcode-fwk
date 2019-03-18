@@ -2,11 +2,9 @@ package fr.noobeclair.hashcode.worker;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 
 import fr.noobeclair.hashcode.bean.BeanContainer;
 import fr.noobeclair.hashcode.in.InReader;

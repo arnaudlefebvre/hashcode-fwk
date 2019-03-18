@@ -2,7 +2,6 @@ package fr.noobeclair.hashcode.bean.hashcode2019;
 
 import java.util.List;
 
-import fr.noobeclair.hashcode.bean.Bean;
 import fr.noobeclair.hashcode.bean.BeanContainer;
 
 public class HashCode2019BeanContainer extends BeanContainer {

@@ -3,7 +3,6 @@ package fr.noobeclair.hashcode.out.hashcode2019;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import fr.noobeclair.hashcode.bean.BeanContainer;
 import fr.noobeclair.hashcode.bean.hashcode2019.HashCode2019BeanContainer;
 import fr.noobeclair.hashcode.bean.hashcode2019.Slide;
 import fr.noobeclair.hashcode.out.OutWriter;

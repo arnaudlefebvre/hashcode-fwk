@@ -10,7 +10,6 @@ import fr.noobeclair.hashcode.bean.BeanContainer;
 import fr.noobeclair.hashcode.in.InReader;
 import fr.noobeclair.hashcode.out.OutWriter;
 import fr.noobeclair.hashcode.score.ScoreCalculator;
-import fr.noobeclair.hashcode.solve.Solver;
 
 public abstract class MultipleWorker<T extends BeanContainer> {
 	

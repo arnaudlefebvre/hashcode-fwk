@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import fr.noobeclair.hashcode.bean.Bean;
-import fr.noobeclair.hashcode.bean.Scorable;
 
 public class SlideShow extends Bean {
 	

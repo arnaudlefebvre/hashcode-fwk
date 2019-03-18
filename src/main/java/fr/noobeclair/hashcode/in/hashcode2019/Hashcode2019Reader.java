@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import fr.noobeclair.hashcode.bean.BeanContainer;
 import fr.noobeclair.hashcode.bean.hashcode2019.HashCode2019BeanContainer;
 import fr.noobeclair.hashcode.bean.hashcode2019.Photo;
 import fr.noobeclair.hashcode.in.InReader;
