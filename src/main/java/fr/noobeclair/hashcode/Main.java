@@ -44,13 +44,13 @@ public class Main {
         logger.info("--                        Hascode Noobeclair                          --");
         logger.info("------------------------------------------------------------------------");
 
-        final Long timeout = TimeUnit.MINUTES.toSeconds(5);
+        final Long timeout = TimeUnit.MINUTES.toSeconds(180);
         try {
             // Simple worker - 1 file in/out - 1 Algorithm - Optionnal : scorer
             final Hashcode2019Reader reader = new Hashcode2019Reader();
-            final HashCode2019StepSolver solver = new HashCode2019StepSolver(20L);
+            final HashCode2019StepSolver solver = new HashCode2019StepSolver(timeout);
             final HashCode2019DummyStepSolver dummySolver = new HashCode2019DummyStepSolver();
-            final HashCode2019RandomStepSolver randomSolver = new HashCode2019RandomStepSolver(20L);
+            final HashCode2019RandomStepSolver randomSolver = new HashCode2019RandomStepSolver(timeout);
             final Hashcode2019Writer writer = new Hashcode2019Writer();
             final Hashcode2019ScoreCalculator scorer = new Hashcode2019ScoreCalculator();
             final SimpleWorker<HashCode2019BeanContainer> sw = new SimpleWorker<>(reader, dummySolver, scorer, writer, "src/main/resources/in/b_lovely_landscapes.txt",

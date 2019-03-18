@@ -45,8 +45,7 @@ public abstract class Solver<T extends BeanContainer> {
 
     public T solve(final T data) {
         final long start = System.currentTimeMillis();
-        logger.info("##################################################################################################################");
-        logger.info("-- Solve start : {} - timeout {} sec ({})", this.getClass().getSimpleName(), timeout, Utils.formatToHHMMSS(timeout));        
+        logger.debug("-- Solve start : {} - timeout {} sec ({})", this.getClass().getSimpleName(), timeout, Utils.formatToHHMMSS(timeout));        
         this.data = data;
         try {
             if (data != null && this.timeout == 0L) {
@@ -57,7 +56,7 @@ public abstract class Solver<T extends BeanContainer> {
             	return null;
             }
         } finally {
-            logger.info("--Solve End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
+            logger.info("--Solve End ({}). Total Time : {}s --",this.getClass().getSimpleName(), Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
         }
     }
 

@@ -16,7 +16,7 @@ public abstract class InReader<T extends BeanContainer> {
 	
 	public T read(String in) {
 		long start = System.currentTimeMillis();
-		logger.info("-- Read start : {}", in);
+		logger.debug("-- Read start : {}", in);
 		try {
 			return readFile(in);
 		} finally {
