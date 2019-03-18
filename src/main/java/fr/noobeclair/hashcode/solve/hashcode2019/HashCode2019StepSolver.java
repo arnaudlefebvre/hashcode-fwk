@@ -69,8 +69,10 @@ public class HashCode2019StepSolver extends Solver<HashCode2019BeanContainer> {
 		
 		@Override
 		protected HashCode2019BeanContainer runStep(HashCode2019BeanContainer datas) {
+			logger.info(" {} All photos",datas.getPhotos().size());
 			List<Photo> listPhotosVertical = datas.getPhotos().stream().filter(photo -> photo.getSens().equalsIgnoreCase("V"))
 					.collect(Collectors.toList());
+			logger.info(" {} Vertical photos",listPhotosVertical.size());
 			datas.setListVerticalPhoto(listPhotosVertical);
 			return datas;
 		}
@@ -100,6 +102,7 @@ public class HashCode2019StepSolver extends Solver<HashCode2019BeanContainer> {
 				}
 			}
 			datas.setSlides(slides);
+			logger.info(" {} Vertical composed slides",slides.size());
 			return datas;
 		}
 	}
@@ -133,7 +136,8 @@ public class HashCode2019StepSolver extends Solver<HashCode2019BeanContainer> {
 			List<Slide> slideshow = new ArrayList<>();
 			// AbstractStep 4 - Construction du slideshow
 			int i = 1;
-			int j = datas.getSlides().size();			
+			int j = datas.getSlides().size();
+			logger.info(" {} All Slides",j);
 			ProgressBar bar = new ProgressBar(j, 100, "|", "|", "=", "=>", "Done!");
 			for (Slide s : datas.getSlides()) {
 				if (Thread.currentThread().isInterrupted()) {
@@ -153,7 +157,8 @@ public class HashCode2019StepSolver extends Solver<HashCode2019BeanContainer> {
 				bar.show(System.out, i);
 				i = i + 1;
 			}
-			bar.end(System.out);			
+			bar.end(System.out);
+			logger.info(" {} All Slides in slideshow ",slideshow.size());
 			datas.setSlideshow(new SlideShow(slideshow));
 			return datas;
 		}

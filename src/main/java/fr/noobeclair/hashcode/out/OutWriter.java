@@ -25,7 +25,7 @@ public abstract class OutWriter<T extends BeanContainer> {
 			}
 			return out;
 		} finally {
-			logger.info("-- Write End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
+			logger.info("-- Write End({}). Total Time : {}s --",path, Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		}
 	}
 	
