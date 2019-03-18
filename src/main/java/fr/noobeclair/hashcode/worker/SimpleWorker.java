@@ -51,4 +51,30 @@ public class SimpleWorker<T extends BeanContainer> extends GenericWorker<T> {
         this.inOut = inOut;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("SimpleWorker [");
+        if (inOut != null) {
+            builder.append("inOut=").append(inOut).append(", ");
+        }
+        if (writer != null) {
+            builder.append("writer=").append(writer).append(", ");
+        }
+        if (reader != null) {
+            builder.append("reader=").append(reader).append(", ");
+        }
+        if (solver != null) {
+            builder.append("solver=").append(solver).append(", ");
+        }
+        if (scorer != null) {
+            builder.append("scorer=").append(scorer);
+        }
+        builder.append("]");
+        return builder.toString();
+    }
+
 }

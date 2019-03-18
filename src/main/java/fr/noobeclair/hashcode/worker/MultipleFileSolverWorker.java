@@ -70,7 +70,7 @@ public class MultipleFileSolverWorker<T extends BeanContainer> extends MultipleW
                 try {
                     result.put(solver.getClass().getSimpleName() + "#" + io.in, sw.run());
                 } catch (final RuntimeException e) {
-                    logger.error("Something went wrong running this worker : {}", e.getMessage());
+                    logger.error("Something went wrong running this worker : {}", sw, e);
                     result.put(solver.getClass().getSimpleName() + "#" + io.in, BigDecimal.ZERO);
                 }
             }
