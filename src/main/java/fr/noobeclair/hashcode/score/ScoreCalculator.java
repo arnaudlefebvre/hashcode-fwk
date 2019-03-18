@@ -20,7 +20,7 @@ public abstract class ScoreCalculator<T extends BeanContainer> {
 	public BigDecimal score(T in) {
 		
 		long start = System.currentTimeMillis();
-		logger.info("-- Score start : {}",in);
+		logger.info("-- Score start : ");
 		try {
 			return run(in);
 		} finally {

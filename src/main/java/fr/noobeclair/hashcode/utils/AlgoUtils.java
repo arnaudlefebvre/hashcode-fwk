@@ -67,17 +67,17 @@ public class AlgoUtils<T extends Bean> {
 		for (T d : list) {
 			
 				double cur = ref.distance(d);
-				logger.debug("nearestSibling ref {}, max dist {}, current {} from distance {}",ref,max,d,cur);
+				//logger.debug("nearestSibling ref {}, max dist {}, current {} (hash : {}) from distance {}, processed {}",ref,max,d,d.hashCode(),cur,exclude);
 				if (!exclude.containsKey(d.hashCode())) {
-				if (max > cur) {
-					tmp = d;
-					max = cur;
-					resIdx = idx;
-				}
+					if (max > cur) {
+						tmp = d;
+						max = cur;
+						resIdx = idx;
+					}
 			}
 			idx = idx++;
 		}
-		logger.debug("nearestSibling ref {}, selected {} from distance {}",ref,tmp,max);
+		//logger.debug("nearestSibling ref {}, selected {} from distance {}",ref,tmp,max);
 		logger.trace("-- nearestSibling End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		return new DistanceResultDto<T>(resIdx, tmp, max);
 	}

@@ -1,10 +1,13 @@
 package fr.noobeclair.hashcode.bean.hashcode2019;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.sun.accessibility.internal.resources.accessibility;
 
 import fr.noobeclair.hashcode.bean.Bean;
 import fr.noobeclair.hashcode.bean.Scorable;
@@ -60,7 +63,8 @@ public class Slide extends Bean implements Scorable<Slide> {
 		if (BigDecimal.ZERO.equals(s)) {
 			return 1;
 		}
-		return BigDecimal.ONE.divide(s).doubleValue();
+		s = s.add(BigDecimal.ONE);
+		return BigDecimal.ONE.divide(s,3, RoundingMode.HALF_UP).doubleValue();
 	}
 	
 	@Override

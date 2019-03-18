@@ -54,8 +54,8 @@ public class Main {
 			MultipleFileWorker<HashCode2019BeanContainer> mfw = new MultipleFileWorker<>(reader, writer, scorer, solver);
 			List<InOut> files = new ArrayList<>();
 			files.add(new InOut("src/main/resources/in/a_example.txt", "src/main/resources/out/a_example.out.txt"));
-			//files.add(new InOut("src/main/resources/in/b_lovely_landscapes.txt", "src/main/resources/out/b_example.out.txt"));
-			//files.add(new InOut("src/main/resources/in/c_memorable_moments.txt", "src/main/resources/out/c_example.out.txt"));
+			files.add(new InOut("src/main/resources/in/b_lovely_landscapes.txt", "src/main/resources/out/b_example.out.txt"));
+			files.add(new InOut("src/main/resources/in/c_memorable_moments.txt", "src/main/resources/out/c_example.out.txt"));
 			mfw.addFiles(files);
 			Map<String, BigDecimal> scores = mfw.run();
 			if(MapUtils.isNotEmpty(scores)) {
@@ -66,9 +66,9 @@ public class Main {
 			MultipleSolverWorker<HashCode2019BeanContainer> msw = new MultipleSolverWorker<>(reader, writer, scorer, new InOut("src/main/resources/in/a_example.txt", "src/main/resources/out/a_example.out.txt"));
 			msw.addSolver(solver);
 			msw.addSolver(dummySolver);
-			//scores = msw.run();
+			scores = msw.run();
 			if(MapUtils.isNotEmpty(scores)) {
-				//MapUtils.verbosePrint(System.out, msw.getClass().getSimpleName() + " : Score du fichier "+msw.getInOut().in, scores);
+				MapUtils.verbosePrint(System.out, msw.getClass().getSimpleName() + " : Score du fichier "+msw.getInOut().in, scores);
 			}
 			
 

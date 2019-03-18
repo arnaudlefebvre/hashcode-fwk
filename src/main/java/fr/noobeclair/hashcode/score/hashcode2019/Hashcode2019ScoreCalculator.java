@@ -18,7 +18,7 @@ public class Hashcode2019ScoreCalculator extends ScoreCalculator<HashCode2019Bea
 		Slide last = null;
 		for (Slide s : in.getSlideshow().getSlides()) {
 			if (last != null) {
-				result.add(last.score(s));
+				result = result.add(last.score(s));
 			}
 			last = s;
 		}

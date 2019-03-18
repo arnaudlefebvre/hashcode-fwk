@@ -136,8 +136,7 @@ public class HashCode2019StepSolver extends Solver<HashCode2019BeanContainer> {
 			List<Slide> slideshow = new ArrayList<>();
 			// AbstractStep 4 - Construction du slideshow
 			int i = 1;
-			int j = datas.getSlides().size();
-			logger.debug("Slides : {}", datas.getSlides());
+			int j = datas.getSlides().size();			
 			ProgressBar bar = new ProgressBar(j, 100, "|", "|", "=", "=>", "Done!");
 			for (Slide s : datas.getSlides()) {
 				if (Thread.currentThread().isInterrupted() || !Thread.currentThread().isAlive()) {
@@ -151,12 +150,13 @@ public class HashCode2019StepSolver extends Solver<HashCode2019BeanContainer> {
 				DistanceResultDto<Slide> res = algo.nearestSibling(s, datas.getSlides(), processed);
 				if (res.getObject() != null) {
 					slideshow.add(res.getObject());
+					processed.put(res.getObject().hashCode(), null);
 				}
 				halt(WAIT);
 				bar.show(System.out, i);
 				i = i + 1;
 			}
-			bar.end(System.out);
+			bar.end(System.out);			
 			datas.setSlideshow(new SlideShow(slideshow));
 			return datas;
 		}
