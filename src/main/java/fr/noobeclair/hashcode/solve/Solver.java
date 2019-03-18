@@ -46,13 +46,15 @@ public abstract class Solver<T extends BeanContainer> {
     public T solve(final T data) {
         final long start = System.currentTimeMillis();
         logger.info("##################################################################################################################");
-        logger.info("-- Solve start : {} - timeout {} sec ({})", this.getClass().getSimpleName(), timeout, Utils.formatToHHMMSS(timeout));
+        logger.info("-- Solve start : {} - timeout {} sec ({})", this.getClass().getSimpleName(), timeout, Utils.formatToHHMMSS(timeout));        
         this.data = data;
         try {
-            if (this.timeout == 0L) {
+            if (data != null && this.timeout == 0L) {
                 return run(data);
-            } else {
+            } else if (data != null) {
                 return solveTimeout(data);
+            } else {
+            	return null;
             }
         } finally {
             logger.info("--Solve End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
@@ -67,20 +69,19 @@ public abstract class Solver<T extends BeanContainer> {
 
         };
         final ExecutorService executor = Executors.newSingleThreadExecutor();
-        final Future<T> future = executor.submit(task);
-        executor.shutdownNow();
+        final Future<T> future = executor.submit(task);        
         try {
             this.data = future.get(timeout, TimeUnit.SECONDS);
         } catch (InterruptedException | TimeoutException e) {
-            logger.error("Solve interrupted (Timeout)");
+            logger.error(" <###----- !!!!!! -----#> Solve interrupted (Timeout)");
+            future.cancel(true);            
+            return null;
+        } catch (final Exception e) {
+            logger.error(" <###----- !!!!!! -----#> Solve aborted due to error : ", e);
             future.cancel(true);
-            executor.shutdownNow();
-            throw new RuntimeException("Solver abort ", e);
-        } catch (final ExecutionException e) {
-            logger.error("Solve aborted due to error : ", e);
-            future.cancel(true);
-            executor.shutdownNow();
             throw new RuntimeException("Solver abort");
+        } finally {
+        	executor.shutdownNow();
         }
         return this.data;
     }

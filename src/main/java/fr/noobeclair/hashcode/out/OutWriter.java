@@ -16,9 +16,12 @@ public abstract class OutWriter<T extends BeanContainer> {
 	
 	public T write(T out, String path) {
 		long start = System.currentTimeMillis();
-		logger.info("-- Write start : {}", path);
+		logger.info("-- Write start : {}", path);				
 		try {
-			writeFile(out, path);
+			if (out != null) {
+				writeFile(out, path);
+			}
+			logger.error(" <###----- !!!!!! -----#> in null !");
 			return out;
 		} finally {
 			logger.info("-- Write End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));

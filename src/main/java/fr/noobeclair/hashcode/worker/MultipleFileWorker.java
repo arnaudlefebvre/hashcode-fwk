@@ -55,12 +55,12 @@ public class MultipleFileWorker<T extends BeanContainer> extends MultipleWorker<
             try {
                 result.put(io.in, sw.run());
             } catch (final RuntimeException e) {
-                logger.error("Something went wrong running this worker : {}", sw, e.getMessage());
+                logger.error(" <###----- !!!!!! -----#> Something went wrong running this worker : {}", sw, e.getMessage());
                 result.put(io.in, BigDecimal.ZERO);
             }
         }
         if (files.isEmpty()) {
-            logger.error("No file - No run ... !");
+            logger.error(" <###----- !!!!!! -----#> No file - No run ... !");
         }
         return result;
     }

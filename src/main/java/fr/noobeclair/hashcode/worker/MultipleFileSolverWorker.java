@@ -70,16 +70,16 @@ public class MultipleFileSolverWorker<T extends BeanContainer> extends MultipleW
                 try {
                     result.put(solver.getClass().getSimpleName() + "#" + io.in, sw.run());
                 } catch (final RuntimeException e) {
-                    logger.error("Something went wrong running this worker : {}", sw, e);
+                    logger.error(" <###----- !!!!!! -----#> Something went wrong running this worker : {}", sw, e);
                     result.put(solver.getClass().getSimpleName() + "#" + io.in, BigDecimal.ZERO);
                 }
             }
         }
         if (files.isEmpty()) {
-            logger.error("No file - No run ... !");
+            logger.error(" <###----- !!!!!! -----#> No file - No run ... !");
         }
         if (solvers.isEmpty()) {
-            logger.error("No solver - No run ... !");
+            logger.error(" <###----- !!!!!! -----#> No solver - No run ... !");
         }
         return result;
     }

@@ -37,14 +37,14 @@ public abstract class AbstractStep<T extends BeanContainer> implements Step<T> {
     @Override
     public T run(final T solver) {
         final long start = System.currentTimeMillis();
-        logger.info("-- AbstractStep {} start : {}", id);
+        logger.debug("-- Step {} start : {}", id);
         try {
             return runStep(solver);
         } catch (final Exception e) {
-            logger.error("Error in step {} : ", id, e);
+            logger.error(" <###----- !!!!!! -----#> Error in step {} : ", id, e);
             return null;
         } finally {
-            logger.info("--AbstractStep {} End. Total Time : {}s --", id,
+            logger.debug("-- Step {} End. Total Time : {}s --", id,
                             Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
         }
     }
@@ -54,7 +54,7 @@ public abstract class AbstractStep<T extends BeanContainer> implements Step<T> {
             try {
                 Thread.sleep(milli);
             } catch (final InterruptedException e) {
-                logger.error("You loose waiting for nothing bro", e);
+                logger.error(" <###----- !!!!!! -----#> You loose waiting for nothing bro", e);
             }
         }
     }

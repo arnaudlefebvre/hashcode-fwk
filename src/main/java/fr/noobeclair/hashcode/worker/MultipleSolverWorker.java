@@ -47,12 +47,12 @@ public class MultipleSolverWorker<T extends BeanContainer> extends MultipleWorke
             try {
                 result.put(sw.getSolver().getClass().getSimpleName(), sw.run());
             } catch (final RuntimeException e) {
-                logger.error("Something went wrong running this worker : {}", sw, e.getMessage());
+                logger.error(" <###----- !!!!!! -----#> Something went wrong running this worker : {}", sw, e.getMessage());
                 result.put(sw.getSolver().getClass().getSimpleName(), BigDecimal.ZERO);
             }
         }
         if (solvers.isEmpty()) {
-            logger.error("No solver - No run ... !");
+            logger.error(" <###----- !!!!!! -----#> No solver - No run ... !");
         }
         return result;
     }

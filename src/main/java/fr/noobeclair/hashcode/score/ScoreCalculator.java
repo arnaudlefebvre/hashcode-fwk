@@ -22,7 +22,11 @@ public abstract class ScoreCalculator<T extends BeanContainer> {
 		long start = System.currentTimeMillis();
 		logger.info("-- Score start : ");
 		try {
-			return run(in);
+			if (in != null) {
+				return run(in);
+			}
+			logger.error(" <###----- !!!!!! -----#> in null !");
+			return BigDecimal.ZERO;
 		} finally {
 			logger.info("--Score End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		}

@@ -136,7 +136,7 @@ public class HashCode2019StepSolver extends Solver<HashCode2019BeanContainer> {
 			int j = datas.getSlides().size();			
 			ProgressBar bar = new ProgressBar(j, 100, "|", "|", "=", "=>", "Done!");
 			for (Slide s : datas.getSlides()) {
-				if (Thread.currentThread().isInterrupted() || !Thread.currentThread().isAlive()) {
+				if (Thread.currentThread().isInterrupted()) {
 					return null;
 				}								
 				if (slideshow.isEmpty()) {

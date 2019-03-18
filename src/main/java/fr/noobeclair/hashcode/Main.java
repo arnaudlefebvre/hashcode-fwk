@@ -81,7 +81,7 @@ public class Main {
             }
 
             final MultipleFileSolverWorker<HashCode2019BeanContainer> mfsw = new MultipleFileSolverWorker<>(reader, writer, scorer);
-            mfsw.addSolver(Arrays.asList(dummySolver, randomSolver, solver));
+            mfsw.addSolver(Arrays.asList(dummySolver,  solver));
             mfsw.addFiles(files);
             scores = mfsw.run();
             if (MapUtils.isNotEmpty(scores)) {
