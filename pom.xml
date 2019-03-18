@@ -71,6 +71,12 @@
 			<artifactId>log4j-core</artifactId>
 			<version>${dep.log4j}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>es.usc.citius.hipster</groupId>
+			<artifactId>hipster-all</artifactId>
+			<version>1.0.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -81,7 +87,7 @@
 				<version>1.6.0</version>
 				<configuration>
 					<mainClass>fr.noobeclair.hashcode.Main</mainClass>
-					
+
 				</configuration>
 			</plugin>
 		</plugins>
