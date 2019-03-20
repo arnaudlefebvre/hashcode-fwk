@@ -24,7 +24,7 @@ public class Hashcode2019Reader extends InReader<HashCode2019BeanContainer> {
 		try (Stream<String> stream = Files.lines(Paths.get(in))) {
 			
 			List<String> lines = stream.collect(Collectors.toList());
-			//lines.stream().forEach(System.out::println);
+			// lines.stream().forEach(System.out::println);
 			String[] conf = ReadFileUtil.getTabFromLineSpace(lines, 0);
 			result.setTotalPhotos(Integer.valueOf(conf[0]));
 			result.setPhotos(readLine(lines));

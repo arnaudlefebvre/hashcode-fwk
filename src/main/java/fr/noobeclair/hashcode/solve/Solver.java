@@ -10,23 +10,37 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import fr.noobeclair.hashcode.bean.BeanContainer;
+import fr.noobeclair.hashcode.bean.Config;
 import fr.noobeclair.hashcode.utils.Utils;
 
-public abstract class Solver<T extends BeanContainer> {
+public abstract class Solver<T extends BeanContainer, V extends Config> {
 	
 	protected static final Logger logger = LogManager.getLogger(Solver.class);
-	private static final Long DEFAULT_TIMEOUT = 3600L;
+	public static final Long DEFAULT_TIMEOUT = 3600L;
+	public static final Long DISABLE_TIMEOUT = 0L;
 	
 	protected String name;
 	protected T data;
+	protected V config;
 	protected Long timeout;
 	
+	/**
+	 * Effectively run the computation and returns data into your <T extends
+	 * BeanContainer>
+	 * 
+	 * @param data
+	 *            datas
+	 * @return data
+	 */
 	protected abstract T run(T data);
+	
+	public static Solver<T, V> build(V conf, Long timeout) {
+		throw UnsupportedOperationException("Not Supported Yet");
+	}
 	
 	/**
 	 * New Solver which never expires.
@@ -47,21 +61,36 @@ public abstract class Solver<T extends BeanContainer> {
 		this.timeout = timeout;
 	}
 	
+	/**
+	 * New solver wich will expire after a timeout in SECONDS
+	 *
+	 * @param timeout
+	 *            in seconds.
+	 * @param V
+	 *            conf config
+	 */
+	public Solver(final V conf, final Long timeout) {
+		this.timeout = timeout;
+		
+	}
+	
 	public T solve(final T data) {
 		final long start = System.currentTimeMillis();
 		logger.debug("-- Solve start : {} - timeout {} sec ({})", this.getClass().getSimpleName(), timeout, Utils.formatToHHMMSS(timeout));
 		this.data = data;
 		try {
-			if (data != null && this.timeout == 0L) {
+			if (data != null && this.timeout == DISABLE_TIMEOUT) {
 				return run(data);
 			} else if (data != null) {
 				return solveSync(data);
 			} else {
 				return null;
 			}
+		} catch (Throwable e) {
+			logger.error("ERROR in solver", e);
+			return null;
 		} finally {
-			logger.info("--Solve End ({}). Total Time : {}s --", this.getClass().getSimpleName(),
-					Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
+			logger.info("--Solve End ({}). Total Time : {}s --", this.getClass().getSimpleName(), Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		}
 	}
 	
@@ -102,14 +131,14 @@ public abstract class Solver<T extends BeanContainer> {
 		final ExecutorService executor = Executors.newSingleThreadExecutor();
 		List<Future<T>> futures = null;
 		try {
-			T res = executor.invokeAny(callables,timeout, TimeUnit.SECONDS);
-			executor.awaitTermination(timeout, TimeUnit.SECONDS);			
+			T res = executor.invokeAny(callables, timeout, TimeUnit.SECONDS);
+			executor.awaitTermination(timeout, TimeUnit.SECONDS);
 			this.data = res;
 		} catch (InterruptedException | TimeoutException e) {
-			logger.error(" <###----- !!!!!! -----#> Solve interrupted (Timeout)");			
+			logger.error(" <###----- !!!!!! -----#> Solve interrupted (Timeout)");
 			return null;
 		} catch (final Exception e) {
-			logger.error(" <###----- !!!!!! -----#> Solve aborted due to error : ", e);			
+			logger.error(" <###----- !!!!!! -----#> Solve aborted due to error : ", e);
 			throw new RuntimeException("Solver abort");
 		} finally {
 			executor.shutdownNow();
@@ -123,6 +152,10 @@ public abstract class Solver<T extends BeanContainer> {
 	
 	protected void setData(final T data) {
 		this.data = data;
+	}
+	
+	public String getAdditionnalInfo() {
+		return "";
 	}
 	
 }
