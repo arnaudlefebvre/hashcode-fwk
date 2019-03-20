@@ -12,7 +12,7 @@ public abstract class ScoreCalculator<T extends BeanContainer> {
 	
 	protected static final Logger logger = LogManager.getLogger(ScoreCalculator.class);
 	
-	public ScoreCalculator() {		
+	public ScoreCalculator() {
 	}
 	
 	protected abstract BigDecimal run(T in);
@@ -28,7 +28,7 @@ public abstract class ScoreCalculator<T extends BeanContainer> {
 			logger.error(" <###----- !!!!!! -----#> in null !");
 			return BigDecimal.ZERO;
 		} finally {
-			logger.info("--Score End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
+			logger.debug("--Score End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		}
 	}
 	

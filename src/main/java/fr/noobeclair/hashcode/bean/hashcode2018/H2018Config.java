@@ -171,32 +171,36 @@ public class H2018Config extends Config {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("H2018Config [timeToFinishCoef=");
+		builder.append("Conf[ttfc=");
 		builder.append(timeToFinishCoef);
-		builder.append(", nearTravelAdjustFct=");
+		builder.append(",ntfct=");
 		builder.append(nearTravelAdjustFct);
-		builder.append(", longTravelAdjustFct=");
+		builder.append(",ltfct=");
 		builder.append(longTravelAdjustFct);
-		builder.append(", nearDistAdjustFct=");
+		builder.append(",ndfct=");
 		builder.append(nearDistAdjustFct);
-		builder.append(", longDistAdjustFct=");
+		builder.append(",ldfct=");
 		builder.append(longDistAdjustFct);
-		builder.append(", nearATravelMethodCst=");
+		builder.append(",nAt=");
 		builder.append(nearATravelMethodCst);
-		builder.append(", nearBTravelMethodCst=");
+		builder.append(",nBt=");
 		builder.append(nearBTravelMethodCst);
-		builder.append(", nearADistMethodCst=");
+		builder.append(",nAd=");
 		builder.append(nearADistMethodCst);
-		builder.append(", nearBDistMethodCst=");
+		builder.append(",nBd=");
 		builder.append(nearBDistMethodCst);
-		builder.append(", longATravelMethodCst=");
+		builder.append(",lAt=");
 		builder.append(longATravelMethodCst);
-		builder.append(", longBTravelMethodCst=");
+		builder.append(",lBt=");
 		builder.append(longBTravelMethodCst);
-		builder.append(", longADistMethodCst=");
+		builder.append(",lAd=");
 		builder.append(longADistMethodCst);
-		builder.append(", longBDistMethodCst=");
+		builder.append(",lBd=");
 		builder.append(longBDistMethodCst);
+		if (CollectionUtils.isNotEmpty(this.carStrategies)) {
+			builder.append(",st=");
+			builder.append(Arrays.toString(this.carStrategies.toArray()));
+		}
 		builder.append("]");
 		return builder.toString();
 	}

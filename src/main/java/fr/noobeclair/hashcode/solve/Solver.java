@@ -38,8 +38,9 @@ public abstract class Solver<T extends BeanContainer, V extends Config> {
 	 */
 	protected abstract T run(T data);
 	
-	public static Solver<T, V> build(V conf, Long timeout) {
-		throw UnsupportedOperationException("Not Supported Yet");
+	public void build(V config, Long timeout) {
+		this.timeout = timeout;
+		this.config = config;
 	}
 	
 	/**
@@ -71,6 +72,7 @@ public abstract class Solver<T extends BeanContainer, V extends Config> {
 	 */
 	public Solver(final V conf, final Long timeout) {
 		this.timeout = timeout;
+		this.config = conf;
 		
 	}
 	

@@ -16,7 +16,6 @@ public class NullWorker extends GenericWorker {
 	@Override
 	public BigDecimal run() {
 		
-		this.writer.write(this.solver.solve(this.reader.read(null)), null);
 		return BigDecimal.ZERO;
 	}
 	

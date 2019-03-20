@@ -7,11 +7,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import fr.noobeclair.hashcode.bean.BeanContainer;
+import fr.noobeclair.hashcode.bean.Config;
 import fr.noobeclair.hashcode.in.InReader;
 import fr.noobeclair.hashcode.out.OutWriter;
 import fr.noobeclair.hashcode.score.ScoreCalculator;
+import fr.noobeclair.hashcode.solve.Solver;
 
-public abstract class MultipleWorker<T extends BeanContainer> {
+public abstract class MultipleWorker<T extends BeanContainer, V extends Config, S extends Solver<T, V>> {
 	
 	protected static final Logger logger = LogManager.getLogger(MultipleWorker.class);
 	
@@ -23,5 +25,5 @@ public abstract class MultipleWorker<T extends BeanContainer> {
 		
 	}
 	
-	public abstract Map<String,BigDecimal> run();
+	public abstract Map<String, BigDecimal> run();
 }

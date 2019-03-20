@@ -25,21 +25,24 @@ public class H2018Solver extends Solver<H2018BeanContainer, H2018Config> {
 	public Integer maxTurn;
 	private Integer curScore;
 	private Integer totalScore;
-	private H2018Config conf;
 	
-	public H2018Solver(H2018Config conf) {
+	public H2018Solver() {
 		super();
-		this.conf = conf;
 	}
 	
-	public H2018Solver(Long timeout, H2018Config conf) {
+	public H2018Solver(H2018Config config) {
+		super();
+		this.config = config;
+	}
+	
+	public H2018Solver(Long timeout, H2018Config config) {
 		super(timeout);
-		this.conf = conf;
+		this.config = config;
 	}
 	
 	@Override
 	public H2018BeanContainer run(H2018BeanContainer data) {
-		// logger.info(data);
+		logger.info("H2018Solver START : {} cars, {} rides, {} turns {},  ({})", data.getCars().size(), data.getAvailableRides().size(), data.getMaxTurn(), this.getAdditionnalInfo());
 		arides = data.getAvailableRides();
 		drides = data.getDoneRides();
 		srides = data.getSelectedRides();
@@ -95,9 +98,8 @@ public class H2018Solver extends Solver<H2018BeanContainer, H2018Config> {
 			// logger.info("TURN {}, {} {}", ct, Main.CR, this.toSMintring());
 			// logger.info("------------------------ NEW TURN ---------------------------");
 		}
-		logger.info("END {}, {}", ct, this.toSMintring());
 		bar.end(System.out);
-		logger.error("THIS IS FUCKING SCORE :" + this.totalScore);
+		logger.info("H2018Solver END, score : {}.  ({})", ct, this.getAdditionnalInfo());
 		this.data.score = this.totalScore;
 		this.data.selectedRides = srides;
 		return this.data;
@@ -109,7 +111,7 @@ public class H2018Solver extends Solver<H2018BeanContainer, H2018Config> {
 		Ride selected = null;
 		int score = 0;
 		for (Ride r : arides) {
-			score = c.getScoreForRide(r, ct, bonus, maxTurn, conf);
+			score = c.getScoreForRide(r, ct, bonus, maxTurn, config);
 			
 			if (max < score) {
 				max = score;
@@ -138,12 +140,7 @@ public class H2018Solver extends Solver<H2018BeanContainer, H2018Config> {
 	
 	@Override
 	public String getAdditionnalInfo() {
-		return conf.toString();
-	}
-	
-	@Override
-	protected Solver<H2018BeanContainer, H2018Config> build(H2018Config conf, Long timeout) {
-		return new H2018Solver(timeout, conf);
+		return config.toString();
 	}
 	
 }
