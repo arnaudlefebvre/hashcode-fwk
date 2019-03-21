@@ -3,5 +3,5 @@ target/
 .project
 .classpath
 src/main/resources/out/*
-.log
-.gz
+*.log
+*.log.gz
