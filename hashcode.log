@@ -1,33 +1,6 @@
-2019-03-20 22:16:17 INFO  Main:42 - ------------------------------------------------------------------------
-2019-03-20 22:16:17 INFO  Main:43 - --                        Hascode Noobeclair                          --
-2019-03-20 22:16:17 INFO  Main:44 - ------------------------------------------------------------------------
-2019-03-20 22:16:17 INFO  InReader:23 - -- Read End (src/main/resources/in/2018/a_example.in). Total Time : 0.031s --
-2019-03-20 22:16:17 INFO  Solver:102 - Solve Thread pool-2-thread-1 started
-2019-03-20 22:16:17 INFO  Solver:45 - H2018Solver START : 2 cars, 3 rides, 10 turns Conf[ttfc=2.0,ntfct=EXP,ltfct=INV,ndfct=LINEAR,ldfct=LINEAR,nAt=1.0,nBt=0.0,nAd=1.1,nBd=0.0,lAt=1.5,lBt=0.0,lAd=1.5,lBd=0.0],  ({})
-2019-03-20 22:16:17 INFO  Solver:101 - H2018Solver END, score : 4.  (Conf[ttfc=2.0,ntfct=EXP,ltfct=INV,ndfct=LINEAR,ldfct=LINEAR,nAt=1.0,nBt=0.0,nAd=1.1,nBd=0.0,lAt=1.5,lBt=0.0,lAd=1.5,lBd=0.0])
-2019-03-20 22:16:17 ERROR Solver:103 - THIS IS FUCKING SCORE :1
-2019-03-20 22:16:17 INFO  Solver:95 - --Solve End (H2018Solver). Total Time : 0.016s --
-2019-03-20 22:16:20 INFO  OutWriter:28 - -- Write End(null). Total Time : 3.006s --
-2019-03-20 22:16:20 INFO  ScoreCalculator:31 - --Score End. Total Time : 0.0s --
-2019-03-20 22:16:20 INFO  InReader:23 - -- Read End (src/main/resources/in/2018/b_should_be_easy.in). Total Time : 0.016s --
-2019-03-20 22:16:20 INFO  Solver:102 - Solve Thread pool-3-thread-1 started
-2019-03-20 22:16:20 INFO  Solver:45 - H2018Solver START : 2 cars, 300 rides, 25000 turns Conf[ttfc=2.0,ntfct=EXP,ltfct=INV,ndfct=LINEAR,ldfct=LINEAR,nAt=1.0,nBt=0.0,nAd=1.1,nBd=0.0,lAt=1.5,lBt=0.0,lAd=1.5,lBd=0.0],  ({})
-2019-03-20 22:16:20 INFO  Solver:101 - H2018Solver END, score : 25000.  (Conf[ttfc=2.0,ntfct=EXP,ltfct=INV,ndfct=LINEAR,ldfct=LINEAR,nAt=1.0,nBt=0.0,nAd=1.1,nBd=0.0,lAt=1.5,lBt=0.0,lAd=1.5,lBd=0.0])
-2019-03-20 22:16:20 ERROR Solver:103 - THIS IS FUCKING SCORE :24602
-2019-03-20 22:16:20 INFO  Solver:95 - --Solve End (H2018Solver). Total Time : 0.094s --
-2019-03-20 22:16:23 INFO  OutWriter:28 - -- Write End(null). Total Time : 3.001s --
-2019-03-20 22:16:23 INFO  ScoreCalculator:31 - --Score End. Total Time : 0.0s --
-2019-03-20 22:16:23 INFO  InReader:23 - -- Read End (src/main/resources/in/2018/c_no_hurry.in). Total Time : 0.015s --
-2019-03-20 22:16:23 INFO  Solver:102 - Solve Thread pool-4-thread-1 started
-2019-03-20 22:16:23 INFO  Solver:45 - H2018Solver START : 2 cars, 10000 rides, 200000 turns Conf[ttfc=2.0,ntfct=EXP,ltfct=INV,ndfct=LINEAR,ldfct=LINEAR,nAt=1.0,nBt=0.0,nAd=1.1,nBd=0.0,lAt=1.5,lBt=0.0,lAd=1.5,lBd=0.0],  ({})
-2019-03-20 22:16:23 INFO  Solver:101 - H2018Solver END, score : 200000.  (Conf[ttfc=2.0,ntfct=EXP,ltfct=INV,ndfct=LINEAR,ldfct=LINEAR,nAt=1.0,nBt=0.0,nAd=1.1,nBd=0.0,lAt=1.5,lBt=0.0,lAd=1.5,lBd=0.0])
-2019-03-20 22:16:23 ERROR Solver:103 - THIS IS FUCKING SCORE :138065
-2019-03-20 22:16:23 INFO  Solver:95 - --Solve End (H2018Solver). Total Time : 0.266s --
-2019-03-20 22:16:26 INFO  OutWriter:28 - -- Write End(null). Total Time : 3.015s --
-2019-03-20 22:16:26 INFO  ScoreCalculator:31 - --Score End. Total Time : 0.0s --
-2019-03-20 22:16:26 INFO  InReader:23 - -- Read End (src/main/resources/in/2018/d_metropolis.in). Total Time : 0.055s --
-2019-03-20 22:16:26 INFO  Solver:102 - Solve Thread pool-5-thread-1 started
-2019-03-20 22:16:26 INFO  Solver:45 - H2018Solver START : 2 cars, 10000 rides, 50000 turns Conf[ttfc=2.0,ntfct=EXP,ltfct=INV,ndfct=LINEAR,ldfct=LINEAR,nAt=1.0,nBt=0.0,nAd=1.1,nBd=0.0,lAt=1.5,lBt=0.0,lAd=1.5,lBd=0.0],  ({})
-2019-03-20 22:16:26 INFO  Solver:101 - H2018Solver END, score : 50000.  (Conf[ttfc=2.0,ntfct=EXP,ltfct=INV,ndfct=LINEAR,ldfct=LINEAR,nAt=1.0,nBt=0.0,nAd=1.1,nBd=0.0,lAt=1.5,lBt=0.0,lAd=1.5,lBd=0.0])
-2019-03-20 22:16:26 ERROR Solver:103 - THIS IS FUCKING SCORE :51045
-2019-03-20 22:16:26 INFO  Solver:95 - --Solve End (H2018Solver). Total Time : 0.078s --
+2019-03-21 01:24:27 INFO  Main:42 - ------------------------------------------------------------------------
+2019-03-21 01:24:27 INFO  Main:43 - --                        Hascode Noobeclair                          --
+2019-03-21 01:24:27 INFO  Main:44 - ------------------------------------------------------------------------
+2019-03-21 01:29:07 INFO  Main:180 - ------------------------------------------------------------------------
+2019-03-21 01:29:07 INFO  Main:181 - -- End. Total Time : 280.484s --
+2019-03-21 01:29:07 INFO  Main:182 - ------------------------------------------------------------------------

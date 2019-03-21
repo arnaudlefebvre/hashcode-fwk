@@ -81,9 +81,9 @@ public class H2018Config extends Config {
 		if (CollectionUtils.containsAny(carStrategies, Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.NEAR_FIRST))) {
 			switch (nearTravelAdjustFct) {
 			case EXP:
-				return Math.exp(t);
+				return Math.exp(t + nearBTravelMethodCst);
 			case LN:
-				return Math.log(t);
+				return Math.log(t + nearBTravelMethodCst);
 			case LINEAR:
 				return nearATravelMethodCst * t + nearBTravelMethodCst;
 			case POW:
@@ -101,9 +101,9 @@ public class H2018Config extends Config {
 		if (CollectionUtils.containsAny(carStrategies, Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.NEAR_FIRST))) {
 			switch (nearDistAdjustFct) {
 			case EXP:
-				return Math.exp(t);
+				return Math.exp(t + nearBDistMethodCst);
 			case LN:
-				return Math.log(t);
+				return Math.log(t + nearBDistMethodCst);
 			case LINEAR:
 				return nearADistMethodCst * t + nearBDistMethodCst;
 			case POW:
@@ -121,9 +121,9 @@ public class H2018Config extends Config {
 		if (CollectionUtils.containsAny(carStrategies, Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.NEAR_FIRST))) {
 			switch (longTravelAdjustFct) {
 			case EXP:
-				return Math.exp(t);
+				return Math.exp(t + longBTravelMethodCst);
 			case LN:
-				return Math.log(t);
+				return Math.log(t + longBTravelMethodCst);
 			case LINEAR:
 				return longATravelMethodCst * t + longBTravelMethodCst;
 			case POW:
@@ -141,9 +141,9 @@ public class H2018Config extends Config {
 		if (CollectionUtils.containsAny(carStrategies, Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.LONG_FIRST))) {
 			switch (longDistAdjustFct) {
 			case EXP:
-				return Math.exp(t);
+				return Math.exp(t + longBDistMethodCst);
 			case LN:
-				return Math.log(t);
+				return Math.log(t + longBDistMethodCst);
 			case LINEAR:
 				return longADistMethodCst * t + longBDistMethodCst;
 			case POW:
@@ -203,6 +203,62 @@ public class H2018Config extends Config {
 		}
 		builder.append("]");
 		return builder.toString();
+	}
+	
+	public Double getTimeToFinishCoef() {
+		return timeToFinishCoef;
+	}
+	
+	public AdjustMethod getNearTravelAdjustFct() {
+		return nearTravelAdjustFct;
+	}
+	
+	public AdjustMethod getLongTravelAdjustFct() {
+		return longTravelAdjustFct;
+	}
+	
+	public AdjustMethod getNearDistAdjustFct() {
+		return nearDistAdjustFct;
+	}
+	
+	public AdjustMethod getLongDistAdjustFct() {
+		return longDistAdjustFct;
+	}
+	
+	public Double getNearATravelMethodCst() {
+		return nearATravelMethodCst;
+	}
+	
+	public Double getNearBTravelMethodCst() {
+		return nearBTravelMethodCst;
+	}
+	
+	public Double getNearADistMethodCst() {
+		return nearADistMethodCst;
+	}
+	
+	public Double getNearBDistMethodCst() {
+		return nearBDistMethodCst;
+	}
+	
+	public Double getLongATravelMethodCst() {
+		return longATravelMethodCst;
+	}
+	
+	public Double getLongBTravelMethodCst() {
+		return longBTravelMethodCst;
+	}
+	
+	public Double getLongADistMethodCst() {
+		return longADistMethodCst;
+	}
+	
+	public Double getLongBDistMethodCst() {
+		return longBDistMethodCst;
+	}
+	
+	public List<CarStrategy> getCarStrategies() {
+		return carStrategies;
 	}
 	
 }

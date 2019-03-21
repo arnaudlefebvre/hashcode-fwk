@@ -20,7 +20,7 @@ public abstract class InReader<T extends BeanContainer> {
 		try {
 			return readFile(in);
 		} finally {
-			logger.info("-- Read End ({}). Total Time : {}s --",in, Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
+			logger.debug("-- Read End ({}). Total Time : {}s --", in, Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		}
 	}
 	

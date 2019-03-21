@@ -4,6 +4,8 @@ import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class ProgressBar {
 	
 	private Long end;
@@ -24,12 +26,14 @@ public class ProgressBar {
 	private Integer progressOption;
 	private Long startTime;
 	private Long lastRefresh;
+	private Integer msgSize;
 	
 	public static final Integer ONLY_BAR = 0;
 	public static final Integer BAR_PERCENT = 10;
 	public static final Integer BAR_COUNT = 20;
 	public static final Integer BAR_ALL = 30;
 	public static final Integer BAR_ETA = 20;
+	public static final Integer BAR_MSG = 40;
 	
 	public Long REFRESH_MS = 10L;
 	public static final BigDecimal MIN = new BigDecimal("20");
@@ -41,6 +45,7 @@ public class ProgressBar {
 	public static final String PAD_STR = " ";
 	public static final String REMAIN_FILL_STR = " ";
 	public static final String PAD_NB_STR = " ";
+	public static final BigDecimal DEFAULT_BAR_MSG_SIZE_PER = new BigDecimal("0.33");
 	
 	public ProgressBar(Long count, Integer maxwidth, String progressStart, String progressEnd, String progressFill, String progressHead, String progressDone) {
 		super();
@@ -60,6 +65,7 @@ public class ProgressBar {
 		this.rpad = 0;
 		this.progressOption = BAR_ALL;
 		this.currentStepTime = System.currentTimeMillis();
+		this.msgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
 		prepare();
 	}
 	
@@ -81,6 +87,7 @@ public class ProgressBar {
 		this.rpad = 0;
 		this.progressOption = progressOption;
 		this.currentStepTime = System.currentTimeMillis();
+		this.msgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
 		prepare();
 	}
 	
@@ -102,6 +109,7 @@ public class ProgressBar {
 		this.rpad = rpad;
 		this.progressOption = BAR_ALL;
 		this.currentStepTime = System.currentTimeMillis();
+		this.msgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
 		prepare();
 	}
 	
@@ -124,6 +132,7 @@ public class ProgressBar {
 		this.rpad = rpad;
 		this.progressOption = progressOption;
 		this.currentStepTime = System.currentTimeMillis();
+		this.msgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
 		prepare();
 	}
 	
@@ -145,6 +154,7 @@ public class ProgressBar {
 		this.rpad = 0;
 		this.progressOption = BAR_ALL;
 		this.currentStepTime = System.currentTimeMillis();
+		this.msgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
 		prepare();
 	}
 	
@@ -166,6 +176,7 @@ public class ProgressBar {
 		this.rpad = 0;
 		this.progressOption = progressOption;
 		this.currentStepTime = System.currentTimeMillis();
+		this.msgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
 		prepare();
 	}
 	
@@ -187,6 +198,7 @@ public class ProgressBar {
 		this.rpad = rpad;
 		this.progressOption = BAR_ALL;
 		this.currentStepTime = System.currentTimeMillis();
+		this.msgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
 		prepare();
 	}
 	
@@ -209,6 +221,7 @@ public class ProgressBar {
 		this.rpad = rpad;
 		this.progressOption = progressOption;
 		this.currentStepTime = System.currentTimeMillis();
+		this.msgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
 		prepare();
 	}
 	
@@ -235,6 +248,10 @@ public class ProgressBar {
 		int countsize = 0;
 		int etasize = 0;
 		int queuesize = 0;
+		int msgSize = 0;
+		if (BAR_MSG.equals(this.progressOption) || BAR_ALL.equals(this.progressOption)) {
+			msgSize = this.msgSize;
+		}
 		if (BAR_PERCENT.equals(this.progressOption) || BAR_ALL.equals(this.progressOption)) {
 			// - xxx%
 			percentsize = "xxx%".length();
@@ -257,7 +274,7 @@ public class ProgressBar {
 			queuesize = queuesize + countsize + percentsize + etasize;
 		}
 		// Taille de la zone de chargement, si maxwidth = 100, 96
-		this.progressWidth = this.maxwidth - (this.lpad + this.rpad + this.progressStart.length() + this.progressEnd.length() + queuesize);
+		this.progressWidth = this.maxwidth - (msgSize + this.lpad + this.rpad + this.progressStart.length() + this.progressEnd.length() + queuesize);
 		// pas de chargement = nombre d'item par unité de la zone de chargement. si end
 		// : 480 = 5
 		this.stepsize = ((Long) Math.round((Math.ceil((double) (end) / progressWidth)))).intValue() * this.progressFill.length();
@@ -352,8 +369,35 @@ public class ProgressBar {
 		return buf.toString();
 	}
 	
+	private String getMsg(String s) {
+		int max = this.msgSize - "...".length();
+		if (StringUtils.isNotEmpty(s)) {
+			if (s.length() > max) {
+				return s.substring(0, this.msgSize - "...".length() + 1) + "...";
+			} else if (s.length() == max) {
+				return s + "...";
+			} else {
+				return String.format("%1$-" + max + "s", s);
+			}
+		}
+		return String.format("%1$" + max + "s", " ");
+	}
+	
+	public String getProgress(Long step, String s) {
+		StringBuffer res = new StringBuffer();
+		res.append(getMsg(s));
+		res.append(getLPadS());
+		res.append(this.progressStart);
+		res.append(getBar(step));
+		res.append(getRest(step));
+		res.append(getQueue(step));
+		res.append("\r");
+		return res.toString();
+	}
+	
 	public String getProgress(Long step) {
 		StringBuffer res = new StringBuffer();
+		res.append(getMsg(null));
 		res.append(getLPadS());
 		res.append(this.progressStart);
 		res.append(getBar(step));
@@ -368,17 +412,21 @@ public class ProgressBar {
 	}
 	
 	public void show(PrintStream out, Long step) {
+		show(out, step, null);
+	}
+	
+	public void show(PrintStream out, Long step, String msg) {
 		this.step = step;
 		setStart();
 		if (step.equals(end)) {
-			out.println(getProgress(step));
+			out.println(getProgress(step, msg));
 			// out.println(this.progressDone);
 			reset();
 		} else // if (step % stepsize == 0) {
 		{
 			calcMeanTime(step);
 			if (isRefresh()) {
-				out.print(getProgress(step));
+				out.print(getProgress(step, msg));
 			}
 			updateRefreshTime(step);
 		}
@@ -450,6 +498,12 @@ public class ProgressBar {
 	
 	public Long getEnd() {
 		return end;
+	}
+	
+	public void updateEnd(PrintStream s, Long step, Long end) {
+		this.end = end;
+		prepare();
+		this.show(s, step, "UPDT END");
 	}
 	
 	public Integer getMaxwidth() {

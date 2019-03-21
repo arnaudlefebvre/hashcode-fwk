@@ -2,7 +2,9 @@ package fr.noobeclair.hashcode.solve;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,6 +29,7 @@ public abstract class Solver<T extends BeanContainer, V extends Config> {
 	protected T data;
 	protected V config;
 	protected Long timeout;
+	protected Map<Integer, String> stats;
 	
 	/**
 	 * Effectively run the computation and returns data into your <T extends
@@ -41,6 +44,7 @@ public abstract class Solver<T extends BeanContainer, V extends Config> {
 	public void build(V config, Long timeout) {
 		this.timeout = timeout;
 		this.config = config;
+		this.stats = new TreeMap<>();
 	}
 	
 	/**
@@ -50,6 +54,7 @@ public abstract class Solver<T extends BeanContainer, V extends Config> {
 	 */
 	public Solver() {
 		this.timeout = DEFAULT_TIMEOUT;
+		this.stats = new TreeMap<>();
 	}
 	
 	/**
@@ -60,6 +65,7 @@ public abstract class Solver<T extends BeanContainer, V extends Config> {
 	 */
 	public Solver(final Long timeout) {
 		this.timeout = timeout;
+		this.stats = new TreeMap<>();
 	}
 	
 	/**
@@ -73,11 +79,12 @@ public abstract class Solver<T extends BeanContainer, V extends Config> {
 	public Solver(final V conf, final Long timeout) {
 		this.timeout = timeout;
 		this.config = conf;
-		
+		this.stats = new TreeMap<>();
 	}
 	
 	public T solve(final T data) {
 		final long start = System.currentTimeMillis();
+		stats.put(StatsConstants.TIME_START, "" + start);
 		logger.debug("-- Solve start : {} - timeout {} sec ({})", this.getClass().getSimpleName(), timeout, Utils.formatToHHMMSS(timeout));
 		this.data = data;
 		try {
@@ -92,14 +99,18 @@ public abstract class Solver<T extends BeanContainer, V extends Config> {
 			logger.error("ERROR in solver", e);
 			return null;
 		} finally {
-			logger.info("--Solve End ({}). Total Time : {}s --", this.getClass().getSimpleName(), Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
+			final long end = System.currentTimeMillis();
+			final long tot = end - start;
+			stats.put(StatsConstants.TIME_TOTAL, "" + tot);
+			stats.put(StatsConstants.TIME_TOTAL, "" + end);
+			logger.debug("--Solve End ({}). Total Time : {}s --", this.getClass().getSimpleName(), Utils.roundMiliTime(tot, 3));
 		}
 	}
 	
 	private T solveSync(final T data) {
 		final Callable<T> task = () -> {
 			final String threadName = Thread.currentThread().getName();
-			logger.info("Solve Thread {} started", threadName);
+			logger.debug("Solve Thread {} started", threadName);
 			return run(data);
 			
 		};
@@ -158,6 +169,10 @@ public abstract class Solver<T extends BeanContainer, V extends Config> {
 	
 	public String getAdditionnalInfo() {
 		return "";
+	}
+	
+	public Map<Integer, String> getStats() {
+		return stats;
 	}
 	
 }
