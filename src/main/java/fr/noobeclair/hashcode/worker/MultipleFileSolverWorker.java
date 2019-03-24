@@ -21,6 +21,7 @@ import fr.noobeclair.hashcode.score.ScoreCalculator;
 import fr.noobeclair.hashcode.solve.Solver;
 import fr.noobeclair.hashcode.solve.StatsConstants;
 import fr.noobeclair.hashcode.utils.ProgressBar;
+import fr.noobeclair.hashcode.utils.ProgressBar.ProgressBarOption;
 
 public class MultipleFileSolverWorker<T extends BeanContainer, V extends Config, S extends Solver<T, V>> extends MultipleWorker<T, V, S> {
 	
@@ -89,7 +90,7 @@ public class MultipleFileSolverWorker<T extends BeanContainer, V extends Config,
 	public Map<String, BigDecimal> run() {
 		Map<String, BigDecimal> result = new TreeMap<>();
 		approx();
-		bar = new ProgressBar(approxEnd, 100, "|", "|", "=", "=>", "Done!");
+		bar = ProgressBar.builder(approxEnd).withMaxWidth(100).withOption(ProgressBarOption.ALL).build();		
 		if (1 == this.execOrder) {
 			result = runSolverFirst();
 		} else {

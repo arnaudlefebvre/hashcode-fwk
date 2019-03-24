@@ -64,8 +64,7 @@ public class ProgressBar {
         this.stepsize = 0;
         this.lpad = 0;
         this.rpad = 0;
-        this.currentStepTime = System.currentTimeMillis();
-        prepare();
+        this.currentStepTime = System.currentTimeMillis();        
         /** Builder var **/
         this.progressStart = builder.barStartChar;
         this.progressEnd = builder.barStartEnd;
@@ -78,199 +77,14 @@ public class ProgressBar {
         this.autoRefresh = builder.autoRefreshTimeCalculation;
         this.refreshMs = builder.refreshTime;
         this.progressOption = builder.progressOption;
-    }
-
-    public ProgressBar(final Long count, final Integer maxwidth, final String progressStart, final String progressEnd, final String progressFill, final String progressHead,
-                       final String progressDone) {
-        super();
-        this.startTime = 0L;
-        this.lastRefresh = 0L;
-        this.end = count;
-        this.maxwidth = maxwidth;
-        this.progressStart = progressStart;
-        this.progressEnd = progressEnd;
-        this.progressFill = progressFill;
-        this.progressHead = progressHead;
-        this.progressDone = progressDone;
-        this.progressMeanTime = new BigDecimal("0");
-        this.step = 0L;
-        this.stepsize = 0;
-        this.lpad = 0;
-        this.rpad = 0;
-        this.progressOption = Arrays.asList(ProgressBarOption.ALL);
-        this.currentStepTime = System.currentTimeMillis();
-        this.msgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
         prepare();
     }
 
-    public ProgressBar(final Long count, final Integer maxwidth, final String progressStart, final String progressEnd, final String progressFill, final String progressHead,
-                       final String progressDone, final Integer progressOption) {
-        super();
-        this.startTime = 0L;
-        this.lastRefresh = 0L;
-        this.end = count;
-        this.maxwidth = maxwidth;
-        this.progressStart = progressStart;
-        this.progressEnd = progressEnd;
-        this.progressFill = progressFill;
-        this.progressHead = progressHead;
-        this.progressDone = progressDone;
-        this.progressMeanTime = new BigDecimal("0");
-        this.step = 0L;
-        this.stepsize = 0;
-        this.lpad = 0;
-        this.rpad = 0;
-        this.progressOption = Arrays.asList(ProgressBarOption.ALL);
-        this.currentStepTime = System.currentTimeMillis();
-        this.msgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
-        prepare();
-    }
-
-    public ProgressBar(final Long count, final Integer maxwidth, final String progressStart, final String progressEnd, final String progressFill, final String progressHead,
-                       final String progressDone, final Integer lpad, final Integer rpad) {
-        super();
-        this.startTime = 0L;
-        this.lastRefresh = 0L;
-        this.end = count;
-        this.maxwidth = maxwidth;
-        this.progressStart = progressStart;
-        this.progressEnd = progressEnd;
-        this.progressFill = progressFill;
-        this.progressHead = progressHead;
-        this.progressDone = progressDone;
-        this.progressMeanTime = new BigDecimal("0");
-        this.step = 0L;
-        this.stepsize = 0;
-        this.lpad = lpad;
-        this.rpad = rpad;
-        this.progressOption = Arrays.asList(ProgressBarOption.ALL);
-        this.currentStepTime = System.currentTimeMillis();
-        this.msgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
-        prepare();
-    }
-
-    public ProgressBar(final Long count, final Integer maxwidth, final String progressStart, final String progressEnd, final String progressFill, final String progressHead,
-                       final String progressDone, final Integer lpad, final Integer rpad,
-                       final Integer progressOption) {
-        super();
-        this.startTime = 0L;
-        this.lastRefresh = 0L;
-        this.end = count;
-        this.maxwidth = maxwidth;
-        this.progressStart = progressStart;
-        this.progressEnd = progressEnd;
-        this.progressFill = progressFill;
-        this.progressHead = progressHead;
-        this.progressDone = progressDone;
-        this.progressMeanTime = new BigDecimal("0");
-        this.step = 0L;
-        this.stepsize = 0;
-        this.lpad = lpad;
-        this.rpad = rpad;
-        this.progressOption = Arrays.asList(ProgressBarOption.ALL);
-        this.currentStepTime = System.currentTimeMillis();
-        this.msgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
-        prepare();
-    }
-
-    public ProgressBar(final Integer count, final Integer maxwidth, final String progressStart, final String progressEnd, final String progressFill, final String progressHead,
-                       final String progressDone) {
-        super();
-        this.startTime = 0L;
-        this.lastRefresh = 0L;
-        this.end = count.longValue();
-        this.maxwidth = maxwidth;
-        this.progressStart = progressStart;
-        this.progressEnd = progressEnd;
-        this.progressFill = progressFill;
-        this.progressHead = progressHead;
-        this.progressDone = progressDone;
-        this.progressMeanTime = new BigDecimal("0");
-        this.step = 0L;
-        this.stepsize = 0;
-        this.lpad = 0;
-        this.rpad = 0;
-        this.progressOption = Arrays.asList(ProgressBarOption.ALL);
-        this.currentStepTime = System.currentTimeMillis();
-        this.msgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
-        prepare();
-    }
-
-    public ProgressBar(final Integer count, final Integer maxwidth, final String progressStart, final String progressEnd, final String progressFill, final String progressHead,
-                       final String progressDone, final List<ProgressBarOption> progressOption) {
-        super();
-        this.startTime = 0L;
-        this.lastRefresh = 0L;
-        this.end = count.longValue();
-        this.maxwidth = maxwidth;
-        this.progressStart = progressStart;
-        this.progressEnd = progressEnd;
-        this.progressFill = progressFill;
-        this.progressHead = progressHead;
-        this.progressDone = progressDone;
-        this.progressMeanTime = new BigDecimal("0");
-        this.step = 0L;
-        this.stepsize = 0;
-        this.lpad = 0;
-        this.rpad = 0;
-        this.progressOption = progressOption;
-        this.currentStepTime = System.currentTimeMillis();
-        this.msgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
-        prepare();
-    }
-
-    public ProgressBar(final Integer count, final Integer maxwidth, final String progressStart, final String progressEnd, final String progressFill, final String progressHead,
-                       final String progressDone, final Integer lpad, final Integer rpad) {
-        super();
-        this.startTime = 0L;
-        this.lastRefresh = 0L;
-        this.end = count.longValue();
-        this.maxwidth = maxwidth;
-        this.progressStart = progressStart;
-        this.progressEnd = progressEnd;
-        this.progressFill = progressFill;
-        this.progressHead = progressHead;
-        this.progressDone = progressDone;
-        this.progressMeanTime = new BigDecimal("0");
-        this.step = 0L;
-        this.stepsize = 0;
-        this.lpad = lpad;
-        this.rpad = rpad;
-        this.progressOption = Arrays.asList(ProgressBarOption.ALL);
-        this.currentStepTime = System.currentTimeMillis();
-        this.msgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
-        prepare();
-    }
-
-    public ProgressBar(final Integer count, final Integer maxwidth, final String progressStart, final String progressEnd, final String progressFill, final String progressHead,
-                       final String progressDone, final Integer lpad, final Integer rpad,
-                       final List<ProgressBarOption> progressOption) {
-        super();
-        this.startTime = 0L;
-        this.lastRefresh = 0L;
-        this.end = count.longValue();
-        this.maxwidth = maxwidth;
-        this.progressStart = progressStart;
-        this.progressEnd = progressEnd;
-        this.progressFill = progressFill;
-        this.progressHead = progressHead;
-        this.progressDone = progressDone;
-        this.progressMeanTime = new BigDecimal("0");
-        this.step = 0L;
-        this.stepsize = 0;
-        this.lpad = lpad;
-        this.rpad = rpad;
-        this.progressOption = progressOption;
-        this.currentStepTime = System.currentTimeMillis();
-        this.msgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
-        prepare();
-    }
-
+  
     private void reset() {
         this.startTime = 0L;
         this.lastRefresh = 0L;
         this.progressMeanTime = new BigDecimal("0");
-        // this.step = 0L;
         this.currentStepTime = System.currentTimeMillis();
     }
 
@@ -463,7 +277,9 @@ public class ProgressBar {
         setStart();
         if (step.equals(end)) {
             out.println(getProgress(step, msg));
-            // out.println(this.progressDone);
+            if (StringUtils.isNotEmpty(this.progressDone)) {
+            	out.println(this.progressDone);
+            }            
             reset();
         } else // if (step % stepsize == 0) {
         {
@@ -507,32 +323,33 @@ public class ProgressBar {
     }
 
     private void updateRefreshTime(final Long step) {
-
-        final double per = step * 100D / this.end;
-        final BigDecimal start = new BigDecimal(System.currentTimeMillis() - this.startTime);
-        BigDecimal nbRefresh = this.refreshMs > 0L ? new BigDecimal(this.refreshMs) : BigDecimal.ONE;
-        final BigDecimal nbDisplaySinceStart = start.divide(nbRefresh, 2, RoundingMode.HALF_UP);
-        if ((per > 0 && per % UPDATE_REFRESH_STEP == 0) || nbDisplaySinceStart.compareTo(MAX_DISPLAY_SINCE_START) > 0) {
-
-            final BigDecimal meanMs = this.progressTotalTime.multiply(new BigDecimal(step + 1));
-            BigDecimal totalEstimatedTime = BigDecimal.ZERO;
-
-            totalEstimatedTime = meanMs.multiply(new BigDecimal(end - step)).add(start);
-
-            if (totalEstimatedTime.compareTo(BigDecimal.ZERO) > 0) {
-                nbRefresh = totalEstimatedTime.divide(nbRefresh, 2, RoundingMode.HALF_UP);
-            }
-            if (nbRefresh.compareTo(MIN) < 0) {
-                this.refreshMs = totalEstimatedTime.divide(MIN_DISPLAY, 3, RoundingMode.HALF_UP).longValue();
-            } else if (meanMs.compareTo(new BigDecimal(refreshMs)) > 0) {
-                this.refreshMs = meanMs.min(MAX).longValue();
-            } else {
-                this.refreshMs = MAX.longValue();
-            }
-            // System.out.println(totalEstimatedTime+" - "+this.REFRESH_MS+" - "+meanMs+ " -
-            // "+nbRefresh+ " - "+totalEstimatedTime.compareTo(BigDecimal.ZERO)+" -
-            // "+totalEstimatedTime.divide(MIN_DISPLAY)+ " - "+nbDisplaySinceStart);
-        }
+    	if (this.autoRefresh) {
+	        final double per = step * 100D / this.end;
+	        final BigDecimal start = new BigDecimal(System.currentTimeMillis() - this.startTime);
+	        BigDecimal nbRefresh = this.refreshMs > 0L ? new BigDecimal(this.refreshMs) : BigDecimal.ONE;
+	        final BigDecimal nbDisplaySinceStart = start.divide(nbRefresh, 2, RoundingMode.HALF_UP);
+	        if ((per > 0 && per % UPDATE_REFRESH_STEP == 0) || nbDisplaySinceStart.compareTo(MAX_DISPLAY_SINCE_START) > 0) {
+	
+	            final BigDecimal meanMs = this.progressTotalTime.multiply(new BigDecimal(step + 1));
+	            BigDecimal totalEstimatedTime = BigDecimal.ZERO;
+	
+	            totalEstimatedTime = meanMs.multiply(new BigDecimal(end - step)).add(start);
+	
+	            if (totalEstimatedTime.compareTo(BigDecimal.ZERO) > 0) {
+	                nbRefresh = totalEstimatedTime.divide(nbRefresh, 2, RoundingMode.HALF_UP);
+	            }
+	            if (nbRefresh.compareTo(MIN) < 0) {
+	                this.refreshMs = totalEstimatedTime.divide(MIN_DISPLAY, 3, RoundingMode.HALF_UP).longValue();
+	            } else if (meanMs.compareTo(new BigDecimal(refreshMs)) > 0) {
+	                this.refreshMs = meanMs.min(MAX).longValue();
+	            } else {
+	                this.refreshMs = MAX.longValue();
+	            }
+	            // System.out.println(totalEstimatedTime+" - "+this.REFRESH_MS+" - "+meanMs+ " -
+	            // "+nbRefresh+ " - "+totalEstimatedTime.compareTo(BigDecimal.ZERO)+" -
+	            // "+totalEstimatedTime.divide(MIN_DISPLAY)+ " - "+nbDisplaySinceStart);
+	        }
+    	}
     }
 
     public Long getStartTime() {
@@ -573,6 +390,10 @@ public class ProgressBar {
         return progressDone;
     }
     
+    public static Builder builder(final Long end)
+    {
+        return new Builder(end);
+    }
     
     public static final class Builder {
     	private Long end;
@@ -744,6 +565,14 @@ public class ProgressBar {
         public Builder withAutoRefreshTime(boolean auto) {
         	this.autoRefreshTimeCalculation = auto;
         	return this;
+        }
+        
+        /**
+         * Build that fuckin ProgresBar yo !
+         * @return ProgressBar
+         */
+        public ProgressBar build() {
+        	return new ProgressBar(this);
         }
         
         
