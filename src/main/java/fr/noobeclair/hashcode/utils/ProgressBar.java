@@ -3,7 +3,10 @@ package fr.noobeclair.hashcode.utils;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class ProgressBar {
@@ -23,19 +26,23 @@ public class ProgressBar {
     private final Integer lpad;
     private final Integer rpad;
     private Integer progressWidth;
-    private final Integer progressOption;
+    private final List<ProgressBarOption> progressOption;
     private Long startTime;
     private Long lastRefresh;
     private final Integer msgSize;
+    private long refreshMs;
+    private boolean autoRefresh;
 
-    public static final Integer ONLY_BAR = 0;
-    public static final Integer BAR_PERCENT = 10;
-    public static final Integer BAR_COUNT = 20;
-    public static final Integer BAR_ALL = 30;
-    public static final Integer BAR_ETA = 20;
-    public static final Integer BAR_MSG = 40;
+    public enum ProgressBarOption  {
+    	BAR,
+    	PERCENT,
+    	COUNT,
+    	ETA,
+    	MSG,
+    	ALL
+    }
 
-    public Long REFRESH_MS = 10L;
+    public static Long REFRESH_MS_DEFAULT = 10L;
     public static final BigDecimal MIN = new BigDecimal("20");
     public static final BigDecimal MAX = new BigDecimal("2000");
     public static final BigDecimal MIN_DISPLAY = new BigDecimal("30");
@@ -46,6 +53,32 @@ public class ProgressBar {
     public static final String REMAIN_FILL_STR = " ";
     public static final String PAD_NB_STR = " ";
     public static final BigDecimal DEFAULT_BAR_MSG_SIZE_PER = new BigDecimal("0.33");
+    
+    public ProgressBar(Builder builder) {
+    	super();
+    	/** Internal non customizable var **/
+    	this.startTime = 0L;
+        this.lastRefresh = 0L;
+        this.progressMeanTime = new BigDecimal("0");
+        this.step = 0L;
+        this.stepsize = 0;
+        this.lpad = 0;
+        this.rpad = 0;
+        this.currentStepTime = System.currentTimeMillis();
+        prepare();
+        /** Builder var **/
+        this.progressStart = builder.barStartChar;
+        this.progressEnd = builder.barStartEnd;
+        this.progressFill = builder.barFill;
+        this.progressHead = builder.barHead;
+        this.maxwidth = builder.maxwidth;
+        this.end = builder.end;
+        this.msgSize = builder.barMsgSize;
+        this.progressDone = builder.barDone;
+        this.autoRefresh = builder.autoRefreshTimeCalculation;
+        this.refreshMs = builder.refreshTime;
+        this.progressOption = builder.progressOption;
+    }
 
     public ProgressBar(final Long count, final Integer maxwidth, final String progressStart, final String progressEnd, final String progressFill, final String progressHead,
                        final String progressDone) {
@@ -64,7 +97,7 @@ public class ProgressBar {
         this.stepsize = 0;
         this.lpad = 0;
         this.rpad = 0;
-        this.progressOption = BAR_ALL;
+        this.progressOption = Arrays.asList(ProgressBarOption.ALL);
         this.currentStepTime = System.currentTimeMillis();
         this.msgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
         prepare();
@@ -87,7 +120,7 @@ public class ProgressBar {
         this.stepsize = 0;
         this.lpad = 0;
         this.rpad = 0;
-        this.progressOption = progressOption;
+        this.progressOption = Arrays.asList(ProgressBarOption.ALL);
         this.currentStepTime = System.currentTimeMillis();
         this.msgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
         prepare();
@@ -110,7 +143,7 @@ public class ProgressBar {
         this.stepsize = 0;
         this.lpad = lpad;
         this.rpad = rpad;
-        this.progressOption = BAR_ALL;
+        this.progressOption = Arrays.asList(ProgressBarOption.ALL);
         this.currentStepTime = System.currentTimeMillis();
         this.msgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
         prepare();
@@ -134,7 +167,7 @@ public class ProgressBar {
         this.stepsize = 0;
         this.lpad = lpad;
         this.rpad = rpad;
-        this.progressOption = progressOption;
+        this.progressOption = Arrays.asList(ProgressBarOption.ALL);
         this.currentStepTime = System.currentTimeMillis();
         this.msgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
         prepare();
@@ -157,14 +190,14 @@ public class ProgressBar {
         this.stepsize = 0;
         this.lpad = 0;
         this.rpad = 0;
-        this.progressOption = BAR_ALL;
+        this.progressOption = Arrays.asList(ProgressBarOption.ALL);
         this.currentStepTime = System.currentTimeMillis();
         this.msgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
         prepare();
     }
 
     public ProgressBar(final Integer count, final Integer maxwidth, final String progressStart, final String progressEnd, final String progressFill, final String progressHead,
-                       final String progressDone, final Integer progressOption) {
+                       final String progressDone, final List<ProgressBarOption> progressOption) {
         super();
         this.startTime = 0L;
         this.lastRefresh = 0L;
@@ -203,7 +236,7 @@ public class ProgressBar {
         this.stepsize = 0;
         this.lpad = lpad;
         this.rpad = rpad;
-        this.progressOption = BAR_ALL;
+        this.progressOption = Arrays.asList(ProgressBarOption.ALL);
         this.currentStepTime = System.currentTimeMillis();
         this.msgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
         prepare();
@@ -211,7 +244,7 @@ public class ProgressBar {
 
     public ProgressBar(final Integer count, final Integer maxwidth, final String progressStart, final String progressEnd, final String progressFill, final String progressHead,
                        final String progressDone, final Integer lpad, final Integer rpad,
-                       final Integer progressOption) {
+                       final List<ProgressBarOption> progressOption) {
         super();
         this.startTime = 0L;
         this.lastRefresh = 0L;
@@ -257,22 +290,23 @@ public class ProgressBar {
         int etasize = 0;
         int queuesize = 0;
         int msgSize = 0;
-        if (BAR_MSG.equals(this.progressOption) || BAR_ALL.equals(this.progressOption)) {
+        
+        if (CollectionUtils.containsAny(this.progressOption, Arrays.asList(ProgressBarOption.ALL,ProgressBarOption.MSG))) {
             msgSize = this.msgSize;
         }
-        if (BAR_PERCENT.equals(this.progressOption) || BAR_ALL.equals(this.progressOption)) {
+        if (CollectionUtils.containsAny(this.progressOption, Arrays.asList(ProgressBarOption.ALL,ProgressBarOption.PERCENT))) {
             // - xxx%
             percentsize = "xxx%".length();
         }
-        if (BAR_COUNT.equals(this.progressOption) || BAR_ALL.equals(this.progressOption)) {
+        if (CollectionUtils.containsAny(this.progressOption, Arrays.asList(ProgressBarOption.ALL,ProgressBarOption.COUNT))) {
             // - end/end
             countsize = "/".length() + (end.toString().length() * 2);
         }
-        if (BAR_ETA.equals(this.progressOption) || BAR_ALL.equals(this.progressOption)) {
+        if (CollectionUtils.containsAny(this.progressOption, Arrays.asList(ProgressBarOption.ALL,ProgressBarOption.ETA))) {
             // - 00h00m00s
             etasize = "00h00m00s".length();
         }
-        if (BAR_COUNT.equals(this.progressOption) || BAR_ALL.equals(this.progressOption) || BAR_PERCENT.equals(this.progressOption) || BAR_ETA.equals(this.progressOption)) {
+        if (CollectionUtils.containsAny(this.progressOption, Arrays.asList(ProgressBarOption.ALL,ProgressBarOption.MSG,ProgressBarOption.ETA,ProgressBarOption.COUNT,ProgressBarOption.PERCENT))) {
             queuesize = " [  ] ".length();
             if (countsize > 0 && percentsize > 0 && etasize > 0) {
                 queuesize = queuesize + (" - ".length() * 2);
@@ -301,7 +335,7 @@ public class ProgressBar {
         if (this.lastRefresh.equals(0L)) {
             res = true;
             this.lastRefresh = startTime;
-        } else if (System.currentTimeMillis() - this.lastRefresh >= REFRESH_MS) {
+        } else if (System.currentTimeMillis() - this.lastRefresh >= refreshMs) {
             res = true;
             this.lastRefresh = System.currentTimeMillis();
         }
@@ -311,24 +345,24 @@ public class ProgressBar {
 
     private String getQueue(final Long step) {
         final StringBuffer buf = new StringBuffer();
-        if (BAR_COUNT.equals(this.progressOption) || BAR_ALL.equals(this.progressOption) || BAR_PERCENT.equals(this.progressOption) || BAR_ETA.equals(this.progressOption)) {
+        if (CollectionUtils.containsAny(this.progressOption, Arrays.asList(ProgressBarOption.ALL,ProgressBarOption.MSG,ProgressBarOption.ETA,ProgressBarOption.COUNT,ProgressBarOption.PERCENT))) {
             buf.append(" [ ");
-            if (BAR_COUNT.equals(this.progressOption) || BAR_ALL.equals(this.progressOption)) {
+            if (CollectionUtils.containsAny(this.progressOption, Arrays.asList(ProgressBarOption.ALL,ProgressBarOption.COUNT))) {
                 buf.append("" + pad("" + step, "" + end) + "/" + end);
             }
-            if ((BAR_COUNT.equals(this.progressOption) && BAR_PERCENT.equals(this.progressOption)) || (BAR_COUNT.equals(this.progressOption) && BAR_ETA.equals(this.progressOption))
-                            || BAR_ALL.equals(this.progressOption)) {
+            if (CollectionUtils.containsAll(this.progressOption, Arrays.asList(ProgressBarOption.COUNT,ProgressBarOption.PERCENT))
+            		|| CollectionUtils.containsAll(this.progressOption, Arrays.asList(ProgressBarOption.COUNT,ProgressBarOption.ETA))
+            		|| this.progressOption.contains(ProgressBarOption.ALL)) {
                 buf.append(" - ");
             }
-            if (BAR_PERCENT.equals(this.progressOption) || BAR_ALL.equals(this.progressOption)) {
+            if (CollectionUtils.containsAny(this.progressOption, Arrays.asList(ProgressBarOption.ALL,ProgressBarOption.PERCENT))) {
                 buf.append("" + (pad("" + step * 100 / this.end, "100")) + "%");
             }
-            // || (BAR_PERCENT.equals(this.progressOption) &&
-            // BAR_ETA.equals(this.progressOption))
-            if ((BAR_PERCENT.equals(this.progressOption) && BAR_ETA.equals(this.progressOption)) || BAR_ALL.equals(this.progressOption)) {
+            if (CollectionUtils.containsAll(this.progressOption, Arrays.asList(ProgressBarOption.PERCENT,ProgressBarOption.ETA))
+            		|| this.progressOption.contains(ProgressBarOption.ALL)) {            
                 buf.append(" - ");
             }
-            if (BAR_ETA.equals(this.progressOption) || BAR_ALL.equals(this.progressOption)) {
+            if (CollectionUtils.containsAny(this.progressOption, Arrays.asList(ProgressBarOption.ALL,ProgressBarOption.ETA))) {
                 buf.append("ETA " + Utils.formatToHHMMSS(this.progressMeanTime.multiply(new BigDecimal(end - step)).longValue()));
             }
             buf.append(" ] ");
@@ -458,7 +492,7 @@ public class ProgressBar {
     }
 
     private void calcMeanTime(final Long step) {
-        if (BAR_ETA.equals(this.progressOption) || BAR_ALL.equals(this.progressOption)) {
+    	 if (CollectionUtils.containsAny(this.progressOption, Arrays.asList(ProgressBarOption.ALL,ProgressBarOption.ETA))) {
             this.progressTotalTime = new BigDecimal("" + (System.currentTimeMillis() - this.startTime));
             final BigDecimal currSec = new BigDecimal("" + (System.currentTimeMillis() - this.currentStepTime)).divide(new BigDecimal("1000"));
             if (step != 0) {
@@ -476,7 +510,7 @@ public class ProgressBar {
 
         final double per = step * 100D / this.end;
         final BigDecimal start = new BigDecimal(System.currentTimeMillis() - this.startTime);
-        BigDecimal nbRefresh = this.REFRESH_MS > 0L ? new BigDecimal(this.REFRESH_MS) : BigDecimal.ONE;
+        BigDecimal nbRefresh = this.refreshMs > 0L ? new BigDecimal(this.refreshMs) : BigDecimal.ONE;
         final BigDecimal nbDisplaySinceStart = start.divide(nbRefresh, 2, RoundingMode.HALF_UP);
         if ((per > 0 && per % UPDATE_REFRESH_STEP == 0) || nbDisplaySinceStart.compareTo(MAX_DISPLAY_SINCE_START) > 0) {
 
@@ -489,11 +523,11 @@ public class ProgressBar {
                 nbRefresh = totalEstimatedTime.divide(nbRefresh, 2, RoundingMode.HALF_UP);
             }
             if (nbRefresh.compareTo(MIN) < 0) {
-                this.REFRESH_MS = totalEstimatedTime.divide(MIN_DISPLAY, 3, RoundingMode.HALF_UP).longValue();
-            } else if (meanMs.compareTo(new BigDecimal(REFRESH_MS)) > 0) {
-                this.REFRESH_MS = meanMs.min(MAX).longValue();
+                this.refreshMs = totalEstimatedTime.divide(MIN_DISPLAY, 3, RoundingMode.HALF_UP).longValue();
+            } else if (meanMs.compareTo(new BigDecimal(refreshMs)) > 0) {
+                this.refreshMs = meanMs.min(MAX).longValue();
             } else {
-                this.REFRESH_MS = MAX.longValue();
+                this.refreshMs = MAX.longValue();
             }
             // System.out.println(totalEstimatedTime+" - "+this.REFRESH_MS+" - "+meanMs+ " -
             // "+nbRefresh+ " - "+totalEstimatedTime.compareTo(BigDecimal.ZERO)+" -
@@ -538,5 +572,181 @@ public class ProgressBar {
     public String getProgressDone() {
         return progressDone;
     }
-
+    
+    
+    public static final class Builder {
+    	private Long end;
+        private Integer maxwidth = 100;
+        private String barStartChar = "|";
+        private String barStartEnd = "|";
+        private String barFill = "=";
+        private String barHead = "=>";
+        private String barDone = StringUtils.EMPTY;
+        private List<ProgressBarOption> progressOption = Arrays.asList(ProgressBarOption.BAR,ProgressBarOption.ETA);
+        private Integer barMsgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
+        private Long refreshTime = ProgressBar.REFRESH_MS_DEFAULT;
+        private boolean autoRefreshTimeCalculation = true;
+        
+        /**
+         * Init new Builder with end count of items to process
+         * @param end
+         */
+        public Builder(Long end) {        	
+			this.end = end;
+		}
+        
+        /**
+         * Set maxWidth in characters for display. Default 100
+         * @param maxWidth
+         * @return Builder
+         */
+        public Builder withMaxWidth(Integer maxWidth) {
+        	this.maxwidth = maxWidth;
+        	return this;
+        }
+        
+        /**
+         * Set Bar Characters for display advancement.
+         * Default is "=" for already done filling, and "=>" for head of done filling.
+         * the progress bar will be surrounded by "|" by default.
+         * Ex : "|===>            |"
+         * @param doneFiller character(s) for already done filling
+         * @param doneHead character(s) for head of already done filling
+         * @see fr.noobeclair.hashcode.utils.ProgressBar.Builder#withBarOpt(String, String, String, String)
+         * @return Builder
+         */
+        public Builder withBarOpt(String doneFiller, String doneHead) {
+        	this.barFill = doneFiller;
+        	this.barHead = doneHead;
+        	return this;
+        }
+        
+        /**
+         * Set Bar Characters for display advancement.
+         * Default is "=" for already done filling, and "=>" for head of done filling.         
+         * Default is "|" for start and end separator .
+         * Ex : "|===>            |"
+         * @param doneFiller character(s) for already done filling
+         * @param doneHead character(s) for head of already done filling
+         * @see fr.noobeclair.hashcode.utils.ProgressBar.Builder#withBarOpt(String, String, String, String)
+         * @return Builder
+         */
+        public Builder withBarOpt(String doneFiller, String doneHead, String startSep, String endSep) {
+        	this.barFill = doneFiller;
+        	this.barHead = doneHead;
+        	this.barStartChar = startSep;
+        	this.barStartEnd = endSep;
+        	return this;
+        }
+        
+        /**
+         * Set end message. If not empty, will be displayed once progress reach 100%
+         * Default is empty String (ie no message)
+         * @param endMsg
+         * @return Builder
+         */
+        public Builder withEndMessage(String endMsg) {
+        	this.barDone = endMsg;
+        	return this;
+        }
+        
+        /**
+         * Set Bar display option, and choose how the bar will display progress
+         * Available option : 
+         *  - ProgressBarOption.BAR : Display a progress bar (ex : "|===>            |")
+         *  - ProgressBarOption.PERCENT : Display a percentage indicator
+         *  - ProgressBarOption.COUNT : Display a current/all indicator (ex: 10/100)
+         *  - ProgressBarOption.ETA : Display a Estimated Time to finish (ex : 01h35m20s)
+         *  - ProgressBarOption.MSG : Display a msg before bar that can be provided during process (Ex : loading file)
+         *  
+         *  DEFAULT is BAR and ETA. Ex : "|===>            | ETA 01h35m20s"
+         *  
+         * @param opt {@link ProgressBarOption}
+         * @see fr.noobeclair.hashcode.utils.ProgressBar.Builder#withOptions(List<ProgressBarOption>)
+         * @return Buidler
+         */
+        public Builder withOption(ProgressBarOption opt) {
+        	if (opt != null) {
+        		this.progressOption = Arrays.asList(opt);
+        	}
+        	else {
+        		throw new IllegalArgumentException("Option cannot be null");
+        	}
+        	return this;
+        }
+        
+        /**
+         * Set Bar display option, and choose how the bar will display progress
+         * Available option : 
+         *  - ProgressBarOption.BAR : Display a progress bar (ex : "|===>            |")
+         *  - ProgressBarOption.PERCENT : Display a percentage indicator
+         *  - ProgressBarOption.COUNT : Display a current/all indicator (ex: 10/100)
+         *  - ProgressBarOption.ETA : Display a Estimated Time to finish (ex : 01h35m20s)
+         *  - ProgressBarOption.MSG : Display a msg before bar that can be provided during process (Ex : loading file)
+         *  
+         *  DEFAULT is BAR and ETA. Ex : "|===>            | ETA 01h35m20s"
+         *  
+         * @param opt {@link ProgressBarOption}
+         * @see fr.noobeclair.hashcode.utils.ProgressBar.Builder#withOptions(List<ProgressBarOption>)
+         * @return Buidler
+         */
+        public Builder withOptions(List<ProgressBarOption> opts) {
+        	if (CollectionUtils.isNotEmpty(opts)) {
+        		this.progressOption = opts;
+        	}
+        	else {
+        		throw new IllegalArgumentException("Option cannot be null");
+        	}
+        	return this;
+        }
+        
+        /**
+         * Set msg area size if the ProgressBarOption.MSG is set.
+         * Default is 1/3 of maxwidth
+         * 
+         * TODO : Add method to set size in percentage of maxwidth
+         * 
+         * @param size
+         * @return Builder
+         */
+        public Builder withBarMsgSize(Integer size) {
+        	if (CollectionUtils.isNotEmpty(this.progressOption) && this.progressOption.contains(ProgressBarOption.MSG)) {
+        		this.barMsgSize = size;
+        	} else {
+        		throw new IllegalArgumentException("Bar message size cannot be set if ProgressBarOption.MSG is not set");
+        	}
+        	return this;
+        }
+        
+        /**
+         * Set the time between each display refresh.
+         * Default 10 milliseconds.
+         * @param ms time between each display refresh (in ms)
+         * @return Builder
+         */
+        public Builder withRefreshTime(Long ms) {
+        	if (ms != null) {
+        	this.refreshTime = ms;
+        	}
+        	else {
+        		throw new IllegalArgumentException("Refresh Time cannot be null");
+        	}
+        	return this;
+        }
+        
+        /**
+         * Enable or disable automatic refreshTime calculation.
+         * if activated, refresh time is adjusted according to each item computation time.
+         * Default is true (activated)
+         * @param auto boolean
+         * @return Builder
+         */
+        public Builder withAutoRefreshTime(boolean auto) {
+        	this.autoRefreshTimeCalculation = auto;
+        	return this;
+        }
+        
+        
+    }
+    
 }
