@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 import fr.noobeclair.hashcode.bean.BeanContainer;
 import fr.noobeclair.hashcode.bean.Config;
 
-public class SolverFactory<S extends Solver<T, V>, T extends BeanContainer, V extends Config> {
+public class SolverFactory<S extends ConfigSolver<T, V>, T extends BeanContainer, V extends Config> {
 	
 	protected static final Logger logger = LogManager.getLogger(SolverFactory.class);
 	
@@ -25,7 +25,7 @@ public class SolverFactory<S extends Solver<T, V>, T extends BeanContainer, V ex
 	}
 	
 	public List<S> createFromConfs(List<V> configs) {
-		return createFromConfs(configs, Solver.DISABLE_TIMEOUT);
+		return createFromConfs(configs, ConfigSolver.DISABLE_TIMEOUT);
 	}
 	
 	public List<S> createFromConfs(List<V> configs, long timeout) {

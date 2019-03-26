@@ -63,7 +63,7 @@ public class ProgressBar {
 	public static final String PAD_STR = " ";
 	public static final String REMAIN_FILL_STR = " ";
 	public static final String PAD_NB_STR = " ";
-	public static final BigDecimal DEFAULT_BAR_MSG_SIZE_PER = new BigDecimal("0.33");
+	public static final BigDecimal DEFAULT_BAR_MSG_SIZE_PER = new BigDecimal("0.27");
 	
 	public ProgressBar(Builder builder) {
 		super();
@@ -289,6 +289,10 @@ public class ProgressBar {
 		show(out, step.longValue(), StringUtils.EMPTY, force);
 	}
 	
+	public void show(final PrintStream out, final Integer step, final String msg) {
+		show(out, step.longValue(), msg, false);
+	}
+	
 	public void show(final PrintStream out, final Long step) {
 		show(out, step, StringUtils.EMPTY, false);
 	}
@@ -440,7 +444,7 @@ public class ProgressBar {
 		private String barHead = "=>";
 		private String barDone = StringUtils.EMPTY;
 		private List<ProgressBarOption> progressOption = Arrays.asList(ProgressBarOption.BAR, ProgressBarOption.ETA);
-		private Integer barMsgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
+		private Integer barMsgSize = null;
 		private Long refreshTime = ProgressBar.REFRESH_MS_DEFAULT;
 		private boolean autoRefreshTimeCalculation = true;
 		
@@ -576,7 +580,7 @@ public class ProgressBar {
 		 * @return Builder
 		 */
 		public Builder withBarMsgSize(Integer size) {
-			if (CollectionUtils.isNotEmpty(this.progressOption) && this.progressOption.contains(ProgressBarOption.MSG)) {
+			if (CollectionUtils.isNotEmpty(this.progressOption) && CollectionUtils.containsAny(this.progressOption, Arrays.asList(ProgressBarOption.MSG, ProgressBarOption.ALL))) {
 				this.barMsgSize = size;
 			} else {
 				throw new IllegalArgumentException("Bar message size cannot be set if ProgressBarOption.MSG is not set");
@@ -614,12 +618,19 @@ public class ProgressBar {
 			return this;
 		}
 		
+		public void updateMsgSize() {
+			if (this.barMsgSize == null) {
+				this.barMsgSize = new BigDecimal(this.maxwidth).multiply(DEFAULT_BAR_MSG_SIZE_PER).intValue();
+			}
+		}
+		
 		/**
 		 * Build that fuckin ProgresBar yo !
 		 * 
 		 * @return ProgressBar
 		 */
 		public ProgressBar build() {
+			updateMsgSize();
 			return new ProgressBar(this);
 		}
 		

@@ -16,11 +16,11 @@ import fr.noobeclair.hashcode.bean.hashcode2018.CityMap;
 import fr.noobeclair.hashcode.bean.hashcode2018.H2018BeanContainer;
 import fr.noobeclair.hashcode.bean.hashcode2018.H2018Config;
 import fr.noobeclair.hashcode.bean.hashcode2018.Ride;
-import fr.noobeclair.hashcode.solve.Solver;
+import fr.noobeclair.hashcode.solve.ConfigSolver;
 import fr.noobeclair.hashcode.solve.StatsConstants;
 import fr.noobeclair.hashcode.utils.ProgressBar;
 
-public class H2018Solver extends Solver<H2018BeanContainer, H2018Config> {
+public class H2018Solver extends ConfigSolver<H2018BeanContainer, H2018Config> {
 	
 	public List<Ride> arides;
 	public List<Ride> drides;
@@ -36,13 +36,13 @@ public class H2018Solver extends Solver<H2018BeanContainer, H2018Config> {
 		super();
 	}
 	
-	public H2018Solver(H2018Config config) {
-		super();
+	public H2018Solver(String name, H2018Config config) {
+		super(name);
 		this.config = config;
 	}
 	
-	public H2018Solver(Long timeout, H2018Config config) {
-		super(timeout);
+	public H2018Solver(String name, Long timeout, H2018Config config) {
+		super(name, timeout);
 		this.config = config;
 	}
 	

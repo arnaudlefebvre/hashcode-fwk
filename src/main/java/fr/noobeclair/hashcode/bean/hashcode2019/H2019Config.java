@@ -18,4 +18,9 @@ public class H2019Config extends Config {
 		// TODO Auto-generated constructor stub
 	}
 	
+	@Override
+	public boolean withProgressBar() {
+		return false;
+	}
+	
 }

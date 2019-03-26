@@ -11,13 +11,13 @@ import fr.noobeclair.hashcode.bean.hashcode2019.HashCode2019BeanContainer;
 import fr.noobeclair.hashcode.bean.hashcode2019.Photo;
 import fr.noobeclair.hashcode.bean.hashcode2019.Slide;
 import fr.noobeclair.hashcode.bean.hashcode2019.SlideShow;
-import fr.noobeclair.hashcode.solve.Solver;
+import fr.noobeclair.hashcode.solve.ConfigSolver;
 import fr.noobeclair.hashcode.utils.AlgoUtils;
 import fr.noobeclair.hashcode.utils.ProgressBar;
 import fr.noobeclair.hashcode.utils.Utils;
 import fr.noobeclair.hashcode.utils.dto.DistanceResultDto;
 
-public class HashCode2019Solver extends Solver<HashCode2019BeanContainer, H2019Config> {
+public class HashCode2019Solver extends ConfigSolver<HashCode2019BeanContainer, H2019Config> {
 	
 	public HashCode2019Solver() {
 		super();

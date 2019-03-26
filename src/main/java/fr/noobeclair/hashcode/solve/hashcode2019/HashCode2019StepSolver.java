@@ -10,26 +10,23 @@ import fr.noobeclair.hashcode.bean.hashcode2019.HashCode2019BeanContainer;
 import fr.noobeclair.hashcode.bean.hashcode2019.Photo;
 import fr.noobeclair.hashcode.bean.hashcode2019.Slide;
 import fr.noobeclair.hashcode.bean.hashcode2019.SlideShow;
-import fr.noobeclair.hashcode.solve.Solver;
+import fr.noobeclair.hashcode.solve.ConfigSolver;
 import fr.noobeclair.hashcode.solve.step.AbstractStep;
 import fr.noobeclair.hashcode.utils.AlgoUtils;
 import fr.noobeclair.hashcode.utils.ProgressBar;
+import fr.noobeclair.hashcode.utils.ProgressBar.ProgressBarOption;
 import fr.noobeclair.hashcode.utils.dto.DistanceResultDto;
 
-public class HashCode2019StepSolver extends Solver<HashCode2019BeanContainer, H2019Config> {
+public class HashCode2019StepSolver extends ConfigSolver<HashCode2019BeanContainer, H2019Config> {
 	
 	private static final Long WAIT = 0L;
-	// private static final Long WAIT = 1L;
-	// private static final Long WAIT = 10L;
-	// private static final Long WAIT = 100L;
-	// private static final Long WAIT = 1000L;
 	
 	public HashCode2019StepSolver() {
 		super();
 	}
 	
-	public HashCode2019StepSolver(Long timeout) {
-		super(timeout);
+	public HashCode2019StepSolver(String name, Long timeout, H2019Config config) {
+		super(name, config, timeout);
 	}
 	
 	@Override
@@ -70,9 +67,9 @@ public class HashCode2019StepSolver extends Solver<HashCode2019BeanContainer, H2
 		
 		@Override
 		protected HashCode2019BeanContainer runStep(HashCode2019BeanContainer datas) {
-			logger.info(" {} All photos", datas.getPhotos().size());
+			// logger.info(" {} All photos", datas.getPhotos().size());
 			List<Photo> listPhotosVertical = datas.getPhotos().stream().filter(photo -> photo.getSens().equalsIgnoreCase("V")).collect(Collectors.toList());
-			logger.info(" {} Vertical photos", listPhotosVertical.size());
+			// logger.info(" {} Vertical photos", listPhotosVertical.size());
 			datas.setListVerticalPhoto(listPhotosVertical);
 			return datas;
 		}
@@ -102,7 +99,7 @@ public class HashCode2019StepSolver extends Solver<HashCode2019BeanContainer, H2
 				}
 			}
 			datas.setSlides(slides);
-			logger.info(" {} Vertical composed slides", slides.size());
+			// logger.info(" {} Vertical composed slides", slides.size());
 			return datas;
 		}
 	}
@@ -134,10 +131,11 @@ public class HashCode2019StepSolver extends Solver<HashCode2019BeanContainer, H2
 			datas.setSlides(datas.getSlides().stream().sorted().collect(Collectors.toList()));
 			List<Slide> slideshow = new ArrayList<>();
 			// AbstractStep 4 - Construction du slideshow
-			int i = 1;
+			Integer i = 1;
 			final Integer j = datas.getSlides().size();
-			logger.info(" {} All Slides", j);
-			final ProgressBar bar = ProgressBar.builder(j.longValue()).withMaxWidth(100).build();
+			// logger.info(" {} All Slides", j);
+			final ProgressBar bar = ProgressBar.builder(j.longValue()).withMaxWidth(200).withOption(ProgressBarOption.ALL).withBarMsgSize(30).build();
+			bar.show(System.out, 0L, getName());
 			for (Slide s : datas.getSlides()) {
 				if (Thread.currentThread().isInterrupted()) {
 					return null;
@@ -153,11 +151,11 @@ public class HashCode2019StepSolver extends Solver<HashCode2019BeanContainer, H2
 					processed.put(res.getObject().hashCode(), null);
 				}
 				halt(WAIT);
-				bar.show(System.out, i);
+				bar.show(System.out, i, getName());
 				i = i + 1;
 			}
 			bar.end(System.out);
-			logger.info(" {} All Slides in slideshow ", slideshow.size());
+			// logger.info(" {} All Slides in slideshow ", slideshow.size());
 			datas.setSlideshow(new SlideShow(slideshow));
 			return datas;
 		}

@@ -5,32 +5,31 @@ import java.math.BigDecimal;
 import org.apache.commons.lang3.StringUtils;
 
 import fr.noobeclair.hashcode.bean.BeanContainer;
-import fr.noobeclair.hashcode.bean.Config;
 import fr.noobeclair.hashcode.in.InReader;
 import fr.noobeclair.hashcode.out.OutWriter;
 import fr.noobeclair.hashcode.score.ScoreCalculator;
 import fr.noobeclair.hashcode.solve.Solver;
 
-public class SimpleWorker<T extends BeanContainer, V extends Config> extends GenericWorker<T, V> {
+public class SimpleWorker<T extends BeanContainer> extends GenericWorker<T> {
 	
 	protected InOut inOut;
 	
-	public SimpleWorker(final InReader<T> reader, final Solver<T, V> solver, final OutWriter<T> writer, final String in, final String out) {
+	public SimpleWorker(final InReader<T> reader, final Solver<T> solver, final OutWriter<T> writer, final String in, final String out) {
 		super(reader, solver, writer);
 		this.inOut = new InOut(in, out);
 	}
 	
-	public SimpleWorker(final InReader<T> reader, final Solver<T, V> solver, final ScoreCalculator<T> scorer, final OutWriter<T> writer, final String in, final String out) {
+	public SimpleWorker(final InReader<T> reader, final Solver<T> solver, final ScoreCalculator<T> scorer, final OutWriter<T> writer, final String in, final String out) {
 		super(reader, solver, scorer, writer);
 		this.inOut = new InOut(in, out);
 	}
 	
-	public SimpleWorker(final InReader<T> reader, final Solver<T, V> solver, final OutWriter<T> writer, final InOut inOut) {
+	public SimpleWorker(final InReader<T> reader, final Solver<T> solver, final OutWriter<T> writer, final InOut inOut) {
 		super(reader, solver, writer);
 		this.inOut = inOut;
 	}
 	
-	public SimpleWorker(final InReader<T> reader, final Solver<T, V> solver, final ScoreCalculator<T> scorer, final OutWriter<T> writer, final InOut inOut) {
+	public SimpleWorker(final InReader<T> reader, final Solver<T> solver, final ScoreCalculator<T> scorer, final OutWriter<T> writer, final InOut inOut) {
 		super(reader, solver, scorer, writer);
 		this.inOut = inOut;
 	}
@@ -62,7 +61,7 @@ public class SimpleWorker<T extends BeanContainer, V extends Config> extends Gen
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		builder.append("SimpleWorker [");
+		builder.append("SimpleConfWorker [");
 		if (solver != null) {
 			builder.append("solver=").append(solver).append(", ");
 		}
@@ -83,11 +82,11 @@ public class SimpleWorker<T extends BeanContainer, V extends Config> extends Gen
 		return builder.toString();
 	}
 	
-	protected String getOut(final Solver<T, V> solver) {
+	protected String getOut(final Solver<T> solver) {
 		if (StringUtils.isNotEmpty(inOut.out)) {
-			return inOut.out + "#" + solver.getClass().getSimpleName() + ".out";
+			return inOut.out + "#" + solver.getName() + ".out";
 		}
-		return inOut.in + "#" + solver.getClass().getSimpleName() + ".out";
+		return inOut.in + "#" + solver.getName() + ".out";
 		
 	}
 }

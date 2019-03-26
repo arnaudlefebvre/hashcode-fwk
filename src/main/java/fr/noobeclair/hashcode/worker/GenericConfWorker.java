@@ -3,32 +3,32 @@ package fr.noobeclair.hashcode.worker;
 import java.math.BigDecimal;
 
 import fr.noobeclair.hashcode.bean.BeanContainer;
+import fr.noobeclair.hashcode.bean.Config;
 import fr.noobeclair.hashcode.in.InReader;
 import fr.noobeclair.hashcode.out.OutWriter;
 import fr.noobeclair.hashcode.score.ScoreCalculator;
-import fr.noobeclair.hashcode.solve.Solver;
+import fr.noobeclair.hashcode.solve.ConfigSolver;
 
-public abstract class GenericWorker<T extends BeanContainer> {
+public abstract class GenericConfWorker<T extends BeanContainer, V extends Config> {
 	
 	protected OutWriter<T> writer;
 	protected InReader<T> reader;
-	protected Solver<T> solver;
+	protected ConfigSolver<T, V> solver;
 	protected ScoreCalculator<T> scorer;
-	protected T data;
 	
-	protected GenericWorker(InReader<T> reader, Solver<T> solver, OutWriter<T> writer) {
+	protected GenericConfWorker(InReader<T> reader, ConfigSolver<T, V> solver, OutWriter<T> writer) {
 		this.reader = reader;
 		this.writer = writer;
 		this.solver = solver;
-		this.data = null;
+		
 	}
 	
-	protected GenericWorker(InReader<T> reader, Solver<T> solver, ScoreCalculator<T> scorer, OutWriter<T> writer) {
+	protected GenericConfWorker(InReader<T> reader, ConfigSolver<T, V> solver, ScoreCalculator<T> scorer, OutWriter<T> writer) {
 		this.reader = reader;
 		this.writer = writer;
 		this.solver = solver;
 		this.scorer = scorer;
-		this.data = null;
+		
 	}
 	
 	public abstract BigDecimal run();
@@ -49,11 +49,11 @@ public abstract class GenericWorker<T extends BeanContainer> {
 		this.reader = reader;
 	}
 	
-	public Solver<T> getSolver() {
+	public ConfigSolver<T, V> getSolver() {
 		return solver;
 	}
 	
-	public void setSolver(Solver<T> solver) {
+	public void setSolver(ConfigSolver<T, V> solver) {
 		this.solver = solver;
 	}
 	

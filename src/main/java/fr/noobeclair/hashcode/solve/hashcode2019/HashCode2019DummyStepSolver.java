@@ -8,11 +8,11 @@ import fr.noobeclair.hashcode.bean.hashcode2019.H2019Config;
 import fr.noobeclair.hashcode.bean.hashcode2019.HashCode2019BeanContainer;
 import fr.noobeclair.hashcode.bean.hashcode2019.Slide;
 import fr.noobeclair.hashcode.bean.hashcode2019.SlideShow;
-import fr.noobeclair.hashcode.solve.Solver;
+import fr.noobeclair.hashcode.solve.ConfigSolver;
 import fr.noobeclair.hashcode.solve.step.AbstractStep;
 import fr.noobeclair.hashcode.utils.ProgressBar;
 
-public class HashCode2019DummyStepSolver extends Solver<HashCode2019BeanContainer, H2019Config> {
+public class HashCode2019DummyStepSolver extends ConfigSolver<HashCode2019BeanContainer, H2019Config> {
 	
 	private static final Long WAIT = 0L;
 	// private static final Long WAIT = 1L;
@@ -20,12 +20,12 @@ public class HashCode2019DummyStepSolver extends Solver<HashCode2019BeanContaine
 	// private static final Long WAIT = 100L;
 	// private static final Long WAIT = 1000L;
 	
-	public HashCode2019DummyStepSolver() {
+	private HashCode2019DummyStepSolver() {
 		super();
 	}
 	
-	public HashCode2019DummyStepSolver(Long timeout) {
-		super(timeout);
+	public HashCode2019DummyStepSolver(String name, Long timeout, H2019Config config) {
+		super(name, config, timeout);
 	}
 	
 	@Override

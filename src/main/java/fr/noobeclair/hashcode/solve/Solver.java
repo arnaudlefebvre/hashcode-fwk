@@ -1,9 +1,6 @@
 package fr.noobeclair.hashcode.solve;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -17,20 +14,19 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import fr.noobeclair.hashcode.bean.BeanContainer;
-import fr.noobeclair.hashcode.bean.Config;
 import fr.noobeclair.hashcode.utils.ProgressBar;
 import fr.noobeclair.hashcode.utils.Utils;
 
-public abstract class Solver<T extends BeanContainer, V extends Config> {
+public abstract class Solver<T extends BeanContainer> {
 	
-	protected static final Logger logger = LogManager.getLogger(Solver.class);
+	protected static final Logger logger = LogManager.getLogger(ConfigSolver.class);
 	public static final Long DEFAULT_TIMEOUT = 3600L;
 	public static final Long DISABLE_TIMEOUT = 0L;
-	private static final String BAR_MSG_SEP = "->";
+	protected static final String BAR_MSG_SEP = "->";
 	
+	/** Name of ConfigSolver, must be unique **/
 	protected String name;
 	protected T data;
-	protected V config;
 	protected Long timeout;
 	protected Map<Integer, String> stats;
 	protected Long barStart;
@@ -45,24 +41,30 @@ public abstract class Solver<T extends BeanContainer, V extends Config> {
 	 */
 	protected abstract T run(T data, ProgressBar bar);
 	
-	public T run(T data) {
+	protected T run(T data) {
 		return run(data, null);
 	}
 	
-	public void build(V config, Long timeout) {
+	public void build(Long timeout) {
 		this.timeout = timeout;
-		this.config = config;
 		this.stats = new TreeMap<>();
 	}
 	
 	/**
-	 * New Solver which never expires.
+	 * New ConfigSolver which never expires.
 	 *
-	 * @see #fr.noobeclair.hashcode.solve.Solver.Solver(Long) for tiemout
+	 * @see #fr.noobeclair.hashcode.solve.ConfigSolver.Solver(Long) for tiemout
 	 */
 	public Solver() {
 		this.timeout = DEFAULT_TIMEOUT;
 		this.stats = new TreeMap<>();
+		this.name = "ConfigSolver" + new Double(Math.random() * 1000).intValue();
+	}
+	
+	public Solver(String name) {
+		this.timeout = DEFAULT_TIMEOUT;
+		this.stats = new TreeMap<>();
+		this.name = name;
 	}
 	
 	/**
@@ -71,30 +73,17 @@ public abstract class Solver<T extends BeanContainer, V extends Config> {
 	 * @param timeout
 	 *            in seconds.
 	 */
-	public Solver(final Long timeout) {
+	public Solver(String name, final Long timeout) {
 		this.timeout = timeout;
 		this.stats = new TreeMap<>();
-	}
-	
-	/**
-	 * New solver wich will expire after a timeout in SECONDS
-	 *
-	 * @param timeout
-	 *            in seconds.
-	 * @param V
-	 *            conf config
-	 */
-	public Solver(final V conf, final Long timeout) {
-		this.timeout = timeout;
-		this.config = conf;
-		this.stats = new TreeMap<>();
+		this.name = name;
 	}
 	
 	public T solve(final T data, ProgressBar bar) {
 		barStart = (bar != null) ? bar.getStep() : 0;
 		final long start = System.currentTimeMillis();
 		stats.put(StatsConstants.TIME_START, "" + start);
-		logger.debug("-- Solve start : {} - timeout {} sec ({})", this.getClass().getSimpleName(), timeout, Utils.formatToHHMMSS(timeout));
+		logger.debug("-- Solve start : {} - timeout {} sec ({})", this.getName(), timeout, Utils.formatToHHMMSS(timeout));
 		this.data = data;
 		try {
 			if (data != null && this.timeout == DISABLE_TIMEOUT) {
@@ -112,7 +101,7 @@ public abstract class Solver<T extends BeanContainer, V extends Config> {
 			final long tot = end - start;
 			stats.put(StatsConstants.TIME_TOTAL, "" + tot);
 			stats.put(StatsConstants.TIME_TOTAL, "" + end);
-			logger.debug("--Solve End ({}). Total Time : {}s --", this.getClass().getSimpleName(), Utils.roundMiliTime(tot, 3));
+			logger.debug("--Solve End ({}). Total Time : {}s --", this.getName(), Utils.roundMiliTime(tot, 3));
 		}
 	}
 	
@@ -138,34 +127,7 @@ public abstract class Solver<T extends BeanContainer, V extends Config> {
 		} catch (final Exception e) {
 			logger.error(" <###----- !!!!!! -----#> Solve aborted due to error : ", e);
 			future.cancel(true);
-			throw new RuntimeException("Solver abort");
-		} finally {
-			executor.shutdownNow();
-		}
-		return this.data;
-	}
-	
-	private T solveAsync(final T data) {
-		Set<Callable<T>> callables = new HashSet<Callable<T>>();
-		final Callable<T> task = () -> {
-			final String threadName = Thread.currentThread().getName();
-			logger.info("Solve Thread {} started", threadName);
-			return run(data);
-			
-		};
-		callables.add(task);
-		final ExecutorService executor = Executors.newSingleThreadExecutor();
-		List<Future<T>> futures = null;
-		try {
-			T res = executor.invokeAny(callables, timeout, TimeUnit.SECONDS);
-			executor.awaitTermination(timeout, TimeUnit.SECONDS);
-			this.data = res;
-		} catch (InterruptedException | TimeoutException e) {
-			logger.error(" <###----- !!!!!! -----#> Solve interrupted (Timeout)");
-			return null;
-		} catch (final Exception e) {
-			logger.error(" <###----- !!!!!! -----#> Solve aborted due to error : ", e);
-			throw new RuntimeException("Solver abort");
+			throw new RuntimeException("ConfigSolver abort");
 		} finally {
 			executor.shutdownNow();
 		}
@@ -176,7 +138,15 @@ public abstract class Solver<T extends BeanContainer, V extends Config> {
 		if (bar != null) {
 			String m = StringUtils.isNotEmpty(bar.getMsg()) ? bar.getMsg().trim() : StringUtils.EMPTY;
 			Integer pos = m.lastIndexOf(BAR_MSG_SEP);
-			String fmsg = (pos != -1) ? (m.substring(0, pos) + BAR_MSG_SEP + msg).trim() : m + BAR_MSG_SEP + msg;
+			String fmsg = "";
+			if (pos == -1) {
+				fmsg = m + BAR_MSG_SEP + msg;
+			} else if (pos == 0) {
+				fmsg = BAR_MSG_SEP + msg;
+			} else {
+				fmsg = (m.substring(0, pos) + BAR_MSG_SEP + msg).trim();
+			}
+			
 			bar.show(System.out, barStart + progress, fmsg);
 		}
 	}
@@ -197,8 +167,8 @@ public abstract class Solver<T extends BeanContainer, V extends Config> {
 		return stats;
 	}
 	
-	public V getConfig() {
-		return config;
+	public String getName() {
+		return name;
 	}
 	
 }

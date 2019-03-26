@@ -11,14 +11,14 @@ import fr.noobeclair.hashcode.bean.hashcode2019.HashCode2019BeanContainer;
 import fr.noobeclair.hashcode.bean.hashcode2019.Photo;
 import fr.noobeclair.hashcode.bean.hashcode2019.Slide;
 import fr.noobeclair.hashcode.bean.hashcode2019.SlideShow;
-import fr.noobeclair.hashcode.solve.Solver;
+import fr.noobeclair.hashcode.solve.ConfigSolver;
 import fr.noobeclair.hashcode.solve.step.AbstractStep;
 import fr.noobeclair.hashcode.utils.AlgoUtils;
 import fr.noobeclair.hashcode.utils.ProgressBar;
 import fr.noobeclair.hashcode.utils.RandomIterator;
 import fr.noobeclair.hashcode.utils.dto.DistanceResultDto;
 
-public class HashCode2019RandomStepSolver extends Solver<HashCode2019BeanContainer, H2019Config> {
+public class HashCode2019RandomStepSolver extends ConfigSolver<HashCode2019BeanContainer, H2019Config> {
 	
 	private static final Long WAIT = 0L;
 	// private static final Long WAIT = 1L;
@@ -30,8 +30,8 @@ public class HashCode2019RandomStepSolver extends Solver<HashCode2019BeanContain
 		super();
 	}
 	
-	public HashCode2019RandomStepSolver(final Long timeout) {
-		super(timeout);
+	public HashCode2019RandomStepSolver(String name, final Long timeout) {
+		super(name, timeout);
 	}
 	
 	@Override
@@ -133,7 +133,8 @@ public class HashCode2019RandomStepSolver extends Solver<HashCode2019BeanContain
 			// AbstractStep 4 - Construction du slideshow
 			int i = 1;
 			final Integer j = datas.getSlides().size();
-			final ProgressBar bar = ProgressBar.builder(j.longValue()).withMaxWidth(100).build();
+			final ProgressBar bar = ProgressBar.builder(j.longValue()).withMaxWidth(200).withBarMsgSize(30).build();
+			bar.show(System.out, 0L, getName());
 			final RandomIterator<Slide> it = new RandomIterator<>(datas.getSlides(), new Random());
 			while (it.hasNext()) {
 				final Slide s = it.next();
@@ -151,7 +152,7 @@ public class HashCode2019RandomStepSolver extends Solver<HashCode2019BeanContain
 					processed.put(res.getObject().hashCode(), null);
 				}
 				halt(WAIT);
-				bar.show(System.out, i);
+				bar.show(System.out, i, getName());
 				i = i + 1;
 			}
 			bar.end(System.out);

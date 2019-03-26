@@ -8,10 +8,11 @@ public abstract class Config {
 	 * Enum for statistics flushing options :
 	 * EACH_RUN : For each run of a solver on a file
 	 * EACH_GROUP : For each goup of data. Only make sens with
-	 * MultipleFileSolverWorker.
-	 * If work order is file MultipleWorker.WORK_ORDER.SOLVE_ALL_FILES, then stats
+	 * MultipleConfFileSolverWorker.
+	 * If work order is file MultipleConfWorker.WORK_ORDER.SOLVE_ALL_FILES, then
+	 * stats
 	 * will be flushed before moving to next solver
-	 * If work order is file MultipleWorker.WORK_ORDER.SOLVE_BY_FILE, then stats
+	 * If work order is file MultipleConfWorker.WORK_ORDER.SOLVE_BY_FILE, then stats
 	 * will be flushed before moving to next file
 	 * END : at the end
 	 * 
@@ -73,6 +74,8 @@ public abstract class Config {
 		this.flushOpt = flushOpt;
 		this.csvSeparator = csvSeparator;
 	}
+	
+	public abstract boolean withProgressBar();
 	
 	public List<Integer> getStatisticKeysToWriteToCSV() {
 		return statisticKeysToWriteToCSV;

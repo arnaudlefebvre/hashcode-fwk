@@ -269,4 +269,9 @@ public class H2018Config extends Config {
 		return carStrategies;
 	}
 	
+	@Override
+	public boolean withProgressBar() {
+		return true;
+	}
+	
 }

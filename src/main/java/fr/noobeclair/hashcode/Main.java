@@ -14,14 +14,24 @@ import org.apache.logging.log4j.Logger;
 import fr.noobeclair.hashcode.bean.hashcode2018.H2018BeanContainer;
 import fr.noobeclair.hashcode.bean.hashcode2018.H2018Config;
 import fr.noobeclair.hashcode.bean.hashcode2018.H2018Config.CarStrategy;
+import fr.noobeclair.hashcode.bean.hashcode2019.H2019Config;
+import fr.noobeclair.hashcode.bean.hashcode2019.HashCode2019BeanContainer;
 import fr.noobeclair.hashcode.in.hashcode2018.H2018Reader;
+import fr.noobeclair.hashcode.in.hashcode2019.Hashcode2019Reader;
 import fr.noobeclair.hashcode.out.H2018Writer;
+import fr.noobeclair.hashcode.out.hashcode2019.Hashcode2019Writer;
 import fr.noobeclair.hashcode.score.hashcode2018.H2018ScoreCalculator;
+import fr.noobeclair.hashcode.score.hashcode2019.Hashcode2019ScoreCalculator;
 import fr.noobeclair.hashcode.solve.SolverFactory;
 import fr.noobeclair.hashcode.solve.hashcode2018.H2018Solver;
+import fr.noobeclair.hashcode.solve.hashcode2019.HashCode2019DummyStepSolver;
+import fr.noobeclair.hashcode.solve.hashcode2019.HashCode2019StepSolver;
 import fr.noobeclair.hashcode.utils.Utils;
 import fr.noobeclair.hashcode.worker.InOut;
-import fr.noobeclair.hashcode.worker.MultipleFileSolverWorker;
+import fr.noobeclair.hashcode.worker.MultipleConfFileSolverWorker;
+import fr.noobeclair.hashcode.worker.MultipleConfFileWorker;
+import fr.noobeclair.hashcode.worker.MultipleConfSolverWorker;
+import fr.noobeclair.hashcode.worker.SimpleConfWorker;
 
 public class Main {
 	public static final String CR = "\r";
@@ -44,64 +54,56 @@ public class Main {
 		logger.info("------------------------------------------------------------------------");
 		
 		final Long timeout = TimeUnit.MINUTES.toSeconds(2);
+		final Long timeout2019 = TimeUnit.SECONDS.toSeconds(5);
 		Map<String, BigDecimal> scores = null;
 		try {
 			// Simple worker - 1 file in/out - 1 Algorithm - Optionnal : scorer
-			// final Hashcode2019Reader reader = new Hashcode2019Reader();
-			// final HashCode2019StepSolver solver = new HashCode2019StepSolver(timeout);
-			// final HashCode2019DummyStepSolver dummySolver = new
-			// HashCode2019DummyStepSolver();
-			// final HashCode2019RandomStepSolver randomSolver = new
-			// HashCode2019RandomStepSolver(timeout);
-			// final Hashcode2019Writer writer = new Hashcode2019Writer();
-			// final Hashcode2019ScoreCalculator scorer = new Hashcode2019ScoreCalculator();
-			// final SimpleWorker<HashCode2019BeanContainer,Config> sw = new
-			// SimpleWorker<>(reader, dummySolver, scorer, writer,
-			// "src/main/resources/in/b_lovely_landscapes.txt",
-			// "src/main/resources/out/b_example.out.txt");
-			// // logger.info("Dummy solver on bigfile b {}", sw.run());
-			//
-			// // Mutiple File Worker - n files in/out - 1 algorithm
-			// final
-			// MultipleFileWorker<HashCode2019BeanContainer,Config,HashCode2019StepSolver>
-			// mfw = new MultipleFileWorker<>(reader, writer, scorer, solver);
-			// final List<InOut> files = new ArrayList<>();
-			// files.add(new InOut("src/main/resources/in/a_example.txt",
-			// "src/main/resources/out/a_example.out.txt"));
-			// files.add(new InOut("src/main/resources/in/b_lovely_landscapes.txt",
-			// "src/main/resources/out/b_example.out.txt"));
-			// files.add(new InOut("src/main/resources/in/c_memorable_moments.txt",
-			// "src/main/resources/out/c_example.out.txt"));
-			// mfw.addFiles(files);
-			// Map<String, BigDecimal> scores = null;
-			// // scores = mfw.run();
-			// if (MapUtils.isNotEmpty(scores)) {
-			// MapUtils.verbosePrint(System.out, mfw.getClass() + "-" + solver.getClass() +
-			// " : Score de chaque fichier ", scores);
-			// }
-			//
-			// // Multiple Solver Worker - 1 files int/out - n algorithm
-			// final MultipleSolverWorker<HashCode2019BeanContainer> msw = new
-			// MultipleSolverWorker<>(reader, writer, scorer,
-			// new InOut("src/main/resources/in/a_example.txt",
-			// "src/main/resources/out/a_example.out.txt"));
-			// msw.addSolver(solver);
-			// msw.addSolver(dummySolver);
-			// // scores = msw.run();
-			// if (MapUtils.isNotEmpty(scores)) {
-			// MapUtils.verbosePrint(System.out, msw.getClass().getSimpleName() + " : Score
-			// du fichier " + msw.getInOut().in, scores);
-			// }
-			//
-			// final MultipleFileSolverWorker<HashCode2019BeanContainer> mfsw = new
-			// MultipleFileSolverWorker<>(reader, writer, scorer);
-			// mfsw.addSolver(Arrays.asList(dummySolver, solver));
-			// mfsw.addFiles(files);
-			// // scores = mfsw.run();
-			// if (MapUtils.isNotEmpty(scores)) {
-			// MapUtils.verbosePrint(System.out, msw.getClass().getSimpleName() + " : Score
-			// des fichiers pour chaque solver ", scores);
-			// }
+			final Hashcode2019Reader reader = new Hashcode2019Reader();
+			final H2019Config cfg2019 = new H2019Config();
+			final HashCode2019StepSolver solver = new HashCode2019StepSolver("StepSolver2019", timeout2019, cfg2019);
+			final HashCode2019DummyStepSolver dummySolver = new HashCode2019DummyStepSolver("Dummy2019", timeout, cfg2019);
+			final Hashcode2019Writer writer = new Hashcode2019Writer();
+			final Hashcode2019ScoreCalculator scorer = new Hashcode2019ScoreCalculator();
+			final SimpleConfWorker<HashCode2019BeanContainer, H2019Config> sw = new SimpleConfWorker<>(reader, dummySolver, scorer, writer,
+					new InOut("src/main/resources/in/b_lovely_landscapes.txt", "src/main/resources/out/b_example.out.txt"));
+			// logger.info("Dummy solver on bigfile b {}", sw.run());
+			
+			// Mutiple File Worker - n files in/out - 1 algorithm
+			final MultipleConfFileWorker<HashCode2019BeanContainer, H2019Config, HashCode2019StepSolver> mfw = new MultipleConfFileWorker<>(reader, writer, scorer, solver, cfg2019);
+			final List<InOut> files = new ArrayList<>();
+			files.add(new InOut("src/main/resources/in/a_example.txt",
+					"src/main/resources/out/a_example.out.txt"));
+			files.add(new InOut("src/main/resources/in/b_lovely_landscapes.txt",
+					"src/main/resources/out/b_example.out.txt"));
+			files.add(new InOut("src/main/resources/in/c_memorable_moments.txt",
+					"src/main/resources/out/c_example.out.txt"));
+			mfw.addFiles(files);
+			scores = null;
+			// scores = mfw.run();
+			if (MapUtils.isNotEmpty(scores)) {
+				MapUtils.verbosePrint(System.out, mfw.getClass() + "-" + solver.getClass() +
+						" : Score de chaque fichier ", scores);
+			}
+			
+			// Multiple ConfigSolver Worker - 1 files int/out - n algorithm
+			final MultipleConfSolverWorker<HashCode2019BeanContainer, H2019Config, HashCode2019StepSolver> msw = new MultipleConfSolverWorker<>(reader, writer, scorer,
+					new InOut("src/main/resources/in/a_example.txt",
+							"src/main/resources/out/a_example.out.txt"),
+					cfg2019);
+			msw.addSolver(solver);
+			msw.addSolver(dummySolver);
+			// scores = msw.run();
+			if (MapUtils.isNotEmpty(scores)) {
+				MapUtils.verbosePrint(System.out, msw.getClass().getSimpleName() + " : Score du fichier " + msw.getInOut().in, scores);
+			}
+			
+			final MultipleConfFileSolverWorker<HashCode2019BeanContainer, H2019Config, HashCode2019StepSolver> mfsw = new MultipleConfFileSolverWorker<>(reader, writer, scorer,
+					Arrays.asList(dummySolver, solver), cfg2019);
+			mfsw.addFiles(files);
+			// scores = mfsw.run();
+			if (MapUtils.isNotEmpty(scores)) {
+				MapUtils.verbosePrint(System.out, msw.getClass().getSimpleName() + " : Score des fichiers pour chaque solver ", scores);
+			}
 			
 			H2018Reader read2018 = new H2018Reader();
 			H2018ScoreCalculator scor2018 = new H2018ScoreCalculator();
@@ -114,6 +116,7 @@ public class Main {
 			List<CarStrategy> carSt5 = Arrays.asList(CarStrategy.LONG_FIRST, CarStrategy.QUICK_FIRST);
 			List<CarStrategy> carStAgr = Arrays.asList(CarStrategy.AGGRESSIVE);
 			
+			H2018Config workerCfg = new H2018Config(0.0, 0.0, 0.0);
 			List<H2018Config> configs = new ArrayList<>();
 			// EXP
 			
@@ -248,7 +251,7 @@ public class Main {
 			files2018.add(new InOut("src/main/resources/in/2018/d_metropolis.in", null));
 			files2018.add(new InOut("src/main/resources/in/2018/e_high_bonus.in", null));
 			
-			final MultipleFileSolverWorker<H2018BeanContainer, H2018Config, H2018Solver> mfsw2018 = new MultipleFileSolverWorker<>(read2018, nwriter, scor2018, 1);
+			final MultipleConfFileSolverWorker<H2018BeanContainer, H2018Config, H2018Solver> mfsw2018 = new MultipleConfFileSolverWorker<>(read2018, nwriter, scor2018, 1, workerCfg);
 			mfsw2018.addFiles(files2018);
 			mfsw2018.addSolver(solvers);
 			scores = mfsw2018.run();
@@ -257,9 +260,9 @@ public class Main {
 			// MapUtils.verbosePrint(System.out, mfsw2018.getClass().getSimpleName() + " :
 			// Score des fichiers pour chaque solver ", scores);
 			// }
-			if (MapUtils.isNotEmpty(scores)) {
-				MapUtils.verbosePrint(System.out, "Meilleurs scores", scores);
-			}
+			// if (MapUtils.isNotEmpty(scores)) {
+			// MapUtils.verbosePrint(System.out, "Meilleurs scores", scores);
+			// }
 		} catch (Throwable e) {
 			logger.error("Erreur : ", e);
 		} finally {
