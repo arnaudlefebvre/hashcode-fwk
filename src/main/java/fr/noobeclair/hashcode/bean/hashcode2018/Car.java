@@ -1,5 +1,10 @@
 package fr.noobeclair.hashcode.bean.hashcode2018;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.collections4.CollectionUtils;
+
 import fr.noobeclair.hashcode.Main;
 import fr.noobeclair.hashcode.bean.Bean;
 
@@ -18,6 +23,7 @@ public class Car extends Bean {
 	public Integer finishTurn;
 	public Integer curScore = 0;
 	public Integer strategy = 0;
+	public List<Ride> rides = new ArrayList<>();
 	
 	public Car() {
 		super();
@@ -54,12 +60,14 @@ public class Car extends Bean {
 	public int finish(Integer turn) {
 		Integer score = -1;
 		if (this.ride != null && this.finishTurn <= turn) {
+			this.rides.add(this.ride);
+			score = this.curScore;
+			this.pos = this.ride.getEnd();
 			this.available = true;
 			this.finishTurn = 0;
-			this.pos = this.ride.getEnd();
 			this.ride = null;
-			score = this.curScore;
 			this.curScore = 0;
+			
 		}
 		return score;
 	}
@@ -67,11 +75,7 @@ public class Car extends Bean {
 	public boolean isFinish(Integer turn) {
 		boolean result = this.available || this.finishTurn <= turn;
 		if (result && this.ride != null) {
-			this.available = true;
-			this.finishTurn = 0;
-			this.pos = this.ride.getEnd();
-			this.ride = null;
-			this.curScore = 0;
+			finish(turn);
 		}
 		return result;
 	}
@@ -249,4 +253,14 @@ public class Car extends Bean {
 		return true;
 	}
 	
+	public String write() {
+		StringBuilder res = new StringBuilder();
+		if (CollectionUtils.isNotEmpty(this.rides)) {
+			res.append(this.rides.size()).append(" ");
+			for (Ride r : this.rides) {
+				res.append(r.getId()).append(" ");
+			}
+		}
+		return res.toString();
+	}
 }

@@ -15,7 +15,7 @@ import fr.noobeclair.hashcode.bean.hashcode2018.H2018BeanContainer;
 import fr.noobeclair.hashcode.bean.hashcode2018.H2018Config;
 import fr.noobeclair.hashcode.bean.hashcode2018.H2018Config.CarStrategy;
 import fr.noobeclair.hashcode.in.hashcode2018.H2018Reader;
-import fr.noobeclair.hashcode.out.NullWriter;
+import fr.noobeclair.hashcode.out.H2018Writer;
 import fr.noobeclair.hashcode.score.hashcode2018.H2018ScoreCalculator;
 import fr.noobeclair.hashcode.solve.SolverFactory;
 import fr.noobeclair.hashcode.solve.hashcode2018.H2018Solver;
@@ -40,7 +40,7 @@ public class Main {
 	public static void main(final String[] args) {
 		final long start = System.currentTimeMillis();
 		logger.info("------------------------------------------------------------------------");
-		logger.info("--                        Hascode Noobeclair                          --");
+		logger.info("--                        Hashcode Noobeclair                          --");
 		logger.info("------------------------------------------------------------------------");
 		
 		final Long timeout = TimeUnit.MINUTES.toSeconds(2);
@@ -105,7 +105,7 @@ public class Main {
 			
 			H2018Reader read2018 = new H2018Reader();
 			H2018ScoreCalculator scor2018 = new H2018ScoreCalculator();
-			NullWriter nwriter = new NullWriter();
+			H2018Writer nwriter = new H2018Writer();
 			
 			List<CarStrategy> carSt1 = Arrays.asList();
 			List<CarStrategy> carSt2 = Arrays.asList(CarStrategy.NEAR_FIRST);
@@ -128,33 +128,115 @@ public class Main {
 			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.INV, H2018Config.AdjustMethod.LINEAR, 1.0, 0.0, 1.1, 0.0, 1.5, 0.0,
 					1.5, 0.0, carStAgr));
 			
-			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.INV, H2018Config.AdjustMethod.LINEAR, 2.0, 0.0, 3.0, 0.0, 1.5,
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR,
+					H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.INV,
+					H2018Config.AdjustMethod.LINEAR, 2.0, 0.0, 3.0, 0.0, 1.5,
 					0.0, 1.5, 0.0, carSt2));
-			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.INV, H2018Config.AdjustMethod.LINEAR, 2.0, 0.0, 3.0, 0.0, 1.5,
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR,
+					H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.INV,
+					H2018Config.AdjustMethod.LINEAR, 2.0, 0.0, 3.0, 0.0, 1.5,
 					0.0, 1.5, 0.0, carSt3));
-			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.INV, H2018Config.AdjustMethod.LINEAR, 1.0, 0.0, 1.1, 0.0, 1.5,
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR,
+					H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.INV,
+					H2018Config.AdjustMethod.LINEAR, 1.0, 0.0, 1.1, 0.0, 1.5,
 					0.0, 1.5, 0.0, carSt4));
 			
-			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.INV, H2018Config.AdjustMethod.LINEAR, 2.0, 0.0, 3.0, 0.0, 1.5, 0.0,
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR,
+					H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.INV,
+					H2018Config.AdjustMethod.LINEAR, 2.0, 0.0, 3.0, 0.0, 1.5, 0.0,
 					1.5, 0.0, carSt2));
-			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.INV, H2018Config.AdjustMethod.LINEAR, 2.0, 0.0, 3.0, 0.0, 1.5, 0.0,
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR,
+					H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.INV,
+					H2018Config.AdjustMethod.LINEAR, 2.0, 0.0, 3.0, 0.0, 1.5, 0.0,
 					1.5, 0.0, carSt3));
-			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.INV, H2018Config.AdjustMethod.LINEAR, 1.0, 0.0, 2.0, 0.0, 1.5, 0.0,
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR,
+					H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.INV,
+					H2018Config.AdjustMethod.LINEAR, 1.0, 0.0, 2.0, 0.0, 1.5, 0.0,
 					1.5, 0.0, carSt4));
 			
-			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.INV, H2018Config.AdjustMethod.EXP, 1.0, 0.0, 2.0, 0.0, 1.5, 0.0,
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR,
+					H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.INV,
+					H2018Config.AdjustMethod.EXP, 1.0, 0.0, 2.0, 0.0, 1.5, 0.0,
 					1.5, 0.0, carSt4));
-			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.INV, H2018Config.AdjustMethod.EXP, 1.0, 0.0, 2.0, 0.0, 1.5, 0.0,
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR,
+					H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.INV,
+					H2018Config.AdjustMethod.EXP, 1.0, 0.0, 2.0, 0.0, 1.5, 0.0,
 					1.5, 0.0, carSt5));
-			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.INV, H2018Config.AdjustMethod.EXP, 1.0, 0.0, 2.0, 0.0, 1.5, 0.0,
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR,
+					H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.INV,
+					H2018Config.AdjustMethod.EXP, 1.0, 0.0, 2.0, 0.0, 1.5, 0.0,
 					1.5, 0.0, carStAgr));
 			
-			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.EXP, 1.0, 0.0, 2.0, 0.0, 1.5, 0.0,
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR,
+					H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.LINEAR,
+					H2018Config.AdjustMethod.EXP, 1.0, 0.0, 2.0, 0.0, 1.5, 0.0,
 					1.5, 0.0, carSt4));
-			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.EXP, 1.0, 0.0, 2.0, 0.0, 1.5, 0.0,
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR,
+					H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.LINEAR,
+					H2018Config.AdjustMethod.EXP, 1.0, 0.0, 2.0, 0.0, 1.5, 0.0,
 					1.5, 0.0, carSt5));
-			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.EXP, 1.0, 0.0, 2.0, 0.0, 1.5, 0.0,
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR,
+					H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.LINEAR,
+					H2018Config.AdjustMethod.EXP, 1.0, 0.0, 2.0, 0.0, 1.5, 0.0,
 					1.5, 0.0, carStAgr));
+			
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR,
+					H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.INV,
+					H2018Config.AdjustMethod.EXP, 1.0, 0.0, 2.0, 0.0, 1.5, 0.0,
+					1.5, 0.0, carSt4));
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR,
+					H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.INV,
+					H2018Config.AdjustMethod.EXP, 1.0, 0.0, 2.0, 0.0, 1.5, 0.0,
+					1.5, 0.0, carSt5));
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.LINEAR,
+					H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.INV,
+					H2018Config.AdjustMethod.EXP, 1.0, 0.0, 2.0, 0.0, 1.5, 0.0,
+					1.5, 0.0, carStAgr));
+			
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.EXP,
+					H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.EXP,
+					H2018Config.AdjustMethod.EXP, 2.0, 0.0, 3.0, 0.0, 1.5,
+					0.0, 1.5, 0.0, carSt2));
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.EXP,
+					H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.EXP,
+					H2018Config.AdjustMethod.EXP, 2.0, 0.0, 3.0, 0.0, 1.5,
+					0.0, 1.5, 0.0, carSt3));
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.EXP,
+					H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.EXP,
+					H2018Config.AdjustMethod.EXP, 1.0, 0.0, 2.0, 0.0, 1.5, 0.0,
+					1.5, 0.0, carSt4));
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.EXP,
+					H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.EXP,
+					H2018Config.AdjustMethod.EXP, 1.0, 0.0, 2.0, 0.0, 1.5, 0.0,
+					1.5, 0.0, carSt5));
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.EXP,
+					H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.EXP,
+					H2018Config.AdjustMethod.EXP, 1.0, 0.0, 2.0, 0.0, 1.5, 0.0,
+					1.5, 0.0, carStAgr));
+			
+			// Winners Custom Try
+			configs.add(new H2018Config(3.0, H2018Config.AdjustMethod.LINEAR,
+					H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.INV,
+					H2018Config.AdjustMethod.LINEAR, 1.0, 0.0, 1.1, 0.0, 1.5,
+					0.0, 1.5, 0.0, carSt4));
+			configs.add(new H2018Config(1.0, H2018Config.AdjustMethod.LINEAR,
+					H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.INV,
+					H2018Config.AdjustMethod.LINEAR, 1.0, 0.0, 1.1, 0.0, 1.3,
+					0.0, 1.5, 0.0, carSt4));
+			configs.add(new H2018Config(1.0, H2018Config.AdjustMethod.LINEAR,
+					H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.INV,
+					H2018Config.AdjustMethod.LINEAR, 1.0, 0.0, 1.0, 0.0, 1.1,
+					0.0, 1.3, 0.0, carSt4));
+			configs.add(new H2018Config(4.0, H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.INV, H2018Config.AdjustMethod.LINEAR, 1.0, 0.0, 1.1, 0.0, 1.5, 0.0,
+					1.5, 0.0, carSt3));
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.INV, H2018Config.AdjustMethod.LINEAR, 2.0, 0.0, 1.8, 0.0, 1.5, 0.0,
+					1.5, 0.0, carSt3));
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.INV, H2018Config.AdjustMethod.LINEAR, 1.0, 0.0, 1.1, 0.0, 2.0, 0.0,
+					2.0, 0.0, carSt4));
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.INV, H2018Config.AdjustMethod.LINEAR, 1.0, 0.0, 1.1, 0.0, 1.8, 0.0,
+					1.8, 0.0, carSt3));
+			configs.add(new H2018Config(2.0, H2018Config.AdjustMethod.EXP, H2018Config.AdjustMethod.LINEAR, H2018Config.AdjustMethod.INV, H2018Config.AdjustMethod.LINEAR, 1.0, 0.0, 1.5, 0.0, 1.5, 0.0,
+					1.5, 0.0, carSt3));
 			
 			SolverFactory<H2018Solver, H2018BeanContainer, H2018Config> sfactory = new SolverFactory<>(H2018Solver.class, H2018BeanContainer.class, H2018Config.class);
 			List<H2018Solver> solvers = sfactory.createFromConfs(configs, timeout);
@@ -171,8 +253,12 @@ public class Main {
 			mfsw2018.addSolver(solvers);
 			scores = mfsw2018.run();
 			
+			// if (MapUtils.isNotEmpty(scores)) {
+			// MapUtils.verbosePrint(System.out, mfsw2018.getClass().getSimpleName() + " :
+			// Score des fichiers pour chaque solver ", scores);
+			// }
 			if (MapUtils.isNotEmpty(scores)) {
-				MapUtils.verbosePrint(System.out, mfsw2018.getClass().getSimpleName() + " : Score des fichiers pour chaque solver ", scores);
+				MapUtils.verbosePrint(System.out, "Meilleurs scores", scores);
 			}
 		} catch (Throwable e) {
 			logger.error("Erreur : ", e);

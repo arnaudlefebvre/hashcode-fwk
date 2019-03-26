@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 import fr.noobeclair.hashcode.bean.hashcode2019.HashCode2019BeanContainer;
 import fr.noobeclair.hashcode.bean.hashcode2019.Photo;
 import fr.noobeclair.hashcode.in.InReader;
-import fr.noobeclair.hashcode.utils.ReadFileUtil;
+import fr.noobeclair.hashcode.utils.FileUtils;
 
 public class Hashcode2019Reader extends InReader<HashCode2019BeanContainer> {
 	
@@ -25,7 +25,7 @@ public class Hashcode2019Reader extends InReader<HashCode2019BeanContainer> {
 			
 			List<String> lines = stream.collect(Collectors.toList());
 			// lines.stream().forEach(System.out::println);
-			String[] conf = ReadFileUtil.getTabFromLineSpace(lines, 0);
+			String[] conf = FileUtils.getTabFromLineSpace(lines, 0);
 			result.setTotalPhotos(Integer.valueOf(conf[0]));
 			result.setPhotos(readLine(lines));
 			
@@ -40,7 +40,7 @@ public class Hashcode2019Reader extends InReader<HashCode2019BeanContainer> {
 		int index = 0;
 		for (String line : lines) {
 			if (index != 0) {
-				String[] linePhoto = ReadFileUtil.getTabFromLineSpace(lines, index);
+				String[] linePhoto = FileUtils.getTabFromLineSpace(lines, index);
 				String sens = linePhoto[0];
 				long nbTag = Integer.valueOf(linePhoto[1]);
 				List<String> tags = new ArrayList<>();

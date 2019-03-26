@@ -1,5 +1,7 @@
 package fr.noobeclair.hashcode.solve.hashcode2018;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,6 +18,7 @@ import fr.noobeclair.hashcode.bean.hashcode2018.H2018Config;
 import fr.noobeclair.hashcode.bean.hashcode2018.Ride;
 import fr.noobeclair.hashcode.solve.Solver;
 import fr.noobeclair.hashcode.solve.StatsConstants;
+import fr.noobeclair.hashcode.utils.ProgressBar;
 
 public class H2018Solver extends Solver<H2018BeanContainer, H2018Config> {
 	
@@ -44,7 +47,7 @@ public class H2018Solver extends Solver<H2018BeanContainer, H2018Config> {
 	}
 	
 	@Override
-	public H2018BeanContainer run(H2018BeanContainer data) {
+	public H2018BeanContainer run(H2018BeanContainer data, ProgressBar bar) {
 		logger.debug("H2018Solver START : {} cars, {} rides, {} turns {},  ({})", data.getCars().size(), data.getAvailableRides().size(), data.getMaxTurn(), this.getAdditionnalInfo());
 		arides = data.getAvailableRides();
 		stats.put(StatsConstants.ITEM0_TOTAL, "" + arides.size());
@@ -56,6 +59,7 @@ public class H2018Solver extends Solver<H2018BeanContainer, H2018Config> {
 		bonus = data.getBonus();
 		maxTurn = data.getMaxTurn();
 		cars = new TreeSet<>(data.getCars());
+		BigDecimal totalstep = new BigDecimal(arides.size());
 		for (Car c : cars) {
 			c.setStrategy(Car.STRAT_ALL);
 			
@@ -63,14 +67,12 @@ public class H2018Solver extends Solver<H2018BeanContainer, H2018Config> {
 		
 		totalScore = 0;
 		List<Car> availableCars = null;
-		int j = maxTurn + data.getAvailableRides().size();
 		int ct = 0;
-		// ProgressBar bar = new ProgressBar(j, 100, "|", "|", "=", "=>", "Done!");
 		for (ct = 0; ct < maxTurn; ct++) {
 			if (arides.isEmpty()) {
 				break;
 			}
-			int progress = ct + arides.size();
+			
 			final int i = ct;
 			
 			availableCars = new ArrayList<>();
@@ -96,20 +98,15 @@ public class H2018Solver extends Solver<H2018BeanContainer, H2018Config> {
 				car.setRide(r, ct, curScore);
 				cars.add(car);
 				srides.add(r);
-				progress = ct + arides.size();
-				// bar.show(System.out, progress);
 				idxCar = idxCar + 1;
 			}
-			progress = ct + arides.size();
-			// bar.show(System.out, progress);
-			// logger.info("TURN {}, {} {}", ct, Main.CR, this.toSMintring());
-			// logger.info("------------------------ NEW TURN ---------------------------");
+			BigDecimal step = totalstep.divide(new BigDecimal(maxTurn), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(ct));
+			showBar(bar, step.longValue(), "" + step.divide(totalstep, 2, RoundingMode.HALF_DOWN).multiply(new BigDecimal("100")) + "%");
 		}
-		// bar.end(System.out);
-		// logger.info("H2018Solver END, score : {}. ({})", ct,
-		// this.getAdditionnalInfo());
+		
 		this.data.score = this.totalScore;
 		this.data.selectedRides = srides;
+		this.data.cars = cars;
 		stats.put(StatsConstants.SCORE, "" + this.data.score);
 		stats.put(StatsConstants.ITEM0_SCORED, "" + this.data.selectedRides.size());
 		addConfigStats();
@@ -159,7 +156,7 @@ public class H2018Solver extends Solver<H2018BeanContainer, H2018Config> {
 			stats.put(StatsConstants.CF_STRAT, Arrays.toString(config.getCarStrategies().toArray()));
 			stats.put(StatsConstants.CF_TTFC, "" + config.getTimeToFinishCoef());
 			stats.put(StatsConstants.CF_NTFCT, "" + config.getNearTravelAdjustFct());
-			stats.put(StatsConstants.CF_LTFCT, "" + config.getNearTravelAdjustFct());
+			stats.put(StatsConstants.CF_LTFCT, "" + config.getLongTravelAdjustFct());
 			stats.put(StatsConstants.CF_NDFCT, "" + config.getNearDistAdjustFct());
 			stats.put(StatsConstants.CF_LDFCT, "" + config.getLongDistAdjustFct());
 			stats.put(StatsConstants.CF_NAT, "" + config.getNearATravelMethodCst());

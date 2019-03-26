@@ -10,6 +10,7 @@ import fr.noobeclair.hashcode.bean.hashcode2019.Slide;
 import fr.noobeclair.hashcode.bean.hashcode2019.SlideShow;
 import fr.noobeclair.hashcode.solve.Solver;
 import fr.noobeclair.hashcode.solve.step.AbstractStep;
+import fr.noobeclair.hashcode.utils.ProgressBar;
 
 public class HashCode2019DummyStepSolver extends Solver<HashCode2019BeanContainer, H2019Config> {
 	
@@ -28,7 +29,7 @@ public class HashCode2019DummyStepSolver extends Solver<HashCode2019BeanContaine
 	}
 	
 	@Override
-	protected HashCode2019BeanContainer run(HashCode2019BeanContainer data) {
+	protected HashCode2019BeanContainer run(HashCode2019BeanContainer data, ProgressBar bar) {
 		List<AbstractStep<HashCode2019BeanContainer>> steps = new ArrayList<>();
 		this.data = data;
 		steps.add(step1());

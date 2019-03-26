@@ -13,6 +13,7 @@ import fr.noobeclair.hashcode.bean.hashcode2019.Slide;
 import fr.noobeclair.hashcode.bean.hashcode2019.SlideShow;
 import fr.noobeclair.hashcode.solve.Solver;
 import fr.noobeclair.hashcode.utils.AlgoUtils;
+import fr.noobeclair.hashcode.utils.ProgressBar;
 import fr.noobeclair.hashcode.utils.Utils;
 import fr.noobeclair.hashcode.utils.dto.DistanceResultDto;
 
@@ -23,7 +24,7 @@ public class HashCode2019Solver extends Solver<HashCode2019BeanContainer, H2019C
 	}
 	
 	@Override
-	protected HashCode2019BeanContainer run(HashCode2019BeanContainer data) {
+	protected HashCode2019BeanContainer run(HashCode2019BeanContainer data, ProgressBar bar) {
 		HashCode2019BeanContainer datas = data;
 		// 1 - Extraction des photos verticales pour les positionner ensembles
 		long start = System.currentTimeMillis();

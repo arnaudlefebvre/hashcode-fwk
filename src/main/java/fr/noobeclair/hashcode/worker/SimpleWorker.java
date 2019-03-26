@@ -2,6 +2,8 @@ package fr.noobeclair.hashcode.worker;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fr.noobeclair.hashcode.bean.BeanContainer;
 import fr.noobeclair.hashcode.bean.Config;
 import fr.noobeclair.hashcode.in.InReader;
@@ -36,10 +38,10 @@ public class SimpleWorker<T extends BeanContainer, V extends Config> extends Gen
 	@Override
 	public BigDecimal run() {
 		if (scorer == null) {
-			this.writer.write(this.solver.solve(this.reader.read(inOut.in)), inOut.out);
+			this.writer.write(this.solver.solve(this.reader.read(inOut.in)), getOut(this.solver));
 			return BigDecimal.ZERO;
 		} else {
-			return this.scorer.score(this.writer.write(this.solver.solve(this.reader.read(inOut.in)), inOut.out));
+			return this.scorer.score(this.writer.write(this.solver.solve(this.reader.read(inOut.in)), getOut(this.solver)));
 		}
 		
 	}
@@ -81,4 +83,11 @@ public class SimpleWorker<T extends BeanContainer, V extends Config> extends Gen
 		return builder.toString();
 	}
 	
+	protected String getOut(final Solver<T, V> solver) {
+		if (StringUtils.isNotEmpty(inOut.out)) {
+			return inOut.out + "#" + solver.getClass().getSimpleName() + ".out";
+		}
+		return inOut.in + "#" + solver.getClass().getSimpleName() + ".out";
+		
+	}
 }

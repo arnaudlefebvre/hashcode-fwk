@@ -12,11 +12,13 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import fr.noobeclair.hashcode.bean.BeanContainer;
 import fr.noobeclair.hashcode.bean.Config;
+import fr.noobeclair.hashcode.utils.ProgressBar;
 import fr.noobeclair.hashcode.utils.Utils;
 
 public abstract class Solver<T extends BeanContainer, V extends Config> {
@@ -24,12 +26,14 @@ public abstract class Solver<T extends BeanContainer, V extends Config> {
 	protected static final Logger logger = LogManager.getLogger(Solver.class);
 	public static final Long DEFAULT_TIMEOUT = 3600L;
 	public static final Long DISABLE_TIMEOUT = 0L;
+	private static final String BAR_MSG_SEP = "->";
 	
 	protected String name;
 	protected T data;
 	protected V config;
 	protected Long timeout;
 	protected Map<Integer, String> stats;
+	protected Long barStart;
 	
 	/**
 	 * Effectively run the computation and returns data into your <T extends
@@ -39,7 +43,11 @@ public abstract class Solver<T extends BeanContainer, V extends Config> {
 	 *            datas
 	 * @return data
 	 */
-	protected abstract T run(T data);
+	protected abstract T run(T data, ProgressBar bar);
+	
+	public T run(T data) {
+		return run(data, null);
+	}
 	
 	public void build(V config, Long timeout) {
 		this.timeout = timeout;
@@ -82,16 +90,17 @@ public abstract class Solver<T extends BeanContainer, V extends Config> {
 		this.stats = new TreeMap<>();
 	}
 	
-	public T solve(final T data) {
+	public T solve(final T data, ProgressBar bar) {
+		barStart = (bar != null) ? bar.getStep() : 0;
 		final long start = System.currentTimeMillis();
 		stats.put(StatsConstants.TIME_START, "" + start);
 		logger.debug("-- Solve start : {} - timeout {} sec ({})", this.getClass().getSimpleName(), timeout, Utils.formatToHHMMSS(timeout));
 		this.data = data;
 		try {
 			if (data != null && this.timeout == DISABLE_TIMEOUT) {
-				return run(data);
+				return run(data, bar);
 			} else if (data != null) {
-				return solveSync(data);
+				return solveSync(data, bar);
 			} else {
 				return null;
 			}
@@ -107,11 +116,15 @@ public abstract class Solver<T extends BeanContainer, V extends Config> {
 		}
 	}
 	
-	private T solveSync(final T data) {
+	public T solve(final T data) {
+		return solve(data, null);
+	}
+	
+	private T solveSync(final T data, ProgressBar bar) {
 		final Callable<T> task = () -> {
 			final String threadName = Thread.currentThread().getName();
 			logger.debug("Solve Thread {} started", threadName);
-			return run(data);
+			return run(data, bar);
 			
 		};
 		final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -159,6 +172,15 @@ public abstract class Solver<T extends BeanContainer, V extends Config> {
 		return this.data;
 	}
 	
+	protected void showBar(ProgressBar bar, Long progress, String msg) {
+		if (bar != null) {
+			String m = StringUtils.isNotEmpty(bar.getMsg()) ? bar.getMsg().trim() : StringUtils.EMPTY;
+			Integer pos = m.lastIndexOf(BAR_MSG_SEP);
+			String fmsg = (pos != -1) ? (m.substring(0, pos) + BAR_MSG_SEP + msg).trim() : m + BAR_MSG_SEP + msg;
+			bar.show(System.out, barStart + progress, fmsg);
+		}
+	}
+	
 	protected T getData() {
 		return data;
 	}
@@ -173,6 +195,10 @@ public abstract class Solver<T extends BeanContainer, V extends Config> {
 	
 	public Map<Integer, String> getStats() {
 		return stats;
+	}
+	
+	public V getConfig() {
+		return config;
 	}
 	
 }

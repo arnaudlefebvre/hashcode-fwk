@@ -35,7 +35,7 @@ public class HashCode2019RandomStepSolver extends Solver<HashCode2019BeanContain
 	}
 	
 	@Override
-	protected HashCode2019BeanContainer run(final HashCode2019BeanContainer data) {
+	protected HashCode2019BeanContainer run(final HashCode2019BeanContainer data, ProgressBar bar) {
 		final List<AbstractStep<HashCode2019BeanContainer>> steps = new ArrayList<>();
 		this.data = data;
 		steps.add(step1());

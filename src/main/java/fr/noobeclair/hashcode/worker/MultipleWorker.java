@@ -15,6 +15,11 @@ import fr.noobeclair.hashcode.solve.Solver;
 
 public abstract class MultipleWorker<T extends BeanContainer, V extends Config, S extends Solver<T, V>> {
 	
+	public enum WORK_ORDER {
+		SOLVE_ALL_FILES, // Runs all files on a solver and move to next solver
+		SOLVE_BY_FILE // Runs each solver on a file and move to next file
+	}
+	
 	protected static final Logger logger = LogManager.getLogger(MultipleWorker.class);
 	
 	protected OutWriter<T> writer;

@@ -33,7 +33,7 @@ public class HashCode2019StepSolver extends Solver<HashCode2019BeanContainer, H2
 	}
 	
 	@Override
-	protected HashCode2019BeanContainer run(HashCode2019BeanContainer data) {
+	protected HashCode2019BeanContainer run(HashCode2019BeanContainer data, ProgressBar bar) {
 		List<AbstractStep<HashCode2019BeanContainer>> steps = new ArrayList<>();
 		this.data = data;
 		steps.add(step1());

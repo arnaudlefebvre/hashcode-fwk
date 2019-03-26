@@ -2,7 +2,9 @@ package fr.noobeclair.hashcode.bean.hashcode2018;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import fr.noobeclair.hashcode.Main;
@@ -10,7 +12,7 @@ import fr.noobeclair.hashcode.bean.BeanContainer;
 
 public class H2018BeanContainer extends BeanContainer {
 	
-	public List<Car> cars;
+	public Set<Car> cars;
 	public List<Ride> availableRides;
 	public List<Ride> doneRides;
 	public List<Ride> selectedRides;
@@ -21,14 +23,14 @@ public class H2018BeanContainer extends BeanContainer {
 	
 	public H2018BeanContainer() {
 		super();
-		this.cars = new ArrayList<>();
+		this.cars = new TreeSet<>();
 		this.availableRides = new ArrayList<>();
 		this.doneRides = new ArrayList<>();
 		this.selectedRides = new ArrayList<>();
 		this.score = 0;
 	}
 	
-	public H2018BeanContainer(List<Car> cars, List<Ride> rides, CityMap map) {
+	public H2018BeanContainer(Set<Car> cars, List<Ride> rides, CityMap map) {
 		super();
 		this.cars = cars;
 		this.availableRides = rides;
@@ -38,11 +40,11 @@ public class H2018BeanContainer extends BeanContainer {
 		this.score = 0;
 	}
 	
-	public List<Car> getCars() {
+	public Set<Car> getCars() {
 		return cars;
 	}
 	
-	public void setCars(List<Car> cars) {
+	public void setCars(Set<Car> cars) {
 		this.cars = cars;
 	}
 	
@@ -118,7 +120,7 @@ public class H2018BeanContainer extends BeanContainer {
 				break;
 			case 2:
 				nb = Integer.parseInt(s);
-				res.cars = new ArrayList<>(nb);
+				res.cars = new TreeSet<>();
 				for (int j = 0; j < i; j++) {
 					Car car = new Car(j, new Point(0, 0));
 					res.cars.add(car);
@@ -153,7 +155,7 @@ public class H2018BeanContainer extends BeanContainer {
 		List<Ride> arides = availableRides.stream().map(Ride::new).collect(Collectors.toList());
 		List<Ride> drides = doneRides.stream().map(Ride::new).collect(Collectors.toList());
 		List<Ride> srides = selectedRides.stream().map(Ride::new).collect(Collectors.toList());
-		List<Car> car = cars.stream().map(Car::new).collect(Collectors.toList());
+		Set<Car> car = cars.stream().map(Car::new).collect(Collectors.toSet());
 		H2018BeanContainer res = new H2018BeanContainer(car, arides, map);
 		res.doneRides = drides;
 		res.selectedRides = srides;

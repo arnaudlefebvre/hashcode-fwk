@@ -7,8 +7,16 @@ import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 
 import fr.noobeclair.hashcode.bean.Config;
+import fr.noobeclair.hashcode.solve.StatsConstants;
 
 public class H2018Config extends Config {
+	
+	private static final List<Integer> CSV_CST = Arrays.asList(StatsConstants.CF_STRAT, StatsConstants.SCORE, StatsConstants.TIME_TOTAL, StatsConstants.ITEM0_TOTAL, StatsConstants.IN_0,
+			StatsConstants.IN_1,
+			StatsConstants.CF_TTFC, StatsConstants.CF_NTFCT, StatsConstants.CF_NDFCT, StatsConstants.CF_LTFCT, StatsConstants.CF_LDFCT, StatsConstants.CF_NAT, StatsConstants.CF_NBT,
+			StatsConstants.CF_NAD, StatsConstants.CF_NBD, StatsConstants.CF_LAT, StatsConstants.CF_LBT, StatsConstants.CF_LAD, StatsConstants.CF_LBD);
+	private static final String CSV_PATH = "src/main/resources/out/2018/global-stats.csv";
+	
 	private Double timeToFinishCoef;
 	
 	private AdjustMethod nearTravelAdjustFct;
@@ -40,7 +48,7 @@ public class H2018Config extends Config {
 	}
 	
 	public H2018Config(Double coefBonus, Double nearBonus, Double distanceBonus) {
-		super();
+		super(CSV_CST, CSV_PATH);
 		this.timeToFinishCoef = 1D;
 		this.nearTravelAdjustFct = AdjustMethod.EXP;
 		this.nearATravelMethodCst = 1D;
@@ -60,7 +68,7 @@ public class H2018Config extends Config {
 	public H2018Config(Double timeToFinishCoef, AdjustMethod nearTravelAdjustFct, AdjustMethod nearDistAdjustFct, AdjustMethod longTravelAdjustFct, AdjustMethod longDistAdjustFct,
 			Double nearATravelMethodCst, Double nearBTravelMethodCst, Double nearADistMethodCst, Double nearBDistMethodCst, Double longATravelMethodCst, Double longBTravelMethodCst,
 			Double longADistMethodCst, Double longBDistMethodCst, List<CarStrategy> carStrategies) {
-		super();
+		super(CSV_CST, CSV_PATH);
 		this.timeToFinishCoef = timeToFinishCoef;
 		this.nearTravelAdjustFct = nearTravelAdjustFct;
 		this.longTravelAdjustFct = longTravelAdjustFct;

@@ -47,12 +47,13 @@ public class ProgressBar {
 	private final Integer msgSize;
 	private long refreshMs;
 	private boolean autoRefresh;
+	private String msg;
 	
 	public enum ProgressBarOption {
 		BAR, PERCENT, COUNT, ETA, MSG, ALL
 	}
 	
-	public static Long REFRESH_MS_DEFAULT = 10L;
+	public static Long REFRESH_MS_DEFAULT = 1000L;
 	public static final BigDecimal MIN = new BigDecimal("20");
 	public static final BigDecimal MAX = new BigDecimal("2000");
 	public static final BigDecimal MIN_DISPLAY = new BigDecimal("30");
@@ -233,18 +234,27 @@ public class ProgressBar {
 	}
 	
 	private String getMsg(final String s) {
-		final String DOT = "...";
-		final int max = this.msgSize - (DOT.length() + 1);
-		if (StringUtils.isNotEmpty(s)) {
-			if (s.length() > max) {
-				return s.substring(0, this.msgSize - (DOT.length() + 1)) + DOT;
-			} else if (s.length() == max) {
-				return s + DOT;
+		if (CollectionUtils.containsAny(this.progressOption, Arrays.asList(ProgressBarOption.ALL, ProgressBarOption.MSG))) {
+			String result = null;
+			final String DOT = "...";
+			final int max = this.msgSize - (DOT.length() + 1);
+			if (StringUtils.isNotEmpty(s)) {
+				if (s.length() > max) {
+					result = s.substring(0, this.msgSize - (DOT.length() + 1)) + DOT;
+				} else if (s.length() == max) {
+					result = s + DOT;
+				} else {
+					result = String.format("%1$-" + (max + DOT.length()) + "s", s);
+				}
 			} else {
-				return String.format("%1$-" + (max + DOT.length()) + "s", s);
+				result = String.format("%1$-" + (max + DOT.length()) + "s", " ");
 			}
+			this.msg = result;
+			return result;
+			
 		}
-		return String.format("%1$-" + (max + DOT.length()) + "s", " ");
+		this.msg = StringUtils.EMPTY;
+		return StringUtils.EMPTY;
 	}
 	
 	public String getProgress(final Long step, final String s) {
@@ -275,14 +285,26 @@ public class ProgressBar {
 		show(out, step.longValue());
 	}
 	
+	public void show(final PrintStream out, final Integer step, Boolean force) {
+		show(out, step.longValue(), StringUtils.EMPTY, force);
+	}
+	
 	public void show(final PrintStream out, final Long step) {
-		show(out, step, null);
+		show(out, step, StringUtils.EMPTY, false);
+	}
+	
+	public void show(final PrintStream out, final Long step, Boolean force) {
+		show(out, step, StringUtils.EMPTY, force);
 	}
 	
 	public void show(final PrintStream out, final Long step, final String msg) {
+		show(out, step, msg, false);
+	}
+	
+	public void show(final PrintStream out, final Long step, final String msg, Boolean force) {
 		this.step = step;
 		setStart();
-		if (step.equals(end)) {
+		if (step >= end) {
 			out.println(getProgress(step, msg));
 			if (StringUtils.isNotEmpty(this.progressDone)) {
 				out.println(this.progressDone);
@@ -291,7 +313,7 @@ public class ProgressBar {
 		} else // if (step % stepsize == 0) {
 		{
 			calcMeanTime(step);
-			if (isRefresh()) {
+			if (isRefresh() || force) {
 				out.print(getProgress(step, msg));
 			}
 			updateRefreshTime(step);
@@ -321,7 +343,7 @@ public class ProgressBar {
 			if (step != 0) {
 				// (moy * stepdone + currtime) / stepdone + 1
 				// this.progressMeanTime = ((this.progressMeanTime * step +currSec) / (step+1));
-				this.progressMeanTime = this.progressTotalTime.divide(new BigDecimal(step + 1), 3, RoundingMode.HALF_UP).divide(new BigDecimal("1000"));
+				this.progressMeanTime = this.progressTotalTime.divide(new BigDecimal(step + 1), 4, RoundingMode.HALF_UP).divide(new BigDecimal("1000"));
 			} else {
 				this.progressMeanTime = currSec;
 			}
@@ -334,7 +356,7 @@ public class ProgressBar {
 			final double per = step * 100D / this.end;
 			final BigDecimal start = new BigDecimal(System.currentTimeMillis() - this.startTime);
 			BigDecimal nbRefresh = this.refreshMs > 0L ? new BigDecimal(this.refreshMs) : BigDecimal.ONE;
-			final BigDecimal nbDisplaySinceStart = start.divide(nbRefresh, 2, RoundingMode.HALF_UP);
+			final BigDecimal nbDisplaySinceStart = start.divide(nbRefresh, 4, RoundingMode.HALF_DOWN);
 			if ((per > 0 && per % UPDATE_REFRESH_STEP == 0) || nbDisplaySinceStart.compareTo(MAX_DISPLAY_SINCE_START) > 0) {
 				
 				final BigDecimal meanMs = this.progressTotalTime.multiply(new BigDecimal(step + 1));
@@ -343,10 +365,10 @@ public class ProgressBar {
 				totalEstimatedTime = meanMs.multiply(new BigDecimal(end - step)).add(start);
 				
 				if (totalEstimatedTime.compareTo(BigDecimal.ZERO) > 0) {
-					nbRefresh = totalEstimatedTime.divide(nbRefresh, 2, RoundingMode.HALF_UP);
+					nbRefresh = totalEstimatedTime.divide(nbRefresh, 4, RoundingMode.HALF_DOWN);
 				}
 				if (nbRefresh.compareTo(MIN) < 0) {
-					this.refreshMs = totalEstimatedTime.divide(MIN_DISPLAY, 3, RoundingMode.HALF_UP).longValue();
+					this.refreshMs = totalEstimatedTime.divide(MIN_DISPLAY, 4, RoundingMode.HALF_DOWN).longValue();
 				} else if (meanMs.compareTo(new BigDecimal(refreshMs)) > 0) {
 					this.refreshMs = meanMs.min(MAX).longValue();
 				} else {
@@ -399,6 +421,14 @@ public class ProgressBar {
 	
 	public static Builder builder(final Long end) {
 		return new Builder(end);
+	}
+	
+	public Long getStep() {
+		return step;
+	}
+	
+	public String getMsg() {
+		return msg;
 	}
 	
 	public static final class Builder {

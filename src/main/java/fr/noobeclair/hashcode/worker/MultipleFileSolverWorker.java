@@ -1,16 +1,16 @@
 package fr.noobeclair.hashcode.worker;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 
 import fr.noobeclair.hashcode.bean.BeanContainer;
@@ -35,7 +35,10 @@ public class MultipleFileSolverWorker<T extends BeanContainer, V extends Config,
 	private Long approxEnd = 0L;
 	private ProgressBar bar;
 	
-	public static final Long DEF_PG_END = 1000L;
+	private Config.FLUSH_CSV_STATS csvFlushMode = null;
+	private String csvPath;
+	
+	private static final String CRLF = System.getProperty("line.separator").toString();
 	/**
 	 * execOrder, 0 : apply each solver and move to next file 1 : run each file and
 	 * move next solver
@@ -90,7 +93,7 @@ public class MultipleFileSolverWorker<T extends BeanContainer, V extends Config,
 	public Map<String, BigDecimal> run() {
 		Map<String, BigDecimal> result = new TreeMap<>();
 		approx();
-		bar = ProgressBar.builder(approxEnd).withMaxWidth(100).withOption(ProgressBarOption.ALL).build();		
+		checkFlushModeAndPath();
 		if (1 == this.execOrder) {
 			result = runSolverFirst();
 		} else {
@@ -102,35 +105,25 @@ public class MultipleFileSolverWorker<T extends BeanContainer, V extends Config,
 		if (solvers.isEmpty()) {
 			logger.error(" <###----- !!!!!! -----#> No solver - No run ... !");
 		}
-		writeStats();
+		flushStats(Config.FLUSH_CSV_STATS.END);
+		bar.end(System.out);
 		return result;
 	}
 	
-	public void approx() {
+	private void approx() {
 		total = 0L;
 		approxEnd = 0L;
 		for (InOut io : files) {
-			approxEnd = approxEnd + (count(io.in) * solvers.size());
+			approxEnd = approxEnd + (fr.noobeclair.hashcode.utils.FileUtils.countLines(io.in) * solvers.size());
 		}
-	}
-	
-	public void writeStats() {
-		final String newLine = System.getProperty("line.separator").toString();
-		File file = new File("src/main/resources/out/2018/global-stats.csv");
-		try {
-			// Set the third parameter to true to specify you want to append to file.
-			FileUtils.write(file, outStats.stream().collect(Collectors.joining(newLine)), true);
-		} catch (IOException e) {
-			System.out.println("Problem occurs when writing : src/main/resources/out/2018/global-stats.csv");
-			e.printStackTrace();
-		}
+		bar = ProgressBar.builder(approxEnd).withMaxWidth(100).withOption(ProgressBarOption.ALL).withAutoRefreshTime(false).build();
 	}
 	
 	public Map<String, BigDecimal> runFileFirst() {
 		final Map<String, BigDecimal> result = new TreeMap<>();
 		for (final InOut io : files) {
 			for (final Solver<T, V> solver : this.solvers) {
-				final SimpleWorker<T, V> sw = new SimpleWorker<>(reader, solver, scorer, writer, io);
+				final SimpleProgressWorker<T, V> sw = new SimpleProgressWorker<>(reader, solver, scorer, writer, io, bar);
 				try {
 					runSolverForFile(result, solver, io, sw);
 				} catch (final Exception e) {
@@ -138,26 +131,16 @@ public class MultipleFileSolverWorker<T extends BeanContainer, V extends Config,
 					result.put(solver.getClass().getSimpleName() + ":" + solver.getAdditionnalInfo() + "--" + io.in, BigDecimal.ZERO);
 				}
 			}
+			flushStats(Config.FLUSH_CSV_STATS.EACH_GROUP);
 		}
 		return result;
-	}
-	
-	private Long count(String f) {
-		Long lines = 0L;
-		try (BufferedReader reader = new BufferedReader(new FileReader(f))) {
-			while (reader.readLine() != null)
-				lines++;
-		} catch (Exception e) {
-			logger.error("Erreur de lecture du fichier {}", f);
-		}
-		return lines;
 	}
 	
 	public Map<String, BigDecimal> runSolverFirst() {
 		final Map<String, BigDecimal> result = new TreeMap<>();
 		for (final Solver<T, V> solver : this.solvers) {
 			for (final InOut io : files) {
-				final SimpleWorker<T, V> sw = new SimpleWorker<>(reader, solver, scorer, writer, io);
+				final SimpleProgressWorker<T, V> sw = new SimpleProgressWorker<>(reader, solver, scorer, writer, io, bar);
 				try {
 					runSolverForFile(result, solver, io, sw);
 				} catch (final Exception e) {
@@ -165,48 +148,93 @@ public class MultipleFileSolverWorker<T extends BeanContainer, V extends Config,
 					result.put(solver.getClass().getSimpleName() + ":" + solver.getAdditionnalInfo() + "--" + io.in, BigDecimal.ZERO);
 				}
 			}
+			flushStats(Config.FLUSH_CSV_STATS.EACH_GROUP);
 		}
-		
 		return result;
 	}
 	
-	private void runSolverForFile(final Map<String, BigDecimal> result, final Solver<T, V> solver, final InOut io, final SimpleWorker<T, V> sw) {
+	private void runSolverForFile(final Map<String, BigDecimal> result, final Solver<T, V> solver, final InOut io, final SimpleProgressWorker<T, V> sw) {
 		BigDecimal b = sw.run();
-		solvefileStats = sw.solver.getStats();
 		result.put(solver.getClass().getSimpleName() + ":" + solver.getAdditionnalInfo() + "--" + io.in, b);
-		outStats.add(outSepLine(io.in, solver, solvefileStats, ";"));
-		// updateEnd(io.in, solvefileStats.get(StatsConstants.ITEM0_TOTAL));
-		total = total + Long.parseLong(solvefileStats.get(StatsConstants.ITEM0_TOTAL));
-		bar.show(System.out, total, solver.getClass().getSimpleName() + ">" + io.in.substring(io.in.lastIndexOf("/"), io.in.length()));
+		handleStats(sw, io);
+		bar.show(System.out, total, ">" + io.in.substring(io.in.lastIndexOf("/"), io.in.length()), true);
 	}
 	
-	private String outSepLine(String in, Solver<T, V> solver, Map<Integer, String> stats, String sep) {
+	private void handleStats(final SimpleWorker<T, V> sw, final InOut io) {
+		Solver<T, V> solver = sw.solver;
+		if (solver.getConfig() != null && CollectionUtils.isNotEmpty(solver.getConfig().getStatisticKeysToWriteToCSV())) {
+			solvefileStats = solver.getStats();
+			outStats.add(buildCsvStatsLine(io.in, solver, solvefileStats, solver.getConfig().getCsvSeparator()));
+			total = total + Long.parseLong(solvefileStats.get(StatsConstants.ITEM0_TOTAL));
+		} else {
+			total = total + 1;
+		}
+		flushStats(Config.FLUSH_CSV_STATS.EACH_RUN);
+	}
+	
+	private String buildCsvStatsLine(String in, Solver<T, V> solver, Map<Integer, String> stats, String sep) {
 		StringBuilder s = new StringBuilder();
-		// fichier, solver, strats, score, temps, nb ride, nb turn, bonus, conf
+		// fichier, solver name, then stats according to config if it exists
 		s.append(in).append(sep);
-		
 		s.append(solver.getClass().getSimpleName()).append(sep);
-		s.append(stats.get(StatsConstants.CF_STRAT)).append(sep);
-		s.append(stats.get(StatsConstants.SCORE)).append(sep);
-		s.append(stats.get(StatsConstants.TIME_TOTAL)).append(sep);
-		s.append(stats.get(StatsConstants.ITEM0_TOTAL)).append(sep);
-		s.append(stats.get(StatsConstants.IN_0)).append(sep);
-		s.append(stats.get(StatsConstants.IN_1)).append(sep);
-		s.append(stats.get(StatsConstants.CF_TTFC)).append(sep);
-		s.append(stats.get(StatsConstants.CF_NTFCT)).append(sep);
-		s.append(stats.get(StatsConstants.CF_LTFCT)).append(sep);
-		s.append(stats.get(StatsConstants.CF_NDFCT)).append(sep);
-		s.append(stats.get(StatsConstants.CF_LDFCT)).append(sep);
-		s.append(stats.get(StatsConstants.CF_NAT)).append(sep);
-		s.append(stats.get(StatsConstants.CF_NBT)).append(sep);
-		s.append(stats.get(StatsConstants.CF_NAD)).append(sep);
-		s.append(stats.get(StatsConstants.CF_NBD)).append(sep);
-		s.append(stats.get(StatsConstants.CF_LAT)).append(sep);
-		s.append(stats.get(StatsConstants.CF_LBT)).append(sep);
-		s.append(stats.get(StatsConstants.CF_LAD)).append(sep);
-		s.append(stats.get(StatsConstants.CF_LBD)).append(sep);
-		
+		if (solver.getConfig() != null && CollectionUtils.isNotEmpty(solver.getConfig().getStatisticKeysToWriteToCSV())) {
+			for (Integer i : solver.getConfig().getStatisticKeysToWriteToCSV()) {
+				s.append(stats.get(i)).append(sep);
+			}
+		}
 		return s.toString();
+	}
+	
+	private void checkFlushModeAndPath() {
+		for (final Solver<T, V> solver : this.solvers) {
+			if (solver.getConfig() != null && solver.getConfig().getFlushOpt() != null) {
+				if (this.csvFlushMode != null && solver.getConfig().getFlushOpt() != this.csvFlushMode) {
+					// this is not normal. either get this one either throw an exception
+					// as procces can be long, it would be better to stop before
+					throw new RuntimeException("Some solvers config does not have the same flush option. Please check your config : Either all the same, Either one set others null");
+				} else {
+					this.csvFlushMode = solver.getConfig().getFlushOpt();
+					if (this.csvFlushMode == Config.FLUSH_CSV_STATS.END) {
+						outStats = new ArrayList<String>(approxEnd.intValue());
+					} else if (this.csvFlushMode == Config.FLUSH_CSV_STATS.EACH_GROUP) {
+						outStats = new ArrayList<String>(Math.max(this.solvers.size(), this.files.size()));
+					} else {
+						outStats = new ArrayList<String>(1);
+					}
+				}
+			}
+			if (solver.getConfig() != null && solver.getConfig().getCsvStatsPath() != null) {
+				if (this.csvPath != null && !solver.getConfig().getCsvStatsPath().equals(this.csvPath)) {
+					// this is not normal. either get this one either throw an exception
+					// as procces can be long, it would be better to stop before
+					throw new RuntimeException("Some solvers config does not have the same csv path. Please check your config : Either all the same, Either one set others null");
+				} else {
+					this.csvPath = solver.getConfig().getCsvStatsPath();
+				}
+			}
+			if (this.csvPath != null) {
+				fr.noobeclair.hashcode.utils.FileUtils.rm(this.csvPath);
+			}
+		}
+	}
+	
+	private void flushStats(Config.FLUSH_CSV_STATS level) {
+		if (this.csvFlushMode != null && this.csvFlushMode == level) {
+			File file = new File(this.csvPath);
+			try {
+				if (level == Config.FLUSH_CSV_STATS.EACH_RUN) {
+					FileUtils.write(file, outStats.get(0) + CRLF, Charset.forName("UTF-8"), true);
+					outStats = new ArrayList<String>(1);
+				} else {
+					FileUtils.write(file, outStats.stream().collect(Collectors.joining(CRLF)), Charset.forName("UTF-8"), true);
+					outStats = new ArrayList<String>(outStats.size());
+				}
+				
+			} catch (IOException e) {
+				logger.error(" <###----- !!!!!! -----#> Problem occurs when writing : {} on level {} with {}", this.csvPath, level, e);
+			}
+		}
+		
 	}
 	
 }
