@@ -30,7 +30,7 @@ public class HashCode2019StepSolver extends ConfigSolver<HashCode2019BeanContain
 	}
 	
 	@Override
-	protected HashCode2019BeanContainer run(HashCode2019BeanContainer data, ProgressBar bar) {
+	protected HashCode2019BeanContainer runWithStat(HashCode2019BeanContainer data, ProgressBar bar) {
 		List<AbstractStep<HashCode2019BeanContainer>> steps = new ArrayList<>();
 		this.data = data;
 		steps.add(step1());
@@ -159,6 +159,11 @@ public class HashCode2019StepSolver extends ConfigSolver<HashCode2019BeanContain
 			datas.setSlideshow(new SlideShow(slideshow));
 			return datas;
 		}
+	}
+	
+	@Override
+	protected void addConfigStats() {
+		return;
 	}
 	
 }

@@ -10,9 +10,14 @@ public class NullSolver extends ConfigSolver {
 	}
 	
 	@Override
-	public BeanContainer run(BeanContainer data, ProgressBar bar) {
+	public BeanContainer runWithStat(BeanContainer data, ProgressBar bar) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	protected void addConfigStats() {
+		return;
 	}
 	
 }

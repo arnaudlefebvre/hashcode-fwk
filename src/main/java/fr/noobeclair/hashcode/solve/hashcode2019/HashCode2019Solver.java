@@ -24,7 +24,7 @@ public class HashCode2019Solver extends ConfigSolver<HashCode2019BeanContainer, 
 	}
 	
 	@Override
-	protected HashCode2019BeanContainer run(HashCode2019BeanContainer data, ProgressBar bar) {
+	protected HashCode2019BeanContainer runWithStat(HashCode2019BeanContainer data, ProgressBar bar) {
 		HashCode2019BeanContainer datas = data;
 		// 1 - Extraction des photos verticales pour les positionner ensembles
 		long start = System.currentTimeMillis();
@@ -78,6 +78,11 @@ public class HashCode2019Solver extends ConfigSolver<HashCode2019BeanContainer, 
 		logger.info("-- Solve sep 4 End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		datas.setSlideshow(new SlideShow(slideshow));
 		return datas;
+	}
+	
+	@Override
+	protected void addConfigStats() {
+		return;
 	}
 	
 }

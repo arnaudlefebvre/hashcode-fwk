@@ -47,7 +47,7 @@ public class H2018Solver extends ConfigSolver<H2018BeanContainer, H2018Config> {
 	}
 	
 	@Override
-	public H2018BeanContainer run(H2018BeanContainer data, ProgressBar bar) {
+	public H2018BeanContainer runWithStat(H2018BeanContainer data, ProgressBar bar) {
 		logger.debug("H2018Solver START : {} cars, {} rides, {} turns {},  ({})", data.getCars().size(), data.getAvailableRides().size(), data.getMaxTurn(), this.getAdditionnalInfo());
 		arides = data.getAvailableRides();
 		stats.put(StatsConstants.ITEM0_TOTAL, "" + arides.size());
@@ -151,7 +151,8 @@ public class H2018Solver extends ConfigSolver<H2018BeanContainer, H2018Config> {
 		return config.toString();
 	}
 	
-	private void addConfigStats() {
+	@Override
+	protected void addConfigStats() {
 		if (CollectionUtils.isNotEmpty(config.getCarStrategies())) {
 			stats.put(StatsConstants.CF_STRAT, Arrays.toString(config.getCarStrategies().toArray()));
 			stats.put(StatsConstants.CF_TTFC, "" + config.getTimeToFinishCoef());

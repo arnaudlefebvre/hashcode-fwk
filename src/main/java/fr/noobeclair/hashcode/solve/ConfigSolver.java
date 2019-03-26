@@ -4,10 +4,20 @@ import java.util.TreeMap;
 
 import fr.noobeclair.hashcode.bean.BeanContainer;
 import fr.noobeclair.hashcode.bean.Config;
+import fr.noobeclair.hashcode.utils.ProgressBar;
 
 public abstract class ConfigSolver<T extends BeanContainer, V extends Config> extends Solver<T> {
 	
 	protected V config;
+	
+	protected abstract T runWithStat(T data, ProgressBar bar);
+	
+	@Override
+	protected T run(T data, ProgressBar bar) {
+		data = runWithStat(data, bar);
+		addConfigStats();
+		return data;
+	}
 	
 	public void build(String name, V config, Long timeout) {
 		this.timeout = timeout;
@@ -70,5 +80,7 @@ public abstract class ConfigSolver<T extends BeanContainer, V extends Config> ex
 	public V getConfig() {
 		return config;
 	}
+	
+	protected abstract void addConfigStats();
 	
 }

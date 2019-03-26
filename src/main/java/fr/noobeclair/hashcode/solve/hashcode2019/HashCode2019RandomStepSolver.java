@@ -21,10 +21,6 @@ import fr.noobeclair.hashcode.utils.dto.DistanceResultDto;
 public class HashCode2019RandomStepSolver extends ConfigSolver<HashCode2019BeanContainer, H2019Config> {
 	
 	private static final Long WAIT = 0L;
-	// private static final Long WAIT = 1L;
-	// private static final Long WAIT = 10L;
-	// private static final Long WAIT = 100L;
-	// private static final Long WAIT = 1000L;
 	
 	public HashCode2019RandomStepSolver() {
 		super();
@@ -35,7 +31,7 @@ public class HashCode2019RandomStepSolver extends ConfigSolver<HashCode2019BeanC
 	}
 	
 	@Override
-	protected HashCode2019BeanContainer run(final HashCode2019BeanContainer data, ProgressBar bar) {
+	protected HashCode2019BeanContainer runWithStat(final HashCode2019BeanContainer data, ProgressBar bar) {
 		final List<AbstractStep<HashCode2019BeanContainer>> steps = new ArrayList<>();
 		this.data = data;
 		steps.add(step1());
@@ -159,6 +155,11 @@ public class HashCode2019RandomStepSolver extends ConfigSolver<HashCode2019BeanC
 			datas.setSlideshow(new SlideShow(slideshow));
 			return datas;
 		}
+	}
+	
+	@Override
+	protected void addConfigStats() {
+		return;
 	}
 	
 }

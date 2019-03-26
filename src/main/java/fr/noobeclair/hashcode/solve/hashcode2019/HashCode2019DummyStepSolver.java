@@ -29,7 +29,7 @@ public class HashCode2019DummyStepSolver extends ConfigSolver<HashCode2019BeanCo
 	}
 	
 	@Override
-	protected HashCode2019BeanContainer run(HashCode2019BeanContainer data, ProgressBar bar) {
+	protected HashCode2019BeanContainer runWithStat(HashCode2019BeanContainer data, ProgressBar bar) {
 		List<AbstractStep<HashCode2019BeanContainer>> steps = new ArrayList<>();
 		this.data = data;
 		steps.add(step1());
@@ -75,4 +75,8 @@ public class HashCode2019DummyStepSolver extends ConfigSolver<HashCode2019BeanCo
 		}
 	}
 	
+	@Override
+	protected void addConfigStats() {
+		return;
+	}
 }
