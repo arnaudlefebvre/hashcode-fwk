@@ -92,7 +92,7 @@ public abstract class AbstractMultipleWorker<T extends BeanContainer> {
 		if (StringUtils.isNotEmpty(io.out)) {
 			return io.out + "#" + solver.getName() + ".out";
 		}
-		return io.in + "#" + solver.getName() + ".out";
+		return "src/main/resources/out/" + io.in.substring(io.in.lastIndexOf("/"), io.in.length()) + "#" + solver.getName() + ".out";
 		
 	}
 	
