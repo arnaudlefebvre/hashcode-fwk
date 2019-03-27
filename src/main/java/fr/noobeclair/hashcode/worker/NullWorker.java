@@ -1,23 +1,21 @@
 package fr.noobeclair.hashcode.worker;
 
-import java.math.BigDecimal;
-
 import fr.noobeclair.hashcode.in.InReader;
 import fr.noobeclair.hashcode.out.OutWriter;
-import fr.noobeclair.hashcode.solve.Solver;
+import fr.noobeclair.hashcode.solve.ConfigSolver;
+import fr.noobeclair.hashcode.utils.dto.WorkerResultDto;
 
-public class NullWorker extends GenericWorker {
+public class NullWorker extends GenericConfWorker {
 	
-	protected NullWorker(InReader reader, Solver solver, OutWriter writer) {
+	protected NullWorker(InReader reader, ConfigSolver solver, OutWriter writer) {
 		super(reader, solver, writer);
 		
 	}
 	
 	@Override
-	public BigDecimal run() {
+	public WorkerResultDto run() {
 		
-		this.writer.write(this.solver.solve(this.reader.read(null)), null);
-		return BigDecimal.ZERO;
+		return new WorkerResultDto();
 	}
 	
 }

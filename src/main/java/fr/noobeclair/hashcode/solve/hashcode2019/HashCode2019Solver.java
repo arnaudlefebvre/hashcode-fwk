@@ -6,29 +6,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import fr.noobeclair.hashcode.bean.hashcode2019.H2019Config;
 import fr.noobeclair.hashcode.bean.hashcode2019.HashCode2019BeanContainer;
 import fr.noobeclair.hashcode.bean.hashcode2019.Photo;
 import fr.noobeclair.hashcode.bean.hashcode2019.Slide;
 import fr.noobeclair.hashcode.bean.hashcode2019.SlideShow;
-import fr.noobeclair.hashcode.solve.Solver;
+import fr.noobeclair.hashcode.solve.ConfigSolver;
 import fr.noobeclair.hashcode.utils.AlgoUtils;
+import fr.noobeclair.hashcode.utils.ProgressBar;
 import fr.noobeclair.hashcode.utils.Utils;
 import fr.noobeclair.hashcode.utils.dto.DistanceResultDto;
 
-public class HashCode2019Solver extends Solver<HashCode2019BeanContainer> {
+public class HashCode2019Solver extends ConfigSolver<HashCode2019BeanContainer, H2019Config> {
 	
 	public HashCode2019Solver() {
 		super();
 	}
 	
 	@Override
-	protected HashCode2019BeanContainer run(HashCode2019BeanContainer data) {
+	protected HashCode2019BeanContainer runWithStat(HashCode2019BeanContainer data, ProgressBar bar) {
 		HashCode2019BeanContainer datas = data;
 		// 1 - Extraction des photos verticales pour les positionner ensembles
 		long start = System.currentTimeMillis();
 		logger.info("-- Solve sep 1 start");
-		List<Photo> listPhotosVertical = datas.getPhotos().stream().filter(photo -> photo.getSens().equalsIgnoreCase("V"))
-				.collect(Collectors.toList());
+		List<Photo> listPhotosVertical = datas.getPhotos().stream().filter(photo -> photo.getSens().equalsIgnoreCase("V")).collect(Collectors.toList());
 		HashMap<Integer, Photo> processed = new HashMap<Integer, Photo>();
 		List<Slide> allSlides = new ArrayList<Slide>();
 		logger.info("-- Solve sep 1 End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
@@ -45,7 +46,7 @@ public class HashCode2019Solver extends Solver<HashCode2019BeanContainer> {
 			AlgoUtils<Photo> algo = new AlgoUtils<Photo>();
 			DistanceResultDto<Photo> res = algo.farthestSibling(p, listPhotosVertical, processed);
 			if (res.getObject() != null) {
-				Slide s = new Slide(p,res.getObject());
+				Slide s = new Slide(p, res.getObject());
 				processed.put(res.getObject().hashCode(), null);
 				allSlides.add(s);
 			}
@@ -57,8 +58,7 @@ public class HashCode2019Solver extends Solver<HashCode2019BeanContainer> {
 		// AbstractStep 2 - cr�ation des slides horizontales -> A voir si on ne pourrait
 		// pas
 		// faire �a direct au chargement du fichier... �a �viterait des boucles
-		allSlides.addAll(datas.getPhotos().stream().filter(photo -> photo.getSens().equalsIgnoreCase("H")).map(p -> new Slide(p, null))
-				.collect(Collectors.toList()));
+		allSlides.addAll(datas.getPhotos().stream().filter(photo -> photo.getSens().equalsIgnoreCase("H")).map(p -> new Slide(p, null)).collect(Collectors.toList()));
 		logger.info("-- Solve sep 3 End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		start = System.currentTimeMillis();
 		logger.info("-- Solve sep 4 start");
@@ -78,6 +78,11 @@ public class HashCode2019Solver extends Solver<HashCode2019BeanContainer> {
 		logger.info("-- Solve sep 4 End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		datas.setSlideshow(new SlideShow(slideshow));
 		return datas;
+	}
+	
+	@Override
+	protected void addConfigStats() {
+		return;
 	}
 	
 }

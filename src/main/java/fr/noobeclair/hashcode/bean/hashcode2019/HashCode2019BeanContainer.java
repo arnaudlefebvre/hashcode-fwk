@@ -6,8 +6,8 @@ import fr.noobeclair.hashcode.bean.BeanContainer;
 
 public class HashCode2019BeanContainer extends BeanContainer {
 	
-	public HashCode2019BeanContainer() {
-		
+	public HashCode2019BeanContainer(String inName) {
+		super(inName);
 	}
 	
 	private int totalPhotos;
@@ -55,7 +55,7 @@ public class HashCode2019BeanContainer extends BeanContainer {
 	public void setListVerticalPhoto(List<Photo> listVerticalPhoto) {
 		this.listVerticalPhoto = listVerticalPhoto;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "HashCode2019BeanContainer [slides=" + slides + ", slideshow=" + slideshow + "]";

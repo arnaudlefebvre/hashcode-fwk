@@ -18,7 +18,7 @@ import fr.noobeclair.hashcode.utils.Utils;
  *
  *
  *
- * @param <T> Solver Impl
+ * @param <T> ConfigSolver Impl
  */
 public abstract class AbstractStep<T extends BeanContainer> implements Step<T> {
 
