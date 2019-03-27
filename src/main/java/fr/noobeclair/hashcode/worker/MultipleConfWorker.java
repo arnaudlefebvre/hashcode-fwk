@@ -24,6 +24,8 @@ import fr.noobeclair.hashcode.score.ScoreCalculator;
 import fr.noobeclair.hashcode.solve.ConfigSolver;
 import fr.noobeclair.hashcode.solve.StatsConstants;
 import fr.noobeclair.hashcode.utils.ProgressBar.Builder;
+import fr.noobeclair.hashcode.utils.dto.SolverResultDto;
+import fr.noobeclair.hashcode.utils.dto.WorkerResultDto;
 
 public abstract class MultipleConfWorker<T extends BeanContainer, V extends Config, S extends ConfigSolver<T, V>> extends AbstractMultipleWorker<T> {
 	
@@ -65,8 +67,8 @@ public abstract class MultipleConfWorker<T extends BeanContainer, V extends Conf
 	}
 	
 	@Override
-	protected Map<String, BigDecimal> solve() {
-		Map<String, BigDecimal> result = new TreeMap<>();
+	protected WorkerResultDto solve() {
+		WorkerResultDto result = null;
 		if (1 == this.execOrder) {
 			result = runSolverFirst();
 		} else {
@@ -91,8 +93,8 @@ public abstract class MultipleConfWorker<T extends BeanContainer, V extends Conf
 		}
 	}
 	
-	protected Map<String, BigDecimal> runFileFirst() {
-		final Map<String, BigDecimal> result = new TreeMap<>();
+	protected WorkerResultDto runFileFirst() {
+		WorkerResultDto result = new WorkerResultDto();
 		for (final InOut io : files) {
 			for (final ConfigSolver<T, V> solver : this.solvers) {
 				final SimpleConfWorker<T, V> sw = new SimpleConfWorker<>(reader, solver, scorer, writer, io, bar);
@@ -100,7 +102,7 @@ public abstract class MultipleConfWorker<T extends BeanContainer, V extends Conf
 					runStatSolverForFile(result, solver, io, sw);
 				} catch (final Exception e) {
 					logger.error(" <###----- !!!!!! -----#> Something went wrong running this worker : {}", sw, e);
-					result.put(solver.getName() + ":" + solver.getAdditionnalInfo() + "--" + io.in, BigDecimal.ZERO);
+					result.addResult(new SolverResultDto(BigDecimal.ZERO, solver.getName(), io.in, -1L, -1L));
 				}
 			}
 			flushStats(Config.FLUSH_CSV_STATS.EACH_GROUP);
@@ -108,8 +110,8 @@ public abstract class MultipleConfWorker<T extends BeanContainer, V extends Conf
 		return result;
 	}
 	
-	protected Map<String, BigDecimal> runSolverFirst() {
-		final Map<String, BigDecimal> result = new TreeMap<>();
+	protected WorkerResultDto runSolverFirst() {
+		WorkerResultDto result = new WorkerResultDto();
 		for (final ConfigSolver<T, V> solver : this.solvers) {
 			for (final InOut io : files) {
 				final SimpleConfWorker<T, V> sw = new SimpleConfWorker<>(reader, solver, scorer, writer, io, bar);
@@ -117,7 +119,7 @@ public abstract class MultipleConfWorker<T extends BeanContainer, V extends Conf
 					runStatSolverForFile(result, solver, io, sw);
 				} catch (final Exception e) {
 					logger.error(" <###----- !!!!!! -----#> Something went wrong running this worker : {}", sw, e);
-					result.put(solver.getName() + ":" + solver.getAdditionnalInfo() + "--" + io.in, BigDecimal.ZERO);
+					result.addResult(new SolverResultDto(BigDecimal.ZERO, solver.getName(), io.in, -1L, -1L));
 				}
 			}
 			flushStats(Config.FLUSH_CSV_STATS.EACH_GROUP);
@@ -125,12 +127,13 @@ public abstract class MultipleConfWorker<T extends BeanContainer, V extends Conf
 		return result;
 	}
 	
-	private void runStatSolverForFile(final Map<String, BigDecimal> result, final ConfigSolver<T, V> solver, final InOut io, final SimpleConfWorker<T, V> sw) {
-		result.putAll(runSolverForFile(sw.solver, io));
+	private void runStatSolverForFile(final WorkerResultDto result, final ConfigSolver<T, V> solver, final InOut io, final SimpleConfWorker<T, V> sw) {
+		result.addResult(runSolverForFile(sw.solver, io));
 		handleStats(sw, io);
 		barShow(solver.getName() + "#" + io.in.substring(io.in.lastIndexOf("/"), io.in.length()), true);
 	}
 	
+	// FIXME - must be rewritten, because stats visibility is normaly protected
 	private void handleStats(final SimpleConfWorker<T, V> sw, final InOut io) {
 		ConfigSolver<T, V> solver = sw.solver;
 		solvefileStats = solver.getStats();

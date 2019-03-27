@@ -31,7 +31,7 @@ public class H2018Reader extends InReader<H2018BeanContainer> {
 			for (String ln : lines) {
 				// logger.info(ln);
 				if (i < LIGNE_IDX_START_RIDES) {
-					result = H2018BeanContainer.parseFromStr(ln, " ");
+					result = H2018BeanContainer.parseFromStr(in, ln, " ");
 					// logger.info(result);
 				} else {
 					Ride r = Ride.parseFromStr(ln, " ");

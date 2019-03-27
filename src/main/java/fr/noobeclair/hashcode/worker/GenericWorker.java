@@ -1,12 +1,11 @@
 package fr.noobeclair.hashcode.worker;
 
-import java.math.BigDecimal;
-
 import fr.noobeclair.hashcode.bean.BeanContainer;
 import fr.noobeclair.hashcode.in.InReader;
 import fr.noobeclair.hashcode.out.OutWriter;
 import fr.noobeclair.hashcode.score.ScoreCalculator;
 import fr.noobeclair.hashcode.solve.Solver;
+import fr.noobeclair.hashcode.utils.dto.WorkerResultDto;
 
 public abstract class GenericWorker<T extends BeanContainer> {
 	
@@ -31,7 +30,7 @@ public abstract class GenericWorker<T extends BeanContainer> {
 		this.data = null;
 	}
 	
-	public abstract BigDecimal run();
+	public abstract WorkerResultDto run();
 	
 	public OutWriter<T> getWriter() {
 		return writer;

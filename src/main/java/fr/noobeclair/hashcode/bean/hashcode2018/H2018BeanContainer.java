@@ -21,8 +21,8 @@ public class H2018BeanContainer extends BeanContainer {
 	public Integer maxTurn;
 	public Integer score;
 	
-	public H2018BeanContainer() {
-		super();
+	public H2018BeanContainer(String inName) {
+		super(inName);
 		this.cars = new TreeSet<>();
 		this.availableRides = new ArrayList<>();
 		this.doneRides = new ArrayList<>();
@@ -30,8 +30,8 @@ public class H2018BeanContainer extends BeanContainer {
 		this.score = 0;
 	}
 	
-	public H2018BeanContainer(Set<Car> cars, List<Ride> rides, CityMap map) {
-		super();
+	public H2018BeanContainer(String inName, Set<Car> cars, List<Ride> rides, CityMap map) {
+		super(inName);
 		this.cars = cars;
 		this.availableRides = rides;
 		this.map = map;
@@ -100,8 +100,8 @@ public class H2018BeanContainer extends BeanContainer {
 		this.maxTurn = maxTurn;
 	}
 	
-	public static H2018BeanContainer parseFromStr(String in, String sep) {
-		H2018BeanContainer res = new H2018BeanContainer();
+	public static H2018BeanContainer parseFromStr(String inName, String in, String sep) {
+		H2018BeanContainer res = new H2018BeanContainer(inName);
 		CityMap city = new CityMap();
 		
 		StringTokenizer stk = new StringTokenizer(in, sep);
@@ -156,7 +156,7 @@ public class H2018BeanContainer extends BeanContainer {
 		List<Ride> drides = doneRides.stream().map(Ride::new).collect(Collectors.toList());
 		List<Ride> srides = selectedRides.stream().map(Ride::new).collect(Collectors.toList());
 		Set<Car> car = cars.stream().map(Car::new).collect(Collectors.toSet());
-		H2018BeanContainer res = new H2018BeanContainer(car, arides, map);
+		H2018BeanContainer res = new H2018BeanContainer(this.inName, car, arides, map);
 		res.doneRides = drides;
 		res.selectedRides = srides;
 		res.bonus = this.bonus;

@@ -20,7 +20,7 @@ public class Hashcode2019Reader extends InReader<HashCode2019BeanContainer> {
 	
 	@Override
 	protected HashCode2019BeanContainer readFile(String in) {
-		HashCode2019BeanContainer result = new HashCode2019BeanContainer();
+		HashCode2019BeanContainer result = new HashCode2019BeanContainer(in);
 		try (Stream<String> stream = Files.lines(Paths.get(in))) {
 			
 			List<String> lines = stream.collect(Collectors.toList());

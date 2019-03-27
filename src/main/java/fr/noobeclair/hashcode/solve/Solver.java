@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import fr.noobeclair.hashcode.bean.BeanContainer;
 import fr.noobeclair.hashcode.utils.ProgressBar;
 import fr.noobeclair.hashcode.utils.Utils;
+import fr.noobeclair.hashcode.utils.dto.SolverResultDto;
 
 public abstract class Solver<T extends BeanContainer> {
 	
@@ -30,6 +31,8 @@ public abstract class Solver<T extends BeanContainer> {
 	protected Long timeout;
 	protected Map<Integer, String> stats;
 	protected Long barStart;
+	protected SolverResultDto resultInfo;
+	protected Long nbItem;
 	
 	/**
 	 * Effectively run the computation and returns data into your <T extends
@@ -40,10 +43,6 @@ public abstract class Solver<T extends BeanContainer> {
 	 * @return data
 	 */
 	protected abstract T run(T data, ProgressBar bar);
-	
-	protected T run(T data) {
-		return run(data, null);
-	}
 	
 	public void build(Long timeout) {
 		this.timeout = timeout;
@@ -79,12 +78,15 @@ public abstract class Solver<T extends BeanContainer> {
 		this.name = name;
 	}
 	
+	public T solve(final T data) {
+		return solve(data, null);
+	}
+	
 	public T solve(final T data, ProgressBar bar) {
-		barStart = (bar != null) ? bar.getStep() : 0;
+		init(data, bar);
 		final long start = System.currentTimeMillis();
 		stats.put(StatsConstants.TIME_START, "" + start);
 		logger.debug("-- Solve start : {} - timeout {} sec ({})", this.getName(), timeout, Utils.formatToHHMMSS(timeout));
-		this.data = data;
 		try {
 			if (data != null && this.timeout == DISABLE_TIMEOUT) {
 				return run(data, bar);
@@ -97,16 +99,48 @@ public abstract class Solver<T extends BeanContainer> {
 			logger.error("ERROR in solver", e);
 			return null;
 		} finally {
-			final long end = System.currentTimeMillis();
-			final long tot = end - start;
-			stats.put(StatsConstants.TIME_TOTAL, "" + tot);
-			stats.put(StatsConstants.TIME_TOTAL, "" + end);
+			final long tot = System.currentTimeMillis() - start;
+			close(tot);
 			logger.debug("--Solve End ({}). Total Time : {}s --", this.getName(), Utils.roundMiliTime(tot, 3));
 		}
 	}
 	
-	public T solve(final T data) {
-		return solve(data, null);
+	protected T run(T data) {
+		return run(data, null);
+	}
+	
+	protected void showBar(ProgressBar bar, Long progress, String msg) {
+		if (bar != null) {
+			String m = StringUtils.isNotEmpty(bar.getMsg()) ? bar.getMsg().trim() : StringUtils.EMPTY;
+			Integer pos = m.lastIndexOf(BAR_MSG_SEP);
+			String fmsg = "";
+			if (pos == -1) {
+				fmsg = m + BAR_MSG_SEP + msg;
+			} else if (pos == 0) {
+				fmsg = BAR_MSG_SEP + msg;
+			} else {
+				fmsg = (m.substring(0, pos) + BAR_MSG_SEP + msg).trim();
+			}
+			
+			bar.show(System.out, barStart + progress, fmsg);
+		}
+	}
+	
+	private void init(final T data, ProgressBar bar) {
+		this.nbItem = 0L;
+		
+		this.resultInfo = new SolverResultDto();
+		this.resultInfo.setInResource(data.getInName());
+		this.resultInfo.setSolverName(this.getName());
+		
+		barStart = (bar != null) ? bar.getStep() : 0;
+		this.data = data;
+	}
+	
+	private void close(Long total) {
+		this.resultInfo.setDuration(total);
+		this.resultInfo.setNbItemProcessed(getNbItems());
+		stats.put(StatsConstants.TIME_TOTAL, "" + total);
 	}
 	
 	private T solveSync(final T data, ProgressBar bar) {
@@ -134,21 +168,22 @@ public abstract class Solver<T extends BeanContainer> {
 		return this.data;
 	}
 	
-	protected void showBar(ProgressBar bar, Long progress, String msg) {
-		if (bar != null) {
-			String m = StringUtils.isNotEmpty(bar.getMsg()) ? bar.getMsg().trim() : StringUtils.EMPTY;
-			Integer pos = m.lastIndexOf(BAR_MSG_SEP);
-			String fmsg = "";
-			if (pos == -1) {
-				fmsg = m + BAR_MSG_SEP + msg;
-			} else if (pos == 0) {
-				fmsg = BAR_MSG_SEP + msg;
-			} else {
-				fmsg = (m.substring(0, pos) + BAR_MSG_SEP + msg).trim();
-			}
-			
-			bar.show(System.out, barStart + progress, fmsg);
-		}
+	/**
+	 * Must returns the numbers of items to process, (not these that actually has
+	 * been processed)
+	 * 
+	 * @return numbers of items to process at start of solve
+	 */
+	protected Long getNbItems() {
+		return this.nbItem;
+	}
+	
+	protected void nbItmPlus() {
+		this.nbItem = this.nbItem + 1;
+	}
+	
+	protected void nbItmPlus(Long nb) {
+		this.nbItem = this.nbItem + nb;
 	}
 	
 	protected T getData() {
@@ -159,12 +194,12 @@ public abstract class Solver<T extends BeanContainer> {
 		this.data = data;
 	}
 	
-	public String getAdditionnalInfo() {
-		return "";
-	}
-	
 	public Map<Integer, String> getStats() {
 		return stats;
+	}
+	
+	public SolverResultDto getResultInfo() {
+		return resultInfo;
 	}
 	
 	public String getName() {

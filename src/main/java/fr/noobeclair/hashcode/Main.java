@@ -1,37 +1,44 @@
 package fr.noobeclair.hashcode;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.collections4.MapUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import fr.noobeclair.hashcode.bean.CustomBeanContainer;
+import fr.noobeclair.hashcode.bean.CustomConfig;
 import fr.noobeclair.hashcode.bean.hashcode2018.H2018BeanContainer;
 import fr.noobeclair.hashcode.bean.hashcode2018.H2018Config;
 import fr.noobeclair.hashcode.bean.hashcode2018.H2018Config.CarStrategy;
 import fr.noobeclair.hashcode.bean.hashcode2019.H2019Config;
 import fr.noobeclair.hashcode.bean.hashcode2019.HashCode2019BeanContainer;
+import fr.noobeclair.hashcode.in.CustomReader;
 import fr.noobeclair.hashcode.in.hashcode2018.H2018Reader;
 import fr.noobeclair.hashcode.in.hashcode2019.Hashcode2019Reader;
+import fr.noobeclair.hashcode.out.CustomWriter;
 import fr.noobeclair.hashcode.out.H2018Writer;
 import fr.noobeclair.hashcode.out.hashcode2019.Hashcode2019Writer;
+import fr.noobeclair.hashcode.score.CustomScoreCalculator;
 import fr.noobeclair.hashcode.score.hashcode2018.H2018ScoreCalculator;
 import fr.noobeclair.hashcode.score.hashcode2019.Hashcode2019ScoreCalculator;
+import fr.noobeclair.hashcode.solve.CustomConfigSolver;
+import fr.noobeclair.hashcode.solve.CustomConfigStepSolver;
+import fr.noobeclair.hashcode.solve.CustomSolver;
 import fr.noobeclair.hashcode.solve.SolverFactory;
 import fr.noobeclair.hashcode.solve.hashcode2018.H2018Solver;
 import fr.noobeclair.hashcode.solve.hashcode2019.HashCode2019DummyStepSolver;
 import fr.noobeclair.hashcode.solve.hashcode2019.HashCode2019StepSolver;
 import fr.noobeclair.hashcode.utils.Utils;
+import fr.noobeclair.hashcode.utils.dto.WorkerResultDto;
 import fr.noobeclair.hashcode.worker.InOut;
 import fr.noobeclair.hashcode.worker.MultipleConfFileSolverWorker;
 import fr.noobeclair.hashcode.worker.MultipleConfFileWorker;
 import fr.noobeclair.hashcode.worker.MultipleConfSolverWorker;
 import fr.noobeclair.hashcode.worker.SimpleConfWorker;
+import fr.noobeclair.hashcode.worker.SimpleWorker;
 
 public class Main {
 	public static final String CR = "\r";
@@ -55,8 +62,45 @@ public class Main {
 		
 		final Long timeout = TimeUnit.MINUTES.toSeconds(2);
 		final Long timeout2019 = TimeUnit.SECONDS.toSeconds(5);
-		Map<String, BigDecimal> scores = null;
+		WorkerResultDto scores = null;
 		try {
+			//Path to in file - out file
+			String in = "";
+			String out = "";
+			// InOut object
+			InOut io = new InOut(in, out);
+			
+			//Create a reader
+			CustomReader creader = new CustomReader();
+			CustomWriter cwriter = new CustomWriter();
+			//Create Config
+			CustomConfig cfg = new CustomConfig();
+			//Create ScoreCalculator
+			CustomScoreCalculator cscorecalc = new CustomScoreCalculator();
+			
+			//Create solvers
+			// 1 - Simple Solver 
+			CustomSolver csolver = new CustomSolver("Simple Custom Solver", timeout);
+			// 2 - Config Solver
+			CustomConfigSolver cfgsolver = new CustomConfigSolver("Simple Custom Solver", cfg, timeout);
+			// 3 - Stepped Config Solver
+			CustomConfigStepSolver stepsolver = new CustomConfigStepSolver("Simple Custom Solver", cfg, timeout);
+			
+			//Create some workers
+			// 1 Simple no Config : 1 file - 1 solver
+			SimpleWorker<CustomBeanContainer> csw = new SimpleWorker<>(creader, csolver, cscorecalc, cwriter, io);
+			// 2 Simple Config : 1 file - 1 solver
+			SimpleConfWorker<CustomBeanContainer, CustomConfig> cfgsw = new SimpleConfWorker<>(creader, cfgsolver, cscorecalc, cwriter, io);
+			// 3 Multiple config : n files, n workers
+			MultipleConfFileSolverWorker<CustomBeanContainer, CustomConfig, CustomConfigSolver> mw = new MultipleConfFileSolverWorker<CustomBeanContainer, CustomConfig, CustomConfigSolver>(creader,
+					cwriter, cscorecalc, 0, cfg);
+			mw.addFiles(Arrays.asList(io));
+			mw.addSolver(Arrays.asList(cfgsolver));
+			
+			//csw.run();
+			//cfgsw.run();
+			//mw.run();
+			
 			// Simple worker - 1 file in/out - 1 Algorithm - Optionnal : scorer
 			final Hashcode2019Reader reader = new Hashcode2019Reader();
 			final H2019Config cfg2019 = new H2019Config();
@@ -80,10 +124,10 @@ public class Main {
 			mfw.addFiles(files);
 			scores = null;
 			// scores = mfw.run();
-			if (MapUtils.isNotEmpty(scores)) {
-				MapUtils.verbosePrint(System.out, mfw.getClass() + "-" + solver.getClass() +
-						" : Score de chaque fichier ", scores);
-			}
+			//			if (MapUtils.isNotEmpty(scores)) {
+			//				MapUtils.verbosePrint(System.out, mfw.getClass() + "-" + solver.getClass() +
+			//						" : Score de chaque fichier ", scores);
+			//			}
 			
 			// Multiple ConfigSolver Worker - 1 files int/out - n algorithm
 			final MultipleConfSolverWorker<HashCode2019BeanContainer, H2019Config, HashCode2019StepSolver> msw = new MultipleConfSolverWorker<>(reader, writer, scorer,
@@ -93,17 +137,17 @@ public class Main {
 			msw.addSolver(solver);
 			msw.addSolver(dummySolver);
 			// scores = msw.run();
-			if (MapUtils.isNotEmpty(scores)) {
-				MapUtils.verbosePrint(System.out, msw.getClass().getSimpleName() + " : Score du fichier " + msw.getInOut().in, scores);
-			}
+			//			if (MapUtils.isNotEmpty(scores)) {
+			//				MapUtils.verbosePrint(System.out, msw.getClass().getSimpleName() + " : Score du fichier " + msw.getInOut().in, scores);
+			//			}
 			
 			final MultipleConfFileSolverWorker<HashCode2019BeanContainer, H2019Config, HashCode2019StepSolver> mfsw = new MultipleConfFileSolverWorker<>(reader, writer, scorer,
 					Arrays.asList(dummySolver, solver), cfg2019);
 			mfsw.addFiles(files);
 			// scores = mfsw.run();
-			if (MapUtils.isNotEmpty(scores)) {
-				MapUtils.verbosePrint(System.out, msw.getClass().getSimpleName() + " : Score des fichiers pour chaque solver ", scores);
-			}
+			//			if (MapUtils.isNotEmpty(scores)) {
+			//				MapUtils.verbosePrint(System.out, msw.getClass().getSimpleName() + " : Score des fichiers pour chaque solver ", scores);
+			//			}
 			
 			H2018Reader read2018 = new H2018Reader();
 			H2018ScoreCalculator scor2018 = new H2018ScoreCalculator();
@@ -254,8 +298,11 @@ public class Main {
 			final MultipleConfFileSolverWorker<H2018BeanContainer, H2018Config, H2018Solver> mfsw2018 = new MultipleConfFileSolverWorker<>(read2018, nwriter, scor2018, 1, workerCfg);
 			mfsw2018.addFiles(files2018);
 			mfsw2018.addSolver(solvers);
+			//mfsw2018.setGlobalConstantsClass(CustomConstants.class);
 			scores = mfsw2018.run();
 			
+			scores.displayAll();
+			scores.displayBest();
 			// if (MapUtils.isNotEmpty(scores)) {
 			// MapUtils.verbosePrint(System.out, mfsw2018.getClass().getSimpleName() + " :
 			// Score des fichiers pour chaque solver ", scores);

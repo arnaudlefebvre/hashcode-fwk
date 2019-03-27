@@ -1,10 +1,9 @@
 package fr.noobeclair.hashcode.worker;
 
-import java.math.BigDecimal;
-
 import fr.noobeclair.hashcode.in.InReader;
 import fr.noobeclair.hashcode.out.OutWriter;
 import fr.noobeclair.hashcode.solve.ConfigSolver;
+import fr.noobeclair.hashcode.utils.dto.WorkerResultDto;
 
 public class NullWorker extends GenericConfWorker {
 	
@@ -14,9 +13,9 @@ public class NullWorker extends GenericConfWorker {
 	}
 	
 	@Override
-	public BigDecimal run() {
+	public WorkerResultDto run() {
 		
-		return BigDecimal.ZERO;
+		return new WorkerResultDto();
 	}
 	
 }

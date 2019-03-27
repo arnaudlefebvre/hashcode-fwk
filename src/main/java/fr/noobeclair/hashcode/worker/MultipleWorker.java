@@ -2,14 +2,14 @@ package fr.noobeclair.hashcode.worker;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import fr.noobeclair.hashcode.bean.BeanContainer;
 import fr.noobeclair.hashcode.solve.Solver;
+import fr.noobeclair.hashcode.utils.dto.SolverResultDto;
+import fr.noobeclair.hashcode.utils.dto.WorkerResultDto;
 
 public abstract class MultipleWorker<T extends BeanContainer, S extends Solver<T>> extends AbstractMultipleWorker<T> {
 	
@@ -22,12 +22,12 @@ public abstract class MultipleWorker<T extends BeanContainer, S extends Solver<T
 	
 	@Override
 	protected void prepare() {
-		throw new UnsupportedOperationException("Not supported yet");
+		return;
 	}
 	
 	@Override
-	protected Map<String, BigDecimal> solve() {
-		Map<String, BigDecimal> result = new TreeMap<>();
+	protected WorkerResultDto solve() {
+		WorkerResultDto result = new WorkerResultDto();
 		if (1 == this.execOrder) {
 			result = runSolverFirst();
 		} else {
@@ -42,30 +42,30 @@ public abstract class MultipleWorker<T extends BeanContainer, S extends Solver<T
 		return result;
 	}
 	
-	protected Map<String, BigDecimal> runFileFirst() {
-		final Map<String, BigDecimal> result = new TreeMap<>();
+	protected WorkerResultDto runFileFirst() {
+		final WorkerResultDto result = new WorkerResultDto();
 		for (final InOut io : files) {
 			for (final Solver<T> solver : this.solvers) {
 				try {
-					result.putAll(runSolverForFile(solver, io));
+					result.addResult(runSolverForFile(solver, io));
 				} catch (final Exception e) {
 					logger.error(" <###----- !!!!!! -----#> Something went wrong running this worker : {}", solver.getName(), e);
-					result.put(solver.getName() + ":" + solver.getAdditionnalInfo() + "--" + io.in, BigDecimal.ZERO);
+					result.addResult(new SolverResultDto(BigDecimal.ZERO, solver.getName(), io.in, -1L, -1L));
 				}
 			}
 		}
 		return result;
 	}
 	
-	protected Map<String, BigDecimal> runSolverFirst() {
-		final Map<String, BigDecimal> result = new TreeMap<>();
+	protected WorkerResultDto runSolverFirst() {
+		final WorkerResultDto result = new WorkerResultDto();
 		for (final Solver<T> solver : this.solvers) {
 			for (final InOut io : files) {
 				try {
-					result.putAll(runSolverForFile(solver, io));
+					result.addResult(runSolverForFile(solver, io));
 				} catch (final Exception e) {
 					logger.error(" <###----- !!!!!! -----#> Something went wrong running this worker : {}", solver.getName(), e);
-					result.put(solver.getName() + ":" + solver.getAdditionnalInfo() + "--" + io.in, BigDecimal.ZERO);
+					result.addResult(new SolverResultDto(BigDecimal.ZERO, solver.getName(), io.in, -1L, -1L));
 				}
 			}
 		}

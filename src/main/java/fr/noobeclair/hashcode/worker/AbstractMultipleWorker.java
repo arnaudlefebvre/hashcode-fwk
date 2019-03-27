@@ -1,13 +1,12 @@
 package fr.noobeclair.hashcode.worker;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import fr.noobeclair.hashcode.GlobalConstants;
 import fr.noobeclair.hashcode.bean.BeanContainer;
 import fr.noobeclair.hashcode.in.InReader;
 import fr.noobeclair.hashcode.out.OutWriter;
@@ -15,9 +14,12 @@ import fr.noobeclair.hashcode.score.ScoreCalculator;
 import fr.noobeclair.hashcode.solve.Solver;
 import fr.noobeclair.hashcode.utils.ProgressBar;
 import fr.noobeclair.hashcode.utils.ProgressBar.Builder;
-import fr.noobeclair.hashcode.utils.ProgressBar.ProgressBarOption;
+import fr.noobeclair.hashcode.utils.dto.SolverResultDto;
+import fr.noobeclair.hashcode.utils.dto.WorkerResultDto;
 
 public abstract class AbstractMultipleWorker<T extends BeanContainer> {
+	
+	protected static final Logger logger = LogManager.getLogger(AbstractMultipleWorker.class);
 	
 	protected Long total = 0L;
 	protected Long approxEnd = 0L;
@@ -27,7 +29,7 @@ public abstract class AbstractMultipleWorker<T extends BeanContainer> {
 	protected OutWriter<T> writer;
 	protected InReader<T> reader;
 	protected ScoreCalculator<T> scorer;
-	
+	protected Class<? extends GlobalConstants> globalConstantsClass = GlobalConstants.class;
 	/**
 	 * execOrder, 0 : apply each solver and move to next file 1 : run each file and
 	 * move next solver
@@ -39,14 +41,18 @@ public abstract class AbstractMultipleWorker<T extends BeanContainer> {
 		SOLVE_BY_FILE // Runs each solver on a file and move to next file
 	}
 	
+	protected abstract void prepare();
+	
+	protected abstract WorkerResultDto solve();
+	
 	public AbstractMultipleWorker() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Map<String, BigDecimal> run() {
+	public WorkerResultDto run() {
 		readAll();
 		prepare();
-		Map<String, BigDecimal> result = solve();
+		WorkerResultDto result = solve();
 		return result;
 	}
 	
@@ -55,10 +61,6 @@ public abstract class AbstractMultipleWorker<T extends BeanContainer> {
 			this.reader.read(io.in);
 		}
 	}
-	
-	protected abstract void prepare();
-	
-	protected abstract Map<String, BigDecimal> solve();
 	
 	protected void barShow(String msg, boolean force) {
 		if (bar != null) {
@@ -78,14 +80,12 @@ public abstract class AbstractMultipleWorker<T extends BeanContainer> {
 		}
 	}
 	
-	protected Map<String, BigDecimal> runSolverForFile(final Solver<T> solver, final InOut io) {
-		Map<String, BigDecimal> result = new TreeMap<>();
+	protected SolverResultDto runSolverForFile(final Solver<T> solver, final InOut io) {
 		T d = this.reader.read(io.in);
 		d = solver.solve(d, bar);
-		BigDecimal score = scorer.score(d);
-		result.put(solver.getName() + ":" + solver.getAdditionnalInfo() + "--" + io.in, score);
+		SolverResultDto score = scorer.score(d, solver.getResultInfo());
 		writer.write(d, getOut(solver, io));
-		return result;
+		return score;
 	}
 	
 	protected String getOut(final Solver<T> solver, final InOut io) {
@@ -97,9 +97,17 @@ public abstract class AbstractMultipleWorker<T extends BeanContainer> {
 	}
 	
 	protected Builder addbarOpt(Builder b) {
-		List<ProgressBarOption> opts = Arrays.asList(ProgressBarOption.MSG, ProgressBarOption.BAR, ProgressBarOption.PERCENT, ProgressBarOption.ETA);
-		return b.withMaxWidth(100).withOptions(opts).withBarMsgSize(30).withBarMsgSize(40).withRefreshTime(10L);
-		
+		try {
+			return b.withMaxWidth(globalConstantsClass.newInstance().BAR_MAX_WIDTH).withOptions(GlobalConstants.BAR_OPTS).withBarMsgSize(GlobalConstants.BAR_MSG_WIDTH)
+					.withRefreshTime(GlobalConstants.BAR_REFRESH_TIME);
+		} catch (InstantiationException | IllegalAccessException e) {
+			logger.error("Cannot access global constants class");
+		}
+		return null;
+	}
+	
+	public void setGlobalConstantsClass(Class globalConstantsClass) {
+		this.globalConstantsClass = globalConstantsClass;
 	}
 	
 }

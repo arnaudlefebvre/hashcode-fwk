@@ -1,7 +1,5 @@
 package fr.noobeclair.hashcode.worker;
 
-import java.math.BigDecimal;
-
 import org.apache.commons.lang3.StringUtils;
 
 import fr.noobeclair.hashcode.bean.BeanContainer;
@@ -9,6 +7,7 @@ import fr.noobeclair.hashcode.in.InReader;
 import fr.noobeclair.hashcode.out.OutWriter;
 import fr.noobeclair.hashcode.score.ScoreCalculator;
 import fr.noobeclair.hashcode.solve.Solver;
+import fr.noobeclair.hashcode.utils.dto.WorkerResultDto;
 
 public class SimpleWorker<T extends BeanContainer> extends GenericWorker<T> {
 	
@@ -35,14 +34,15 @@ public class SimpleWorker<T extends BeanContainer> extends GenericWorker<T> {
 	}
 	
 	@Override
-	public BigDecimal run() {
+	public WorkerResultDto run() {
+		WorkerResultDto result = new WorkerResultDto();
 		if (scorer == null) {
 			this.writer.write(this.solver.solve(this.reader.read(inOut.in)), getOut(this.solver));
-			return BigDecimal.ZERO;
+			result.addResult(this.solver.getResultInfo());
 		} else {
-			return this.scorer.score(this.writer.write(this.solver.solve(this.reader.read(inOut.in)), getOut(this.solver)));
+			result.addResult(this.scorer.score(this.writer.write(this.solver.solve(this.reader.read(inOut.in)), getOut(this.solver)), this.solver.getResultInfo()));
 		}
-		
+		return result;
 	}
 	
 	public InOut getInOut() {

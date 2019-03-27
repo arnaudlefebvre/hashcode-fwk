@@ -48,7 +48,7 @@ public class H2018Solver extends ConfigSolver<H2018BeanContainer, H2018Config> {
 	
 	@Override
 	public H2018BeanContainer runWithStat(H2018BeanContainer data, ProgressBar bar) {
-		logger.debug("H2018Solver START : {} cars, {} rides, {} turns {},  ({})", data.getCars().size(), data.getAvailableRides().size(), data.getMaxTurn(), this.getAdditionnalInfo());
+		logger.debug("H2018Solver START : {} cars, {} rides, {} turns {},  ({})", data.getCars().size(), data.getAvailableRides().size(), data.getMaxTurn());
 		arides = data.getAvailableRides();
 		stats.put(StatsConstants.ITEM0_TOTAL, "" + arides.size());
 		stats.put(StatsConstants.ITEM1_TOTAL, "" + data.getCars().size());
@@ -144,11 +144,6 @@ public class H2018Solver extends ConfigSolver<H2018BeanContainer, H2018Config> {
 	public String toSMintring() {
 		return "H2018Solver [totalScore=" + totalScore + ", arides=[" + arides.size() + "]," + Main.CR + " drides=[" + drides.size() + "]," + Main.CR + " srides=[" + srides.size() + "]," + Main.CR
 				+ "cars=[" + cars + "], map=" + map + ", bonus=" + bonus + ", maxTurn=" + maxTurn + "]";
-	}
-	
-	@Override
-	public String getAdditionnalInfo() {
-		return config.toString();
 	}
 	
 	@Override

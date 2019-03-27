@@ -5,15 +5,16 @@ import java.math.BigDecimal;
 import fr.noobeclair.hashcode.bean.hashcode2019.HashCode2019BeanContainer;
 import fr.noobeclair.hashcode.bean.hashcode2019.Slide;
 import fr.noobeclair.hashcode.score.ScoreCalculator;
+import fr.noobeclair.hashcode.utils.dto.SolverResultDto;
 
 public class Hashcode2019ScoreCalculator extends ScoreCalculator<HashCode2019BeanContainer> {
-
+	
 	public Hashcode2019ScoreCalculator() {
 		
 	}
-
+	
 	@Override
-	protected BigDecimal run(HashCode2019BeanContainer in) {
+	protected SolverResultDto run(HashCode2019BeanContainer in, SolverResultDto currentResult) {
 		BigDecimal result = new BigDecimal("0");
 		Slide last = null;
 		for (Slide s : in.getSlideshow().getSlides()) {
@@ -22,7 +23,8 @@ public class Hashcode2019ScoreCalculator extends ScoreCalculator<HashCode2019Bea
 			}
 			last = s;
 		}
-		return result;
+		currentResult.setScore(result);
+		return currentResult;
 	}
-
+	
 }

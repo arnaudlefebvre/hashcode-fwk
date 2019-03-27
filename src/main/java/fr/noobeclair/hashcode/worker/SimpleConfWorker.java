@@ -1,7 +1,5 @@
 package fr.noobeclair.hashcode.worker;
 
-import java.math.BigDecimal;
-
 import org.apache.commons.lang3.StringUtils;
 
 import fr.noobeclair.hashcode.bean.BeanContainer;
@@ -11,6 +9,7 @@ import fr.noobeclair.hashcode.out.OutWriter;
 import fr.noobeclair.hashcode.score.ScoreCalculator;
 import fr.noobeclair.hashcode.solve.ConfigSolver;
 import fr.noobeclair.hashcode.utils.ProgressBar;
+import fr.noobeclair.hashcode.utils.dto.WorkerResultDto;
 
 public class SimpleConfWorker<T extends BeanContainer, V extends Config> extends GenericConfWorker<T, V> {
 	
@@ -62,13 +61,15 @@ public class SimpleConfWorker<T extends BeanContainer, V extends Config> extends
 	}
 	
 	@Override
-	public BigDecimal run() {
+	public WorkerResultDto run() {
+		WorkerResultDto result = new WorkerResultDto();
 		if (scorer == null) {
 			this.writer.write(this.solver.solve(this.reader.read(inOut.in), bar), getOut(this.solver));
-			return BigDecimal.ZERO;
+			result.addResult(this.solver.getResultInfo());
 		} else {
-			return this.scorer.score(this.writer.write(this.solver.solve(this.reader.read(inOut.in), bar), getOut(this.solver)));
+			result.addResult(this.scorer.score(this.writer.write(this.solver.solve(this.reader.read(inOut.in), bar), getOut(this.solver)), this.solver.getResultInfo()));
 		}
+		return result;
 		
 	}
 	
