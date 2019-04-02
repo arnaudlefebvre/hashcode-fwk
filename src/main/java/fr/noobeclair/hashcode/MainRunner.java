@@ -290,6 +290,7 @@ public class MainRunner {
 			WorkerFactory<H2018BeanContainer, H2018Reader, H2018Writer, H2018Config, H2018Solver, H2018ScoreCalculator> sw0 = new WorkerFactory<H2018BeanContainer, H2018Reader, H2018Writer, H2018Config, H2018Solver, H2018ScoreCalculator>();
 			MultipleConfFileSolverWorker<H2018BeanContainer, H2018Config, H2018Solver> mfsw2018 = sw0.builder()
 					.readWrite(read2018, nwriter)
+					.score(scor2018)
 					.config(workerCfg).solvers(sfactory.createFromConfs(configs, timeout))
 					.progressBar()
 					.file(new InOut("src/main/resources/in/2018/a_example.in", null))
