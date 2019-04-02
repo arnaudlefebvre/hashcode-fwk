@@ -1,0 +1,18 @@
+<project name="hashcode-fwk" default="dist" basedir=".">
+   <description>Hashcode Framework</description>
+ 	
+ 	<target name="copyCustom">
+ 		<copy todir="src/main/resources/generate">
+ 		<fileset dir="src/main/java/fr/noobeclair/hashcode" includes="**/Custom*.java" >   			
+		</fileset>
+		</copy>
+ 	</target>
+    
+    <target name="prepareCustom">
+ 		<replaceregexp >
+ 		<fileset dir="src/main/resources/generate" includes="**/Custom*.java" >   			
+		</fileset>
+		</replaceregexp>
+ 	</target>
+    
+</project>

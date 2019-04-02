@@ -1,9 +1,12 @@
 /**
  * 
  */
-package fr.noobeclair.hashcode.bean;
+package fr.noobeclair.hashcode.bean.custom;
 
 import java.util.List;
+
+import fr.noobeclair.hashcode.bean.Config;
+import fr.noobeclair.hashcode.bean.Config.FLUSH_CSV_STATS;
 
 /**
  * @author arnaud

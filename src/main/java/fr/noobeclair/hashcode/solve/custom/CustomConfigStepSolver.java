@@ -1,7 +1,8 @@
-package fr.noobeclair.hashcode.solve;
+package fr.noobeclair.hashcode.solve.custom;
 
-import fr.noobeclair.hashcode.bean.CustomBeanContainer;
-import fr.noobeclair.hashcode.bean.CustomConfig;
+import fr.noobeclair.hashcode.bean.custom.CustomBeanContainer;
+import fr.noobeclair.hashcode.bean.custom.CustomConfig;
+import fr.noobeclair.hashcode.solve.ConfigSolver;
 import fr.noobeclair.hashcode.utils.ProgressBar;
 
 public class CustomConfigStepSolver extends ConfigSolver<CustomBeanContainer, CustomConfig> {

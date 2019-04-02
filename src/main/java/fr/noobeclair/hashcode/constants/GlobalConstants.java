@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.noobeclair.hashcode;
+package fr.noobeclair.hashcode.constants;
 
 import java.util.Arrays;
 import java.util.List;

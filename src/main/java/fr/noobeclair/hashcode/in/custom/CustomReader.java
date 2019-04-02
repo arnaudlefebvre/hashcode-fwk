@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.noobeclair.hashcode.in;
+package fr.noobeclair.hashcode.in.custom;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import fr.noobeclair.hashcode.bean.CustomBeanContainer;
+import fr.noobeclair.hashcode.bean.custom.CustomBeanContainer;
+import fr.noobeclair.hashcode.in.InReader;
 
 public class CustomReader extends InReader<CustomBeanContainer> {
 	

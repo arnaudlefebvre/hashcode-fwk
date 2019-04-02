@@ -1,8 +1,9 @@
-package fr.noobeclair.hashcode.score;
+package fr.noobeclair.hashcode.score.custom;
 
 import java.math.BigDecimal;
 
-import fr.noobeclair.hashcode.bean.CustomBeanContainer;
+import fr.noobeclair.hashcode.bean.custom.CustomBeanContainer;
+import fr.noobeclair.hashcode.score.ScoreCalculator;
 import fr.noobeclair.hashcode.utils.dto.SolverResultDto;
 
 public class CustomScoreCalculator extends ScoreCalculator<CustomBeanContainer> {

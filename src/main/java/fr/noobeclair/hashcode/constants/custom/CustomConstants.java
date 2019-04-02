@@ -1,7 +1,8 @@
-package fr.noobeclair.hashcode;
+package fr.noobeclair.hashcode.constants.custom;
 
 import java.util.Arrays;
 
+import fr.noobeclair.hashcode.constants.GlobalConstants;
 import fr.noobeclair.hashcode.utils.ProgressBar.ProgressBarOption;
 
 /**

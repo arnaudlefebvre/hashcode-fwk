@@ -1,4 +1,4 @@
-package fr.noobeclair.hashcode.out;
+package fr.noobeclair.hashcode.out.hashcode2018;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -7,6 +7,7 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import fr.noobeclair.hashcode.bean.hashcode2018.Car;
 import fr.noobeclair.hashcode.bean.hashcode2018.H2018BeanContainer;
+import fr.noobeclair.hashcode.out.OutWriter;
 
 public class H2018Writer extends OutWriter<H2018BeanContainer> {
 	

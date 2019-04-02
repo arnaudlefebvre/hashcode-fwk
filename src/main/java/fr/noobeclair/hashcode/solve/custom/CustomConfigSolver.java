@@ -1,10 +1,11 @@
-package fr.noobeclair.hashcode.solve;
+package fr.noobeclair.hashcode.solve.custom;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.noobeclair.hashcode.bean.CustomBeanContainer;
-import fr.noobeclair.hashcode.bean.CustomConfig;
+import fr.noobeclair.hashcode.bean.custom.CustomBeanContainer;
+import fr.noobeclair.hashcode.bean.custom.CustomConfig;
+import fr.noobeclair.hashcode.solve.ConfigSolver;
 import fr.noobeclair.hashcode.solve.step.AbstractStep;
 import fr.noobeclair.hashcode.utils.ProgressBar;
 

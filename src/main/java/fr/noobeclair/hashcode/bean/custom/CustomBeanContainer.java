@@ -1,7 +1,9 @@
 /**
  * 
  */
-package fr.noobeclair.hashcode.bean;
+package fr.noobeclair.hashcode.bean.custom;
+
+import fr.noobeclair.hashcode.bean.BeanContainer;
 
 /**
  * @author arnaud

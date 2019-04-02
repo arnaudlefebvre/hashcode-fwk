@@ -1,9 +1,10 @@
-package fr.noobeclair.hashcode.out;
+package fr.noobeclair.hashcode.out.custom;
 
 import java.io.FileWriter;
 import java.io.IOException;
 
-import fr.noobeclair.hashcode.bean.CustomBeanContainer;
+import fr.noobeclair.hashcode.bean.custom.CustomBeanContainer;
+import fr.noobeclair.hashcode.out.OutWriter;
 
 public class CustomWriter extends OutWriter<CustomBeanContainer> {
 	

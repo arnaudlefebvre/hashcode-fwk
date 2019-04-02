@@ -1,6 +1,7 @@
-package fr.noobeclair.hashcode.solve;
+package fr.noobeclair.hashcode.solve.custom;
 
-import fr.noobeclair.hashcode.bean.CustomBeanContainer;
+import fr.noobeclair.hashcode.bean.custom.CustomBeanContainer;
+import fr.noobeclair.hashcode.solve.Solver;
 import fr.noobeclair.hashcode.utils.ProgressBar;
 
 public class CustomSolver extends Solver<CustomBeanContainer> {
