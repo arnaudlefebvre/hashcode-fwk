@@ -69,16 +69,16 @@ public abstract class MultipleConfWorker<T extends BeanContainer, V extends Conf
 	@Override
 	protected WorkerResultDto solve() {
 		WorkerResultDto result = null;
-		if (1 == this.execOrder) {
+		if (AbstractMultipleWorker.WORK_ORDER.SOLVER == this.execOrder) {
 			result = runSolverFirst();
 		} else {
 			result = runFileFirst();
 		}
 		if (files.isEmpty()) {
-			logger.error(" <###----- !!!!!! -----#> No file - No run ... !");
+			logger.error("No file - No run ... !");
 		}
 		if (solvers.isEmpty()) {
-			logger.error(" <###----- !!!!!! -----#> No solver - No run ... !");
+			logger.error("No solver - No run ... !");
 		}
 		flushStats(Config.FLUSH_CSV_STATS.END);
 		barEnd();
@@ -101,7 +101,7 @@ public abstract class MultipleConfWorker<T extends BeanContainer, V extends Conf
 				try {
 					runStatSolverForFile(result, solver, io, sw);
 				} catch (final Exception e) {
-					logger.error(" <###----- !!!!!! -----#> Something went wrong running this worker : {}", sw, e);
+					logger.error("Something went wrong running this worker : {}", sw, e);
 					result.addResult(new SolverResultDto(BigDecimal.ZERO, solver.getName(), io.in, -1L, -1L));
 				}
 			}
@@ -118,7 +118,7 @@ public abstract class MultipleConfWorker<T extends BeanContainer, V extends Conf
 				try {
 					runStatSolverForFile(result, solver, io, sw);
 				} catch (final Exception e) {
-					logger.error(" <###----- !!!!!! -----#> Something went wrong running this worker : {}", sw, e);
+					logger.error("Something went wrong running this worker : {}", sw, e);
 					result.addResult(new SolverResultDto(BigDecimal.ZERO, solver.getName(), io.in, -1L, -1L));
 				}
 			}
@@ -160,7 +160,7 @@ public abstract class MultipleConfWorker<T extends BeanContainer, V extends Conf
 				}
 				
 			} catch (IOException e) {
-				logger.error(" <###----- !!!!!! -----#> Problem occurs when writing : {} on level {} with {}", this.csvPath, level, e);
+				logger.error("Problem occurs when writing : {} on level {} with {}", this.csvPath, level, e);
 			}
 		}
 		

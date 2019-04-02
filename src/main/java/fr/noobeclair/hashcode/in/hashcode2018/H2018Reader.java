@@ -47,7 +47,7 @@ public class H2018Reader extends InReader<H2018BeanContainer> {
 			return result;
 			
 		} catch (Exception e) {
-			logger.error(" <###----- !!!!!! -----#> Erreur lors de la lecture du fichier {}", in, e);
+			logger.error("Erreur lors de la lecture du fichier {}", in, e);
 		}
 		return result;
 	}

@@ -11,6 +11,19 @@ import fr.noobeclair.hashcode.solve.ConfigSolver;
 import fr.noobeclair.hashcode.utils.ProgressBar;
 import fr.noobeclair.hashcode.utils.dto.WorkerResultDto;
 
+/**
+ * Simple Configurable Worker that encapsulate :
+ * 1 reader/writer
+ * 1 solver
+ * 1 optionnal solver
+ * 
+ * @author arnaud
+ *
+ * @param <T
+ *            extends BeanContainer>
+ * @param <
+ *            V extends Config>
+ */
 public class SimpleConfWorker<T extends BeanContainer, V extends Config> extends GenericConfWorker<T, V> {
 	
 	protected InOut inOut;

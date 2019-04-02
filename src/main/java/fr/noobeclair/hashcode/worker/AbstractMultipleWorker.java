@@ -1,13 +1,14 @@
 package fr.noobeclair.hashcode.worker;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import fr.noobeclair.hashcode.GlobalConstants;
 import fr.noobeclair.hashcode.bean.BeanContainer;
+import fr.noobeclair.hashcode.constants.GlobalConstants;
 import fr.noobeclair.hashcode.in.InReader;
 import fr.noobeclair.hashcode.out.OutWriter;
 import fr.noobeclair.hashcode.score.ScoreCalculator;
@@ -34,11 +35,11 @@ public abstract class AbstractMultipleWorker<T extends BeanContainer> {
 	 * execOrder, 0 : apply each solver and move to next file 1 : run each file and
 	 * move next solver
 	 */
-	protected Integer execOrder = 0;
+	protected WORK_ORDER execOrder = WORK_ORDER.SOLVER;
 	
 	public enum WORK_ORDER {
-		SOLVE_ALL_FILES, // Runs all files on a solver and move to next solver
-		SOLVE_BY_FILE // Runs each solver on a file and move to next file
+		SOLVER, // Runs all files on a solver and move to next solver
+		FILE // Runs each solver on a file and move to next file
 	}
 	
 	protected abstract void prepare();
@@ -83,7 +84,12 @@ public abstract class AbstractMultipleWorker<T extends BeanContainer> {
 	protected SolverResultDto runSolverForFile(final Solver<T> solver, final InOut io) {
 		T d = this.reader.read(io.in);
 		d = solver.solve(d, bar);
-		SolverResultDto score = scorer.score(d, solver.getResultInfo());
+		SolverResultDto score = solver.getResultInfo();
+		if (scorer != null) {
+			score = scorer.score(d, score);
+		} else {
+			score.setScore(BigDecimal.ZERO);
+		}
 		writer.write(d, getOut(solver, io));
 		return score;
 	}
@@ -108,6 +114,10 @@ public abstract class AbstractMultipleWorker<T extends BeanContainer> {
 	
 	public void setGlobalConstantsClass(Class globalConstantsClass) {
 		this.globalConstantsClass = globalConstantsClass;
+	}
+	
+	public void setExecOrder(WORK_ORDER execOrder) {
+		this.execOrder = execOrder;
 	}
 	
 }

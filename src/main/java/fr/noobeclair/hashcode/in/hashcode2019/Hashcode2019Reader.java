@@ -30,7 +30,7 @@ public class Hashcode2019Reader extends InReader<HashCode2019BeanContainer> {
 			result.setPhotos(readLine(lines));
 			
 		} catch (Exception e) {
-			logger.error(" <###----- !!!!!! -----#> Erreur lors de la lecture du fichier {}", in);
+			logger.error("Erreur lors de la lecture du fichier {}", in);
 		}
 		return result;
 	}

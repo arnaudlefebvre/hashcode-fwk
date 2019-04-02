@@ -8,7 +8,7 @@
 	<description>Noobeclair's Hashcode framework</description>
 
 	<properties>
-		<revision>0.0.1-SNAPSHOT</revision>
+		<revision>0.0.2-SNAPSHOT</revision>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -73,10 +73,16 @@
 			<version>${dep.log4j}</version>
 		</dependency>
 
+		<!-- <dependency> -->
+		<!-- <groupId>es.usc.citius.hipster</groupId> -->
+		<!-- <artifactId>hipster-all</artifactId> -->
+		<!-- <version>1.0.1</version> -->
+		<!-- </dependency> -->
+
 		<dependency>
-			<groupId>es.usc.citius.hipster</groupId>
-			<artifactId>hipster-all</artifactId>
-			<version>1.0.1</version>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>27.1-jre</version>
 		</dependency>
 	</dependencies>
 
@@ -87,10 +93,32 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.6.0</version>
 				<configuration>
-					<mainClass>fr.noobeclair.hashcode.Main</mainClass>
+					<mainClass>fr.noobeclair.hashcode.MainRunner</mainClass>
 
 				</configuration>
 			</plugin>
+			<!-- GENERATE -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<id>deploy-artifact</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<ant antfile="${basedir}/generate.xml">     
+									<target name="build" />
+								</ant>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin><!-- GENERATE -->
 		</plugins>
 	</build>
 </project>

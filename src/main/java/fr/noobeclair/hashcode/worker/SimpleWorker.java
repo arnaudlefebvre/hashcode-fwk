@@ -9,6 +9,17 @@ import fr.noobeclair.hashcode.score.ScoreCalculator;
 import fr.noobeclair.hashcode.solve.Solver;
 import fr.noobeclair.hashcode.utils.dto.WorkerResultDto;
 
+/**
+ * Simple Worker that handles and runs :
+ * 1 reader/writer
+ * 1 solver
+ * 1 optionnal solver
+ * 
+ * @author arnaud
+ *
+ * @param <T
+ *            extends BeanContainer>
+ */
 public class SimpleWorker<T extends BeanContainer> extends GenericWorker<T> {
 	
 	protected InOut inOut;

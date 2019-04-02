@@ -1,0 +1,123 @@
+<project name="hashcode-fwk" default="dist" basedir=".">
+	<description>Hashcode Framework</description>
+
+	<target name="copyCustom" >
+		<delete includeemptydirs="true" failonerror="false">
+		  <fileset dir="src/main/resources/generate" includes="**/*"/>
+		</delete>
+		<copy todir="src/main/resources/generate/src/main/java">
+			<fileset dir="src/main/java/fr/noobeclair/hashcode" includes="**/Custom*.java">
+			</fileset>
+		</copy>		
+		<copy file="src/main/java/fr/noobeclair/hashcode/CustomMain.java" tofile="src/main/resources/generate/src/main/java/MainRunner.java" />
+		<delete file="src/main/resources/generate/src/main/java/CustomMain.java" /> 
+		<copy file="src/main/resources/log4j2.properties" tofile="src/main/resources/generate/src/main/resources/log4j2.properties" />
+		<copy file="pom.xml" tofile="src/main/resources/generate/pom.xml" />
+	</target>
+
+	<target name="prepareCustom">
+		<replaceregexp byline="true">
+			<regexp pattern="(fr\.noobeclair\.hashcode)(\.[^\.]+)\.custom\.(.*)" />
+			<substitution expression="${groupId}\2.\3"></substitution>
+			<fileset dir="src/main/resources/generate" includes="**/Custom*.java">
+			</fileset>
+		</replaceregexp>
+
+		<replaceregexp byline="true">
+			<regexp pattern="(fr\.noobeclair\.hashcode)(\.[^\.]+)\.custom" />
+			<substitution expression="${groupId}\2"></substitution>
+			<fileset dir="src/main/resources/generate" includes="**/Custom*.java">
+			</fileset>
+		</replaceregexp>
+		
+		<!-- Main -->
+		<replaceregexp byline="true">
+		<regexp pattern="CustomMain" />
+			<substitution expression="MainRunner"></substitution>
+			<fileset dir="src/main/resources/generate" includes="**/Main*.java">
+			</fileset>
+		</replaceregexp>
+		
+		<replaceregexp byline="true">
+		<regexp pattern="package fr\.noobeclair\.hashcode;" />
+			<substitution expression="package ${groupId};"></substitution>
+			<fileset dir="src/main/resources/generate" includes="**/Main*.java">
+			</fileset>
+		</replaceregexp>
+		
+		<replaceregexp byline="true">
+			<regexp pattern="(fr\.noobeclair\.hashcode)(\.[^\.]+)\.custom\.(.*)" />
+			<substitution expression="${groupId}\2.\3"></substitution>
+			<fileset dir="src/main/resources/generate" includes="**/Main*.java">
+			</fileset>
+		</replaceregexp>
+		
+		<!-- Pom -->
+		<replaceregexp byline="true">
+			<regexp pattern="(fr\.noobeclair\.hashcode)" />
+			<substitution expression="${groupId}"></substitution>
+			<fileset dir="src/main/resources/generate" includes="**/pom.xml">
+			</fileset>
+		</replaceregexp>
+		
+		<replaceregexp flags="m">
+			<regexp pattern="phase>compile" />
+			<substitution expression="phase>deploy"></substitution>
+			<fileset dir="src/main/resources/generate" includes="**/pom.xml">
+			</fileset>
+		</replaceregexp>
+		
+		
+		
+		<replaceregexp>
+			<regexp pattern="fr.noobeclair" />
+			<substitution expression="${groupId}"></substitution>
+			<fileset dir="src/main/resources/generate" includes="**/pom.xml">
+			</fileset>
+		</replaceregexp>
+		
+		<replaceregexp>
+			<regexp pattern="hashcode-fwk" />
+			<substitution expression="${artifactId}"></substitution>
+			<fileset dir="src/main/resources/generate" includes="**/pom.xml">
+			</fileset>
+		</replaceregexp>
+		
+		<replaceregexp>
+			<regexp pattern="&lt;dependencies&gt;" />
+			<substitution expression="&lt;dependencies&gt; &lt;dependency&gt;	&lt;groupId&gt;fr.noobeclair&lt;/groupId&gt; &lt;artifactId&gt;hashcode-fwk&lt;/artifactId&gt; &lt;version&gt;${version}&lt;/version&gt; &lt;/dependency&gt; "></substitution>
+			<fileset dir="src/main/resources/generate" includes="**/pom.xml">
+			</fileset>
+		</replaceregexp>
+	</target>
+
+	<target name="removeCustomPck">
+		<move todir="src/main/resources/generate">
+			<fileset dir="src/main/resources/generate">
+				<include name="**/custom/*" />
+			</fileset>
+			<mapper type="regexp" from="^(.*)custom(.*)" to="\1/\2" />
+		</move>
+		<!-- Remove empty folders -->
+		<delete includeemptydirs="true">
+			<fileset dir="src/main/resources/generate" includes="**/custom/">
+				
+			</fileset>
+		</delete>
+	</target>
+	
+	
+	<target name="moveToArch">
+	
+		<delete includeemptydirs="true">
+		  <fileset dir="../hashcode-fwk-arch/src/main/resources/archetype-resources" includes="**/*"/>
+		</delete>
+		<copy todir="../hashcode-fwk-arch/src/main/resources/archetype-resources">
+			<fileset dir="src/main/resources/generate">
+			</fileset>		
+		</copy>		
+	</target>
+
+	<target name="build" depends="copyCustom,prepareCustom, removeCustomPck, moveToArch" />
+
+</project>

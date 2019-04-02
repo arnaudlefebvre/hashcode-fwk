@@ -28,16 +28,16 @@ public abstract class MultipleWorker<T extends BeanContainer, S extends Solver<T
 	@Override
 	protected WorkerResultDto solve() {
 		WorkerResultDto result = new WorkerResultDto();
-		if (1 == this.execOrder) {
+		if (WORK_ORDER.SOLVER == this.execOrder) {
 			result = runSolverFirst();
 		} else {
 			result = runFileFirst();
 		}
 		if (files.isEmpty()) {
-			logger.error(" <###----- !!!!!! -----#> No file - No run ... !");
+			logger.error("No file - No run ... !");
 		}
 		if (solvers.isEmpty()) {
-			logger.error(" <###----- !!!!!! -----#> No solver - No run ... !");
+			logger.error("No solver - No run ... !");
 		}
 		return result;
 	}
@@ -49,7 +49,7 @@ public abstract class MultipleWorker<T extends BeanContainer, S extends Solver<T
 				try {
 					result.addResult(runSolverForFile(solver, io));
 				} catch (final Exception e) {
-					logger.error(" <###----- !!!!!! -----#> Something went wrong running this worker : {}", solver.getName(), e);
+					logger.error("Something went wrong running this worker : {}", solver.getName(), e);
 					result.addResult(new SolverResultDto(BigDecimal.ZERO, solver.getName(), io.in, -1L, -1L));
 				}
 			}
@@ -64,7 +64,7 @@ public abstract class MultipleWorker<T extends BeanContainer, S extends Solver<T
 				try {
 					result.addResult(runSolverForFile(solver, io));
 				} catch (final Exception e) {
-					logger.error(" <###----- !!!!!! -----#> Something went wrong running this worker : {}", solver.getName(), e);
+					logger.error("Something went wrong running this worker : {}", solver.getName(), e);
 					result.addResult(new SolverResultDto(BigDecimal.ZERO, solver.getName(), io.in, -1L, -1L));
 				}
 			}
