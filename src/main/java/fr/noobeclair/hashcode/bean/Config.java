@@ -117,4 +117,20 @@ public abstract class Config {
 		this.progressBar = progressBar;
 	}
 	
+	public Config clone(Config c) throws CloneNotSupportedException {
+		Config res = (Config) c.clone();
+		res.statisticKeysToWriteToCSV = c.statisticKeysToWriteToCSV;
+		res.csvStatsPath = c.csvStatsPath;
+		res.flushOpt = c.flushOpt;
+		return res;
+	}
+	
+	public void cloneTo(Config c) {
+		c.csvSeparator = this.csvSeparator;
+		c.csvStatsPath = this.csvStatsPath;
+		c.flushOpt = this.flushOpt;
+		c.progressBar = this.progressBar;
+		c.statisticKeysToWriteToCSV = this.statisticKeysToWriteToCSV;
+	}
+	
 }
