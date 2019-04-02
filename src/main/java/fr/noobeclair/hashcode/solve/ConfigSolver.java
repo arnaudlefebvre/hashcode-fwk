@@ -6,12 +6,42 @@ import fr.noobeclair.hashcode.bean.BeanContainer;
 import fr.noobeclair.hashcode.bean.Config;
 import fr.noobeclair.hashcode.utils.ProgressBar;
 
+/**
+ * Abstract Configurable Solver
+ * 
+ * Compute a solution of a in datasets (encapsulated in a BeanContainer)
+ * 
+ * This class provides a configurable solving. Which means that solver can use
+ * constants
+ * defined in Config to adapt solver algorithm
+ * 
+ * a timeout handler is provided. Default is 1 hour
+ * 
+ * @author arnaud
+ *
+ * @param <T>
+ *            BeanContainer
+ * @param <V>
+ *            Config
+ */
 public abstract class ConfigSolver<T extends BeanContainer, V extends Config> extends Solver<T> {
 	
+	/** Config **/
 	protected V config;
 	
+	/**
+	 * Run with a stat handler
+	 * 
+	 * @param data
+	 * @param bar
+	 *            ProgressBar
+	 * @return T extends BeanContainer
+	 */
 	protected abstract T runWithStat(T data, ProgressBar bar);
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected T run(T data, ProgressBar bar) {
 		data = runWithStat(data, bar);
@@ -19,6 +49,13 @@ public abstract class ConfigSolver<T extends BeanContainer, V extends Config> ex
 		return data;
 	}
 	
+	/**
+	 * Build a {@link ConfigSolver}
+	 * 
+	 * @param name
+	 * @param config
+	 * @param timeout
+	 */
 	public void build(String name, V config, Long timeout) {
 		this.timeout = timeout;
 		this.config = config;
@@ -26,6 +63,12 @@ public abstract class ConfigSolver<T extends BeanContainer, V extends Config> ex
 		this.name = name;
 	}
 	
+	/**
+	 * Build a {@link ConfigSolver}
+	 * 
+	 * @param config
+	 * @param timeout
+	 */
 	public void build(V config, Long timeout) {
 		this.timeout = timeout;
 		this.config = config;
@@ -34,8 +77,9 @@ public abstract class ConfigSolver<T extends BeanContainer, V extends Config> ex
 	}
 	
 	/**
-	 * New ConfigSolver which never expires.
-	 *
+	 * New ConfigSolver which expires after DEFAULT_TIMEOUT seconds.
+	 * name is randomly defined
+	 * 
 	 * @see #fr.noobeclair.hashcode.solve.ConfigSolver.Solver(Long) for tiemout
 	 */
 	public ConfigSolver() {
@@ -44,6 +88,13 @@ public abstract class ConfigSolver<T extends BeanContainer, V extends Config> ex
 		this.name = "ConfigSolver" + new Double(Math.random() * 100).intValue();
 	}
 	
+	/**
+	 * New ConfigSolver which expires after DEFAULT_TIMEOUT seconds.
+	 * 
+	 * @param name
+	 *            String solver unique name
+	 * @see #fr.noobeclair.hashcode.solve.ConfigSolver.Solver(Long) for tiemout
+	 */
 	public ConfigSolver(String name) {
 		this.timeout = DEFAULT_TIMEOUT;
 		this.stats = new TreeMap<>();
@@ -52,7 +103,9 @@ public abstract class ConfigSolver<T extends BeanContainer, V extends Config> ex
 	
 	/**
 	 * New solver wich will expire after a timeout in SECONDS
-	 *
+	 * 
+	 * @param name
+	 *            String solver unique name
 	 * @param timeout
 	 *            in seconds.
 	 */
@@ -64,7 +117,9 @@ public abstract class ConfigSolver<T extends BeanContainer, V extends Config> ex
 	
 	/**
 	 * New solver wich will expire after a timeout in SECONDS
-	 *
+	 * 
+	 * @param name
+	 *            String solver unique name
 	 * @param timeout
 	 *            in seconds.
 	 * @param V
@@ -81,6 +136,9 @@ public abstract class ConfigSolver<T extends BeanContainer, V extends Config> ex
 		return config;
 	}
 	
+	/**
+	 * Add statistics in stats map.
+	 */
 	protected abstract void addConfigStats();
 	
 }

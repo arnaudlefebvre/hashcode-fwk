@@ -29,7 +29,7 @@ public class CustomReader extends InReader<CustomBeanContainer> {
 			return result;
 			
 		} catch (Exception e) {
-			logger.error(" <###----- !!!!!! -----#> Erreur lors de la lecture du fichier {}", in, e);
+			logger.error("Erreur lors de la lecture du fichier {}", in, e);
 		}
 		return result;
 	}

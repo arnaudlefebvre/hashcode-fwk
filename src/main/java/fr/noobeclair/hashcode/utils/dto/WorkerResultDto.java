@@ -6,6 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * List of SolverResultDto with display functions
+ * 
+ * @author arnaud
+ *
+ */
 public class WorkerResultDto {
 	
 	private List<SolverResultDto> solverResults;

@@ -18,6 +18,22 @@ import fr.noobeclair.hashcode.utils.ProgressBar;
 import fr.noobeclair.hashcode.utils.Utils;
 import fr.noobeclair.hashcode.utils.dto.SolverResultDto;
 
+/**
+ * Abstract Solver
+ * 
+ * Compute a solution of a in datasets (encapsulated in a BeanContainer
+ * 
+ * This class provides a simple solving. Which means that solver can not be
+ * configured with an ConfigInstance.
+ * Thus all solver of this normally gives the same result for a same input
+ * datasets.
+ * 
+ * a timeout handler is provided. Default is 1 hour
+ * 
+ * @author arnaud
+ *
+ * @param <T>
+ */
 public abstract class Solver<T extends BeanContainer> {
 	
 	protected static final Logger logger = LogManager.getLogger(ConfigSolver.class);
@@ -27,11 +43,17 @@ public abstract class Solver<T extends BeanContainer> {
 	
 	/** Name of ConfigSolver, must be unique **/
 	protected String name;
+	/** data BeanContainer **/
 	protected T data;
+	/** Configured timeout for solving **/
 	protected Long timeout;
+	/** Statistical Map that can be filled by solver implementations **/
 	protected Map<Integer, String> stats;
+	/** Progress bar start progress before solving **/
 	protected Long barStart;
+	/** Container for solver stats and scoring **/
 	protected SolverResultDto resultInfo;
+	/** Number of item processed in BeanContainer (for stats) **/
 	protected Long nbItem;
 	
 	/**
@@ -40,17 +62,23 @@ public abstract class Solver<T extends BeanContainer> {
 	 * 
 	 * @param data
 	 *            datas
-	 * @return data
+	 * @return data computed BeanContainer
 	 */
 	protected abstract T run(T data, ProgressBar bar);
 	
+	/**
+	 * Change Solver timeout and init stats
+	 * 
+	 * @param timeout
+	 *            Long, timeout in seconds
+	 */
 	public void build(Long timeout) {
 		this.timeout = timeout;
 		this.stats = new TreeMap<>();
 	}
 	
 	/**
-	 * New ConfigSolver which never expires.
+	 * New ConfigSolver which expires at DEFAULT_TIMEOUT in seconds.
 	 *
 	 * @see #fr.noobeclair.hashcode.solve.ConfigSolver.Solver(Long) for tiemout
 	 */
@@ -60,6 +88,11 @@ public abstract class Solver<T extends BeanContainer> {
 		this.name = "ConfigSolver" + new Double(Math.random() * 1000).intValue();
 	}
 	
+	/**
+	 * 
+	 * @param name
+	 *            String solver name
+	 */
 	public Solver(String name) {
 		this.timeout = DEFAULT_TIMEOUT;
 		this.stats = new TreeMap<>();
@@ -68,9 +101,12 @@ public abstract class Solver<T extends BeanContainer> {
 	
 	/**
 	 * New solver wich will expire after a timeout in SECONDS
-	 *
+	 * 
+	 * @param name
+	 *            String solver name
 	 * @param timeout
 	 *            in seconds.
+	 * 
 	 */
 	public Solver(String name, final Long timeout) {
 		this.timeout = timeout;
@@ -78,10 +114,27 @@ public abstract class Solver<T extends BeanContainer> {
 		this.name = name;
 	}
 	
+	/**
+	 * Solve with no timeout
+	 * 
+	 * @param data
+	 * @return <T extends BeanContainer> Computed data
+	 */
 	public T solve(final T data) {
 		return solve(data, null);
 	}
 	
+	/**
+	 * Solve
+	 * Handles ProgressBar if provided, time logging,
+	 * and Stats aggregation.
+	 * 
+	 * @param data
+	 * @param bar
+	 *            ProgressBar that can be updated by implemented solver and provides
+	 *            feedback
+	 * @return <T extends BeanContainer> Computed data
+	 */
 	public T solve(final T data, ProgressBar bar) {
 		init(data, bar);
 		final long start = System.currentTimeMillis();
@@ -105,10 +158,26 @@ public abstract class Solver<T extends BeanContainer> {
 		}
 	}
 	
+	/**
+	 * Run with no Progress bar
+	 * 
+	 * @param data
+	 * @return <T extends BeanContainer> Computed data
+	 */
 	protected T run(T data) {
 		return run(data, null);
 	}
 	
+	/**
+	 * Show ProgressBar if it exists
+	 * 
+	 * @param bar
+	 *            the ProgressBar
+	 * @param progress
+	 *            current progress to display
+	 * @param msg
+	 *            String msg to display
+	 */
 	protected void showBar(ProgressBar bar, Long progress, String msg) {
 		if (bar != null) {
 			String m = StringUtils.isNotEmpty(bar.getMsg()) ? bar.getMsg().trim() : StringUtils.EMPTY;
@@ -126,6 +195,12 @@ public abstract class Solver<T extends BeanContainer> {
 		}
 	}
 	
+	/**
+	 * Init Solver before effective solving
+	 * 
+	 * @param data
+	 * @param bar
+	 */
 	private void init(final T data, ProgressBar bar) {
 		this.nbItem = 0L;
 		
@@ -137,12 +212,25 @@ public abstract class Solver<T extends BeanContainer> {
 		this.data = data;
 	}
 	
+	/**
+	 * Close solver : Write duration, nbItems and time to results;
+	 * 
+	 * @param total
+	 *            Long total solving time
+	 */
 	private void close(Long total) {
 		this.resultInfo.setDuration(total);
 		this.resultInfo.setNbItemProcessed(getNbItems());
 		stats.put(StatsConstants.TIME_TOTAL, "" + total);
 	}
 	
+	/**
+	 * Runs solver in threaded Sync mode which enable a timeout termination
+	 * 
+	 * @param data
+	 * @param bar
+	 * @return
+	 */
 	private T solveSync(final T data, ProgressBar bar) {
 		final Callable<T> task = () -> {
 			final String threadName = Thread.currentThread().getName();
@@ -155,11 +243,11 @@ public abstract class Solver<T extends BeanContainer> {
 		try {
 			this.data = future.get(timeout, TimeUnit.SECONDS);
 		} catch (InterruptedException | TimeoutException e) {
-			logger.error(" <###----- !!!!!! -----#> Solve interrupted (Timeout)");
+			logger.error("Solve interrupted (Timeout)");
 			future.cancel(true);
 			return null;
 		} catch (final Exception e) {
-			logger.error(" <###----- !!!!!! -----#> Solve aborted due to error : ", e);
+			logger.error("Solve aborted due to error : ", e);
 			future.cancel(true);
 			throw new RuntimeException("ConfigSolver abort");
 		} finally {

@@ -9,6 +9,17 @@ import org.apache.logging.log4j.Logger;
 import fr.noobeclair.hashcode.bean.BeanContainer;
 import fr.noobeclair.hashcode.bean.Config;
 
+/**
+ * Solver Factory,
+ * 
+ * Create multiples instance of Solver Impl for each Config instances provided
+ * 
+ * @author arnaud
+ *
+ * @param <S>
+ * @param <T>
+ * @param <V>
+ */
 public class SolverFactory<S extends ConfigSolver<T, V>, T extends BeanContainer, V extends Config> {
 	
 	protected static final Logger logger = LogManager.getLogger(SolverFactory.class);
@@ -42,4 +53,5 @@ public class SolverFactory<S extends ConfigSolver<T, V>, T extends BeanContainer
 			return res;
 		}
 	}
+	
 }

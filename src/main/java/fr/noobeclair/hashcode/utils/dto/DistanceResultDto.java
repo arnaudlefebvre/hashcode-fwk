@@ -2,6 +2,14 @@ package fr.noobeclair.hashcode.utils.dto;
 
 import fr.noobeclair.hashcode.bean.Bean;
 
+/**
+ * Distance result dto for encapsulate distance, object at this distance, and
+ * his index
+ * 
+ * @author arnaud
+ *
+ * @param <T>
+ */
 public class DistanceResultDto<T extends Bean> {
 	
 	private int index;

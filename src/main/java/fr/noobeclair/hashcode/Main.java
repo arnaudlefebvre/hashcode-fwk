@@ -39,6 +39,7 @@ import fr.noobeclair.hashcode.worker.MultipleConfFileWorker;
 import fr.noobeclair.hashcode.worker.MultipleConfSolverWorker;
 import fr.noobeclair.hashcode.worker.SimpleConfWorker;
 import fr.noobeclair.hashcode.worker.SimpleWorker;
+import fr.noobeclair.hashcode.worker.WorkerFactory;
 
 public class Main {
 	public static final String CR = "\r";
@@ -286,18 +287,30 @@ public class Main {
 					1.5, 0.0, carSt3));
 			
 			SolverFactory<H2018Solver, H2018BeanContainer, H2018Config> sfactory = new SolverFactory<>(H2018Solver.class, H2018BeanContainer.class, H2018Config.class);
-			List<H2018Solver> solvers = sfactory.createFromConfs(configs, timeout);
+			WorkerFactory<H2018BeanContainer, H2018Reader, H2018Writer, H2018Config, H2018Solver, H2018ScoreCalculator> sw0 = new WorkerFactory<H2018BeanContainer, H2018Reader, H2018Writer, H2018Config, H2018Solver, H2018ScoreCalculator>();
+			MultipleConfFileSolverWorker<H2018BeanContainer, H2018Config, H2018Solver> mfsw2018 = sw0.builder()
+					.readWrite(read2018, nwriter)
+					.config(workerCfg).solvers(sfactory.createFromConfs(configs, timeout))
+					.progressBar()
+					.file(new InOut("src/main/resources/in/2018/a_example.in", null))
+					.file(new InOut("src/main/resources/in/2018/b_should_be_easy.in", null))
+					.file(new InOut("src/main/resources/in/2018/c_no_hurry.in", null))
+					.file(new InOut("src/main/resources/in/2018/d_metropolis.in", null))
+					.file(new InOut("src/main/resources/in/2018/e_high_bonus.in", null))
+					.Build();
 			
-			final List<InOut> files2018 = new ArrayList<>();
-			files2018.add(new InOut("src/main/resources/in/2018/a_example.in", null));
-			files2018.add(new InOut("src/main/resources/in/2018/b_should_be_easy.in", null));
-			files2018.add(new InOut("src/main/resources/in/2018/c_no_hurry.in", null));
-			files2018.add(new InOut("src/main/resources/in/2018/d_metropolis.in", null));
-			files2018.add(new InOut("src/main/resources/in/2018/e_high_bonus.in", null));
-			
-			final MultipleConfFileSolverWorker<H2018BeanContainer, H2018Config, H2018Solver> mfsw2018 = new MultipleConfFileSolverWorker<>(read2018, nwriter, scor2018, 1, workerCfg);
-			mfsw2018.addFiles(files2018);
-			mfsw2018.addSolver(solvers);
+			//			List<H2018Solver> solvers = sfactory.createFromConfs(configs, timeout);
+			//			
+			//			final List<InOut> files2018 = new ArrayList<>();
+			//			files2018.add(new InOut("src/main/resources/in/2018/a_example.in", null));
+			//			files2018.add(new InOut("src/main/resources/in/2018/b_should_be_easy.in", null));
+			//			files2018.add(new InOut("src/main/resources/in/2018/c_no_hurry.in", null));
+			//			files2018.add(new InOut("src/main/resources/in/2018/d_metropolis.in", null));
+			//			files2018.add(new InOut("src/main/resources/in/2018/e_high_bonus.in", null));
+			//			
+			//			final MultipleConfFileSolverWorker<H2018BeanContainer, H2018Config, H2018Solver> mfsw2018 = new MultipleConfFileSolverWorker<>(read2018, nwriter, scor2018, 1, workerCfg);
+			//			mfsw2018.addFiles(files2018);
+			//			mfsw2018.addSolver(solvers);
 			//mfsw2018.setGlobalConstantsClass(CustomConstants.class);
 			scores = mfsw2018.run();
 			

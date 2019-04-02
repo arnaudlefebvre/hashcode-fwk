@@ -41,7 +41,7 @@ public abstract class AbstractStep<T extends BeanContainer> implements Step<T> {
         try {
             return runStep(solver);
         } catch (final Exception e) {
-            logger.error(" <###----- !!!!!! -----#> Error in step {} : ", id, e);
+            logger.error("Error in step {} : ", id, e);
             return null;
         } finally {
             logger.debug("-- Step {} End. Total Time : {}s --", id,
@@ -54,7 +54,7 @@ public abstract class AbstractStep<T extends BeanContainer> implements Step<T> {
             try {
                 Thread.sleep(milli);
             } catch (final InterruptedException e) {
-                logger.error(" <###----- !!!!!! -----#> You loose waiting for nothing bro", e);
+                logger.error("You loose waiting for nothing bro", e);
             }
         }
     }

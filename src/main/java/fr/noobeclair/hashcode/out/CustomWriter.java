@@ -16,7 +16,7 @@ public class CustomWriter extends OutWriter<CustomBeanContainer> {
 		try (FileWriter writer = new FileWriter(path)) {
 			// Do something
 		} catch (IOException e) {
-			logger.error(" <###----- !!!!!! -----#> Erreur lors de l'écriture du fichier {}", path, e);
+			logger.error("Erreur lors de l'écriture du fichier {}", path, e);
 		}
 	}
 	

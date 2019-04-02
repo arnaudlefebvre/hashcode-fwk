@@ -32,7 +32,7 @@ public class MultipleFileSolverWorker<T extends BeanContainer, S extends Solver<
 		this.files = new ArrayList<>();
 	}
 	
-	public MultipleFileSolverWorker(final InReader<T> reader, final OutWriter<T> writer, final ScoreCalculator<T> scorer, final Integer execOrder) {
+	public MultipleFileSolverWorker(final InReader<T> reader, final OutWriter<T> writer, final ScoreCalculator<T> scorer, final WORK_ORDER execOrder) {
 		super();
 		this.reader = reader;
 		this.writer = writer;

@@ -48,12 +48,4 @@ public class CustomConfig extends Config {
 		// TODO Auto-generated constructor stub
 	}
 	
-	/* (non-Javadoc)
-	 * @see fr.noobeclair.hashcode.bean.Config#withProgressBar()
-	 */
-	@Override
-	public boolean withProgressBar() {
-		throw new UnsupportedOperationException("Not supported yet");
-	}
-	
 }

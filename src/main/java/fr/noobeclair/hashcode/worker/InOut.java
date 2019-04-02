@@ -1,5 +1,11 @@
 package fr.noobeclair.hashcode.worker;
 
+/**
+ * Simply in file path and out file path container
+ * 
+ * @author arnaud
+ *
+ */
 public class InOut {
 	public String in;
 	public String out;

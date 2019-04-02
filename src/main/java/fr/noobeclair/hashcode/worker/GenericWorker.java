@@ -7,6 +7,17 @@ import fr.noobeclair.hashcode.score.ScoreCalculator;
 import fr.noobeclair.hashcode.solve.Solver;
 import fr.noobeclair.hashcode.utils.dto.WorkerResultDto;
 
+/**
+ * Abstract Generic Worker that encapsulate :
+ * 1 reader/writer
+ * 1 solver
+ * 1 optionnal solver
+ * 
+ * @author arnaud
+ *
+ * @param <T
+ *            extends BeanContainer>
+ */
 public abstract class GenericWorker<T extends BeanContainer> {
 	
 	protected OutWriter<T> writer;

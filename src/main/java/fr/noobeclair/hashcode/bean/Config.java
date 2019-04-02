@@ -50,6 +50,8 @@ public abstract class Config {
 	
 	protected String csvSeparator = ";";
 	
+	protected boolean progressBar = false;
+	
 	public Config() {
 		super();
 	}
@@ -75,26 +77,44 @@ public abstract class Config {
 		this.csvSeparator = csvSeparator;
 	}
 	
-	public abstract boolean withProgressBar();
+	public boolean withProgressBar() {
+		return progressBar;
+	}
 	
 	public List<Integer> getStatisticKeysToWriteToCSV() {
 		return statisticKeysToWriteToCSV;
+	}
+	
+	public void setStatisticKeysToWriteToCSV(List<Integer> statisticKeysToWriteToCSV) {
+		this.statisticKeysToWriteToCSV = statisticKeysToWriteToCSV;
 	}
 	
 	public String getCsvStatsPath() {
 		return csvStatsPath;
 	}
 	
+	public void setCsvStatsPath(String csvStatsPath) {
+		this.csvStatsPath = csvStatsPath;
+	}
+	
 	public FLUSH_CSV_STATS getFlushOpt() {
 		return flushOpt;
+	}
+	
+	public void setFlushOpt(FLUSH_CSV_STATS flushOpt) {
+		this.flushOpt = flushOpt;
 	}
 	
 	public String getCsvSeparator() {
 		return csvSeparator;
 	}
 	
-	public void setCsvStatsPath(String csvStatsPath) {
-		this.csvStatsPath = csvStatsPath;
+	public void setCsvSeparator(String csvSeparator) {
+		this.csvSeparator = csvSeparator;
+	}
+	
+	public void setProgressBar(boolean progressBar) {
+		this.progressBar = progressBar;
 	}
 	
 }

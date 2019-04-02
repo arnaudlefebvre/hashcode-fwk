@@ -23,7 +23,7 @@ public class H2018Writer extends OutWriter<H2018BeanContainer> {
 				}
 			}
 		} catch (IOException e) {
-			logger.error(" <###----- !!!!!! -----#> Erreur lors de l'écriture du fichier {}", path, e);
+			logger.error("Erreur lors de l'écriture du fichier {}", path, e);
 		}
 	}
 	

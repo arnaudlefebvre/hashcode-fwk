@@ -3,6 +3,12 @@ package fr.noobeclair.hashcode.utils.dto;
 import java.math.BigDecimal;
 import java.util.Map;
 
+/**
+ * Solver result dto that encapsulate a solver results and stats :
+ * 
+ * @author arnaud
+ *
+ */
 public class SolverResultDto {
 	
 	private BigDecimal score;

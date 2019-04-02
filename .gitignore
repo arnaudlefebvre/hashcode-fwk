@@ -3,6 +3,7 @@ target/
 .project
 .classpath
 src/main/resources/out/*
+logs/*
 hashcode.log
 *.log
 *.log.gz

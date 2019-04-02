@@ -1,5 +1,6 @@
 package fr.noobeclair.hashcode.solve;
 
+/** Custom Stats index for Statical map **/
 public class StatsConstants {
 	public static final Integer TIME_TOTAL = 0;
 	public static final Integer TIME_START = 1;
