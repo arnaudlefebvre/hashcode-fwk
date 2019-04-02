@@ -10,7 +10,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.collections4.CollectionUtils;
 
-import fr.noobeclair.hashcode.Main;
+import fr.noobeclair.hashcode.MainRunner;
 import fr.noobeclair.hashcode.bean.hashcode2018.Car;
 import fr.noobeclair.hashcode.bean.hashcode2018.CityMap;
 import fr.noobeclair.hashcode.bean.hashcode2018.H2018BeanContainer;
@@ -137,12 +137,12 @@ public class H2018Solver extends ConfigSolver<H2018BeanContainer, H2018Config> {
 	
 	@Override
 	public String toString() {
-		return "H2018Solver [totalScore=" + totalScore + ", arides=[" + arides + "]," + Main.CR + " drides=[" + drides + "]," + Main.CR + " srides=[" + srides + "]," + Main.CR + "cars=[" + cars
+		return "H2018Solver [totalScore=" + totalScore + ", arides=[" + arides + "]," + MainRunner.CR + " drides=[" + drides + "]," + MainRunner.CR + " srides=[" + srides + "]," + MainRunner.CR + "cars=[" + cars
 				+ "], map=" + map + ", bonus=" + bonus + ", maxTurn=" + maxTurn + "]";
 	}
 	
 	public String toSMintring() {
-		return "H2018Solver [totalScore=" + totalScore + ", arides=[" + arides.size() + "]," + Main.CR + " drides=[" + drides.size() + "]," + Main.CR + " srides=[" + srides.size() + "]," + Main.CR
+		return "H2018Solver [totalScore=" + totalScore + ", arides=[" + arides.size() + "]," + MainRunner.CR + " drides=[" + drides.size() + "]," + MainRunner.CR + " srides=[" + srides.size() + "]," + MainRunner.CR
 				+ "cars=[" + cars + "], map=" + map + ", bonus=" + bonus + ", maxTurn=" + maxTurn + "]";
 	}
 	

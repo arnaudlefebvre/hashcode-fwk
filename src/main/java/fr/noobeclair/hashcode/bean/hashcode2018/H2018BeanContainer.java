@@ -7,7 +7,7 @@ import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import fr.noobeclair.hashcode.Main;
+import fr.noobeclair.hashcode.MainRunner;
 import fr.noobeclair.hashcode.bean.BeanContainer;
 
 public class H2018BeanContainer extends BeanContainer {
@@ -166,7 +166,7 @@ public class H2018BeanContainer extends BeanContainer {
 	
 	@Override
 	public String toString() {
-		return "Container[arides=[" + availableRides + "]," + Main.CR + " drides=[" + doneRides + "]," + Main.CR + " srides=[" + selectedRides + "]," + Main.CR + "cars=[" + cars + "], map=" + map
+		return "Container[arides=[" + availableRides + "]," + MainRunner.CR + " drides=[" + doneRides + "]," + MainRunner.CR + " srides=[" + selectedRides + "]," + MainRunner.CR + "cars=[" + cars + "], map=" + map
 				+ ", bonus=" + bonus + ", maxTurn=" + maxTurn + "]";
 	}
 	

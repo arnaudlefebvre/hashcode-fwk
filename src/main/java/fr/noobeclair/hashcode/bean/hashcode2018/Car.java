@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 
-import fr.noobeclair.hashcode.Main;
+import fr.noobeclair.hashcode.MainRunner;
 import fr.noobeclair.hashcode.bean.Bean;
 
 public class Car extends Bean {
@@ -207,7 +207,7 @@ public class Car extends Bean {
 	
 	@Override
 	public String toString() {
-		return "Car [id=" + id + ", pos=" + pos + ", ride=" + ride + ", available=" + available + ", finishTurn=" + finishTurn + ",  score=" + curScore + "]" + Main.CR;
+		return "Car [id=" + id + ", pos=" + pos + ", ride=" + ride + ", available=" + available + ", finishTurn=" + finishTurn + ",  score=" + curScore + "]" + MainRunner.CR;
 	}
 	
 	@Override

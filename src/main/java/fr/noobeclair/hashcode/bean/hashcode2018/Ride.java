@@ -2,7 +2,7 @@ package fr.noobeclair.hashcode.bean.hashcode2018;
 
 import java.util.StringTokenizer;
 
-import fr.noobeclair.hashcode.Main;
+import fr.noobeclair.hashcode.MainRunner;
 import fr.noobeclair.hashcode.bean.Bean;
 
 public class Ride extends Bean {
@@ -224,7 +224,7 @@ public class Ride extends Bean {
 	
 	@Override
 	public String toString() {
-		return "Ride [id=" + id + ", start=" + start + ", end=" + end + ", points=" + getPoints() + ", tripSt=" + tripSt + ", tripEnd=" + tripEnd + "]" + Main.CR;
+		return "Ride [id=" + id + ", start=" + start + ", end=" + end + ", points=" + getPoints() + ", tripSt=" + tripSt + ", tripEnd=" + tripEnd + "]" + MainRunner.CR;
 	}
 	
 }

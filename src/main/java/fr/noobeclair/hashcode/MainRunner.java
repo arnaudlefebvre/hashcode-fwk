@@ -41,9 +41,9 @@ import fr.noobeclair.hashcode.worker.SimpleConfWorker;
 import fr.noobeclair.hashcode.worker.SimpleWorker;
 import fr.noobeclair.hashcode.worker.WorkerFactory;
 
-public class Main {
+public class MainRunner {
 	public static final String CR = "\r";
-	private static final Logger logger = LogManager.getLogger(Main.class);
+	private static final Logger logger = LogManager.getLogger(MainRunner.class);
 	// 1 - create � worker.
 	// 2 - workers use � reader to read input
 	// 3 - worker use � solver which provide � solution
