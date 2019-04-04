@@ -21,29 +21,33 @@ public class DoubleConfigParam<C extends Config> extends ConfigParam<C> {
 	
 	public DoubleConfigParam(String fieldname, TYPE type, String min, String max, String step, ConfGenerable cf) {
 		super(fieldname, type, min, max, step, cf);
-		this.maxi = Double.parseDouble(min);
-		this.mini = Double.parseDouble(max);
+		init(min, max, step);
+	}
+	
+	private void init(String min, String max, String step) {
+		this.mini = Double.parseDouble(min);
+		this.maxi = Double.parseDouble(max);
 		this.stepi = Double.parseDouble(step);
 	}
 	
 	@Override
 	public C go(C config) {
+		init(min, max, step);
 		if (StringUtils.isEmpty(current)) {
 			cur = mini;
+		} else {
+			cur = Double.parseDouble(current);
 		}
-		if (cur < maxi) {
-			for (Field f : config.getClass().getFields()) {
-				if (f.getName().equals(this.fieldName)) {
-					f.setAccessible(true);
-					try {
-						f.setDouble(config, cur);
-					} catch (IllegalArgumentException | IllegalAccessException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				
+		if (cur <= maxi) {
+			try {
+				Field f = config.getClass().getDeclaredField(this.fieldName);
+				f.setAccessible(true);
+				f.set(config, cur);
+			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+			
 			cur = cur + stepi;
 		} else {
 			return null;
@@ -51,5 +55,16 @@ public class DoubleConfigParam<C extends Config> extends ConfigParam<C> {
 		
 		current = cur.toString();
 		return config;
+	}
+	
+	@Override
+	public Integer getNb() {
+		return (int) ((maxi - mini) / stepi) + 1;
+	}
+	
+	@Override
+	protected String getValFromStep(String step) {
+		Double i = Double.parseDouble(step);
+		return "" + (mini + (stepi * i));
 	}
 }

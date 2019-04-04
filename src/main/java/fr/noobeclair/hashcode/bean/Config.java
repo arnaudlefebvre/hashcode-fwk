@@ -56,6 +56,23 @@ public abstract class Config {
 		super();
 	}
 	
+	public Config(Config c) {
+		this.statisticKeysToWriteToCSV = c.statisticKeysToWriteToCSV;
+		this.csvStatsPath = c.csvStatsPath;
+		this.flushOpt = c.flushOpt;
+		this.csvSeparator = c.csvSeparator;
+		this.progressBar = c.progressBar;
+	}
+	
+	public Config(List<Integer> statisticKeysToWriteToCSV, String csvStatsPath, FLUSH_CSV_STATS flushOpt, String csvSeparator, boolean progressBar) {
+		super();
+		this.statisticKeysToWriteToCSV = statisticKeysToWriteToCSV;
+		this.csvStatsPath = csvStatsPath;
+		this.flushOpt = flushOpt;
+		this.csvSeparator = csvSeparator;
+		this.progressBar = progressBar;
+	}
+	
 	protected Config(List<Integer> statisticKeysToWriteToCSV, String csvStatsPath) {
 		super();
 		this.statisticKeysToWriteToCSV = statisticKeysToWriteToCSV;

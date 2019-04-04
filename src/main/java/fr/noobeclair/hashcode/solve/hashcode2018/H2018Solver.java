@@ -137,12 +137,14 @@ public class H2018Solver extends ConfigSolver<H2018BeanContainer, H2018Config> {
 	
 	@Override
 	public String toString() {
-		return "H2018Solver [totalScore=" + totalScore + ", arides=[" + arides + "]," + MainRunner.CR + " drides=[" + drides + "]," + MainRunner.CR + " srides=[" + srides + "]," + MainRunner.CR + "cars=[" + cars
+		return "H2018Solver [totalScore=" + totalScore + ", arides=[" + arides + "]," + MainRunner.CR + " drides=[" + drides + "]," + MainRunner.CR + " srides=[" + srides + "]," + MainRunner.CR
+				+ "cars=[" + cars
 				+ "], map=" + map + ", bonus=" + bonus + ", maxTurn=" + maxTurn + "]";
 	}
 	
 	public String toSMintring() {
-		return "H2018Solver [totalScore=" + totalScore + ", arides=[" + arides.size() + "]," + MainRunner.CR + " drides=[" + drides.size() + "]," + MainRunner.CR + " srides=[" + srides.size() + "]," + MainRunner.CR
+		return "H2018Solver [totalScore=" + totalScore + ", arides=[" + arides.size() + "]," + MainRunner.CR + " drides=[" + drides.size() + "]," + MainRunner.CR + " srides=[" + srides.size() + "],"
+				+ MainRunner.CR
 				+ "cars=[" + cars + "], map=" + map + ", bonus=" + bonus + ", maxTurn=" + maxTurn + "]";
 	}
 	
@@ -152,17 +154,17 @@ public class H2018Solver extends ConfigSolver<H2018BeanContainer, H2018Config> {
 			stats.put(StatsConstants.CF_STRAT, Arrays.toString(config.getCarStrategies().toArray()));
 			stats.put(StatsConstants.CF_TTFC, "" + config.getTimeToFinishCoef());
 			stats.put(StatsConstants.CF_NTFCT, "" + config.getNearTravelAdjustFct());
-			stats.put(StatsConstants.CF_LTFCT, "" + config.getLongTravelAdjustFct());
-			stats.put(StatsConstants.CF_NDFCT, "" + config.getNearDistAdjustFct());
-			stats.put(StatsConstants.CF_LDFCT, "" + config.getLongDistAdjustFct());
-			stats.put(StatsConstants.CF_NAT, "" + config.getNearATravelMethodCst());
-			stats.put(StatsConstants.CF_NBT, "" + config.getNearBTravelMethodCst());
-			stats.put(StatsConstants.CF_NAD, "" + config.getNearADistMethodCst());
-			stats.put(StatsConstants.CF_NBD, "" + config.getNearBDistMethodCst());
-			stats.put(StatsConstants.CF_LAT, "" + config.getLongATravelMethodCst());
-			stats.put(StatsConstants.CF_LBT, "" + config.getLongBTravelMethodCst());
-			stats.put(StatsConstants.CF_LAD, "" + config.getLongADistMethodCst());
-			stats.put(StatsConstants.CF_LBD, "" + config.getLongBDistMethodCst());
+			//			stats.put(StatsConstants.CF_LTFCT, "" + config.getLongTravelAdjustFct());
+			//			stats.put(StatsConstants.CF_NDFCT, "" + config.getNearDistAdjustFct());
+			//			stats.put(StatsConstants.CF_LDFCT, "" + config.getLongDistAdjustFct());
+			//			stats.put(StatsConstants.CF_NAT, "" + config.getNearATravelMethodCst());
+			//			stats.put(StatsConstants.CF_NBT, "" + config.getNearBTravelMethodCst());
+			//			stats.put(StatsConstants.CF_NAD, "" + config.getNearADistMethodCst());
+			//			stats.put(StatsConstants.CF_NBD, "" + config.getNearBDistMethodCst());
+			//			stats.put(StatsConstants.CF_LAT, "" + config.getLongATravelMethodCst());
+			//			stats.put(StatsConstants.CF_LBT, "" + config.getLongBTravelMethodCst());
+			//			stats.put(StatsConstants.CF_LAD, "" + config.getLongADistMethodCst());
+			//			stats.put(StatsConstants.CF_LBD, "" + config.getLongBDistMethodCst());
 		}
 	}
 	

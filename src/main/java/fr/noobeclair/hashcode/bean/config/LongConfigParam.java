@@ -22,6 +22,10 @@ public class LongConfigParam<C extends Config> extends ConfigParam<C> {
 	
 	public LongConfigParam(String fieldname, TYPE type, String min, String max, String step, ConfGenerable cf) {
 		super(fieldname, type, min, max, step, cf);
+		init(min, max, step);
+	}
+	
+	private void init(String min, String max, String step) {
 		this.maxi = Long.parseLong(min);
 		this.mini = Long.parseLong(max);
 		this.stepi = Long.parseLong(step);
@@ -31,19 +35,17 @@ public class LongConfigParam<C extends Config> extends ConfigParam<C> {
 	public C go(C config) {
 		if (StringUtils.isEmpty(current)) {
 			cur = mini;
+		} else {
+			cur = Long.parseLong(current);
 		}
 		if (cur < maxi) {
-			for (Field f : config.getClass().getFields()) {
-				if (f.getName().equals(this.fieldName)) {
-					f.setAccessible(true);
-					try {
-						f.setLong(config, cur);
-					} catch (IllegalArgumentException | IllegalAccessException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				
+			try {
+				Field f = config.getClass().getDeclaredField(this.fieldName);
+				f.setAccessible(true);
+				f.set(config, cur);
+			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			cur = cur + stepi;
 		} else {
@@ -54,4 +56,14 @@ public class LongConfigParam<C extends Config> extends ConfigParam<C> {
 		return config;
 	}
 	
+	@Override
+	public Integer getNb() {
+		return (int) ((maxi - mini) / stepi) + 1;
+	}
+	
+	@Override
+	protected String getValFromStep(String step) {
+		Long i = Long.parseLong(step);
+		return "" + (mini + (stepi * i));
+	}
 }

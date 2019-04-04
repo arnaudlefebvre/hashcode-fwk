@@ -12,6 +12,10 @@ import fr.noobeclair.hashcode.bean.ConfigFactory;
 public @interface ConfGenerable {
 	ConfigFactory.TYPE type();
 	
+	Class<? extends Enum> eClass() default Enum.class;
+	
+	String[] excludes() default {};
+	
 	String min() default "";
 	
 	String max() default "";

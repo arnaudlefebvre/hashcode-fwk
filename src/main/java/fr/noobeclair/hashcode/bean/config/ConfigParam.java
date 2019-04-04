@@ -6,7 +6,17 @@ import fr.noobeclair.hashcode.annotation.ConfGenerable;
 import fr.noobeclair.hashcode.bean.Config;
 import fr.noobeclair.hashcode.bean.ConfigFactory;
 
-public class ConfigParam<C extends Config> {
+/**
+ * @author arnaud
+ *
+ * @param <C>
+ */
+/**
+ * @author arnaud
+ *
+ * @param <C>
+ */
+public class ConfigParam<C extends Config> implements Comparable<ConfigParam<C>> {
 	
 	protected ConfigFactory.TYPE type;
 	protected String min;
@@ -16,6 +26,7 @@ public class ConfigParam<C extends Config> {
 	
 	protected String fieldName = StringUtils.EMPTY;
 	protected String current = StringUtils.EMPTY;
+	protected Integer nb = null;
 	
 	public ConfigParam() {
 		// TODO Auto-generated constructor stub
@@ -70,4 +81,63 @@ public class ConfigParam<C extends Config> {
 	public void reset() {
 		this.current = StringUtils.EMPTY;
 	}
+	
+	public void reset(String i) {
+		if ("0".equals(i)) {
+			reset();
+		} else {
+			this.current = getValFromStep(i);
+		}
+	}
+	
+	protected String getValFromStep(String step) {
+		return StringUtils.EMPTY;
+	}
+	
+	public Integer getNbConf() {
+		if (nb == null) {
+			nb = getNb();
+		}
+		return nb;
+	}
+	
+	public Integer getNb() {
+		return 0;
+	}
+	
+	@Override
+	public int compareTo(ConfigParam<C> o) {
+		int thisnb = this.getNbConf();
+		int onb = o.getNbConf();
+		if (thisnb > onb) {
+			return 1;
+		} else if (thisnb < onb) {
+			return -1;
+		} else {
+			return 0;
+		}
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ConfigParam [");
+		if (type != null) {
+			builder.append("type=");
+			builder.append(type);
+			builder.append(", ");
+		}
+		if (fieldName != null) {
+			builder.append("fieldName=");
+			builder.append(fieldName);
+			builder.append(", ");
+		}
+		if (nb != null) {
+			builder.append("nb=");
+			builder.append(nb);
+		}
+		builder.append("]");
+		return builder.toString();
+	}
+	
 }
