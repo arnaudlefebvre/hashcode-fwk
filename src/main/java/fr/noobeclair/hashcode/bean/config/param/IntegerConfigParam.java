@@ -1,34 +1,34 @@
-package fr.noobeclair.hashcode.bean.config;
+package fr.noobeclair.hashcode.bean.config.param;
 
 import java.lang.reflect.Field;
 
 import org.apache.commons.lang3.StringUtils;
 
 import fr.noobeclair.hashcode.annotation.ConfGenerable;
-import fr.noobeclair.hashcode.bean.Config;
-import fr.noobeclair.hashcode.bean.ConfigFactory.TYPE;
+import fr.noobeclair.hashcode.bean.config.AbstractFactory;
+import fr.noobeclair.hashcode.bean.config.Config;
 
-public class LongConfigParam<C extends Config> extends ConfigParam<C> {
+public class IntegerConfigParam<C extends Config> extends ConfigParam<C> {
 	
-	Long mini;
-	Long maxi;
-	Long stepi;
+	Integer mini;
+	Integer maxi;
+	Integer stepi;
 	
-	Long cur;
+	Integer cur;
 	
-	public LongConfigParam() {
+	public IntegerConfigParam() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public LongConfigParam(String fieldname, TYPE type, String min, String max, String step, ConfGenerable cf) {
+	public IntegerConfigParam(String fieldname, AbstractFactory.TYPE type, String min, String max, String step, ConfGenerable cf) {
 		super(fieldname, type, min, max, step, cf);
 		init(min, max, step);
 	}
 	
 	private void init(String min, String max, String step) {
-		this.maxi = Long.parseLong(min);
-		this.mini = Long.parseLong(max);
-		this.stepi = Long.parseLong(step);
+		this.mini = Integer.parseInt(min);
+		this.maxi = Integer.parseInt(max);
+		this.stepi = Integer.parseInt(step);
 	}
 	
 	@Override
@@ -36,7 +36,7 @@ public class LongConfigParam<C extends Config> extends ConfigParam<C> {
 		if (StringUtils.isEmpty(current)) {
 			cur = mini;
 		} else {
-			cur = Long.parseLong(current);
+			cur = Integer.parseInt(current);
 		}
 		if (cur < maxi) {
 			try {
@@ -58,12 +58,12 @@ public class LongConfigParam<C extends Config> extends ConfigParam<C> {
 	
 	@Override
 	public Integer getNb() {
-		return (int) ((maxi - mini) / stepi) + 1;
+		return (maxi - mini) / stepi + 1;
 	}
 	
 	@Override
 	protected String getValFromStep(String step) {
-		Long i = Long.parseLong(step);
+		Integer i = Integer.parseInt(step);
 		return "" + (mini + (stepi * i));
 	}
 }

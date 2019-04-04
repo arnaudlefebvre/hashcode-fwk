@@ -1,10 +1,10 @@
-package fr.noobeclair.hashcode.bean.config;
+package fr.noobeclair.hashcode.bean.config.param;
 
 import org.apache.commons.lang3.StringUtils;
 
 import fr.noobeclair.hashcode.annotation.ConfGenerable;
-import fr.noobeclair.hashcode.bean.Config;
-import fr.noobeclair.hashcode.bean.ConfigFactory;
+import fr.noobeclair.hashcode.bean.config.AbstractFactory;
+import fr.noobeclair.hashcode.bean.config.Config;
 
 /**
  * @author arnaud
@@ -18,7 +18,7 @@ import fr.noobeclair.hashcode.bean.ConfigFactory;
  */
 public class ConfigParam<C extends Config> implements Comparable<ConfigParam<C>> {
 	
-	protected ConfigFactory.TYPE type;
+	protected AbstractFactory.TYPE type;
 	protected String min;
 	protected String max;
 	protected String step;
@@ -32,7 +32,7 @@ public class ConfigParam<C extends Config> implements Comparable<ConfigParam<C>>
 		// TODO Auto-generated constructor stub
 	}
 	
-	public ConfigParam(String fieldname, ConfigFactory.TYPE type, String min, String max, String step, ConfGenerable cf) {
+	public ConfigParam(String fieldname, AbstractFactory.TYPE type, String min, String max, String step, ConfGenerable cf) {
 		super();
 		this.fieldName = fieldname;
 		this.type = type;
@@ -42,11 +42,11 @@ public class ConfigParam<C extends Config> implements Comparable<ConfigParam<C>>
 		this.cf = cf;
 	}
 	
-	public ConfigFactory.TYPE getType() {
+	public AbstractFactory.TYPE getType() {
 		return type;
 	}
 	
-	public void setType(ConfigFactory.TYPE type) {
+	public void setType(AbstractFactory.TYPE type) {
 		this.type = type;
 	}
 	
@@ -110,9 +110,9 @@ public class ConfigParam<C extends Config> implements Comparable<ConfigParam<C>>
 		int thisnb = this.getNbConf();
 		int onb = o.getNbConf();
 		if (thisnb > onb) {
-			return 1;
-		} else if (thisnb < onb) {
 			return -1;
+		} else if (thisnb < onb) {
+			return 1;
 		} else {
 			return 0;
 		}

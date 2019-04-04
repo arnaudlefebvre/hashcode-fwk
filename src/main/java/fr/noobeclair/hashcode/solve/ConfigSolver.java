@@ -3,7 +3,7 @@ package fr.noobeclair.hashcode.solve;
 import java.util.TreeMap;
 
 import fr.noobeclair.hashcode.bean.BeanContainer;
-import fr.noobeclair.hashcode.bean.Config;
+import fr.noobeclair.hashcode.bean.config.Config;
 import fr.noobeclair.hashcode.utils.ProgressBar;
 
 /**

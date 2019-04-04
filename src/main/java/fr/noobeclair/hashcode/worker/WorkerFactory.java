@@ -8,7 +8,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import com.google.common.base.Preconditions;
 
 import fr.noobeclair.hashcode.bean.BeanContainer;
-import fr.noobeclair.hashcode.bean.Config;
+import fr.noobeclair.hashcode.bean.config.Config;
 import fr.noobeclair.hashcode.in.InReader;
 import fr.noobeclair.hashcode.out.OutWriter;
 import fr.noobeclair.hashcode.score.ScoreCalculator;

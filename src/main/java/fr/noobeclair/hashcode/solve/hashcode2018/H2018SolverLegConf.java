@@ -13,15 +13,14 @@ import org.apache.commons.collections4.CollectionUtils;
 import fr.noobeclair.hashcode.MainRunner;
 import fr.noobeclair.hashcode.bean.hashcode2018.Car;
 import fr.noobeclair.hashcode.bean.hashcode2018.CityMap;
+import fr.noobeclair.hashcode.bean.hashcode2018.H18LegConf;
 import fr.noobeclair.hashcode.bean.hashcode2018.H2018BeanContainer;
-import fr.noobeclair.hashcode.bean.hashcode2018.H2018Config;
 import fr.noobeclair.hashcode.bean.hashcode2018.Ride;
 import fr.noobeclair.hashcode.solve.ConfigSolver;
 import fr.noobeclair.hashcode.solve.StatsConstants;
-import fr.noobeclair.hashcode.utils.FixedStack;
 import fr.noobeclair.hashcode.utils.ProgressBar;
 
-public class H2018Solver extends ConfigSolver<H2018BeanContainer, H2018Config> {
+public class H2018SolverLegConf extends ConfigSolver<H2018BeanContainer, H18LegConf> {
 	
 	public List<Ride> arides;
 	public List<Ride> drides;
@@ -33,16 +32,16 @@ public class H2018Solver extends ConfigSolver<H2018BeanContainer, H2018Config> {
 	private Integer curScore;
 	private Integer totalScore;
 	
-	public H2018Solver() {
+	public H2018SolverLegConf() {
 		super();
 	}
 	
-	public H2018Solver(String name, H2018Config config) {
+	public H2018SolverLegConf(String name, H18LegConf config) {
 		super(name);
 		this.config = config;
 	}
 	
-	public H2018Solver(String name, Long timeout, H2018Config config) {
+	public H2018SolverLegConf(String name, Long timeout, H18LegConf config) {
 		super(name, timeout);
 		this.config = config;
 	}
@@ -114,61 +113,13 @@ public class H2018Solver extends ConfigSolver<H2018BeanContainer, H2018Config> {
 		return this.data;
 	}
 	
-	private Integer getMin(FixedStack<Ride> arides) {
-		int min = Integer.MAX_VALUE;
-		List<Ride> rides = arides.toList();
-		if (rides.size() != arides.size()) {
-			return Integer.MIN_VALUE;
-		}
-		for (Ride r : rides) {
-			int score = r.score;
-			if (r.score < min) {
-				min = r.score;
-			}
-		}
-		return min;
-	}
-	
-	private Ride getRideForCar(Car c, List<Ride> arides, int ct) {
-		Car copy = new Car(c);
-		return null;
-	}
-	
-	private List<Ride> listBestMatchesForCar(Car c, List<Ride> arides, int ct) {
-		//Seuil calculé par rappot à la diagonale ? racine de (long² + larg ²)
-		
-		curScore = 0;
-		Integer max = Integer.MIN_VALUE;
-		FixedStack<Ride> rides = new FixedStack<>(5);
-		Ride selected = null;
-		int score = 0;
-		for (Ride r : arides) {
-			score = c.getScoreForRide(r, ct, bonus, maxTurn, config, c.pos);
-			
-			if (score > max) {
-				//				max = score;
-				r.setScore(score);
-				rides.push(r);
-				rides.sort();
-				max = getMin(rides);
-			}
-			// logger.info("Score : car {}, current ride {}, score {}, max {}, selected {}",
-			// c, r, score, max, selected);
-		}
-		curScore = max;
-		if (selected == null) {
-			logger.info("Score : car {},  score {}, max {}, selected {}", c, score, max, selected);
-		}
-		return rides.toList();
-	}
-	
 	private Ride getPerfectForCar(Car c, List<Ride> arides, int ct) {
 		curScore = 0;
 		Integer max = Integer.MIN_VALUE;
 		Ride selected = null;
 		int score = 0;
 		for (Ride r : arides) {
-			score = c.getScoreForRide(r, ct, bonus, maxTurn, config, c.pos);
+			score = c.getScoreForRide(r, ct, bonus, maxTurn, config);
 			
 			if (max < score) {
 				max = score;

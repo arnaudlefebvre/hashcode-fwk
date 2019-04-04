@@ -178,10 +178,16 @@ public class Car extends Bean {
 	// return score.intValue();
 	//
 	// }
-	
-	public int getScoreForRide(Ride r, Integer turn, Integer bonus, Integer maxTurn, H2018Config conf) {
+	public int getSimpleScore(Ride r, Integer turn, Integer bonus, Integer maxTurn, H2018Config conf) {
 		Double d = new Double(r.getPoints());
 		Double t = new Double(this.pos.distance(r.getStart()));
+		Double score = d + t;
+		return score.intValue();
+	}
+	
+	public int getScoreForRide(Ride r, Integer turn, Integer bonus, Integer maxTurn, H2018Config conf, Point thisPos) {
+		Double d = new Double(r.getPoints());
+		Double t = new Double(thisPos.distance(r.getStart()));
 		Double ratio = conf.adjustTimeWhenFinishRatio(t, d, turn, maxTurn);
 		
 		t = conf.adjustNearTravel(t);
@@ -201,6 +207,7 @@ public class Car extends Bean {
 		// logger.debug("score {}, turn {}, max turn {}, d {}, t {}, goSt {}, totalTrip
 		// {}, availability {}, bonus {}", score, turn, maxTurn, d, t, goStart,
 		// totalTrip, availabililty, abonus);
+		
 		return score.intValue();
 		
 	}

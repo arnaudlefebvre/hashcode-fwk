@@ -1,4 +1,4 @@
-package fr.noobeclair.hashcode.bean;
+package fr.noobeclair.hashcode.bean.config;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -8,17 +8,14 @@ import java.util.List;
 import com.google.common.base.Preconditions;
 
 import fr.noobeclair.hashcode.annotation.ConfGenerable;
-import fr.noobeclair.hashcode.bean.config.BigDecConfigParam;
-import fr.noobeclair.hashcode.bean.config.ConfigParam;
-import fr.noobeclair.hashcode.bean.config.DoubleConfigParam;
-import fr.noobeclair.hashcode.bean.config.EnumConfigParam;
-import fr.noobeclair.hashcode.bean.config.IntegerConfigParam;
-import fr.noobeclair.hashcode.bean.config.LongConfigParam;
+import fr.noobeclair.hashcode.bean.config.param.BigDecConfigParam;
+import fr.noobeclair.hashcode.bean.config.param.ConfigParam;
+import fr.noobeclair.hashcode.bean.config.param.DoubleConfigParam;
+import fr.noobeclair.hashcode.bean.config.param.EnumConfigParam;
+import fr.noobeclair.hashcode.bean.config.param.IntegerConfigParam;
+import fr.noobeclair.hashcode.bean.config.param.LongConfigParam;
 
-public class ConfigFactory<C extends Config> {
-	public enum TYPE {
-		INT, LONG, DOUBLE, BIGDEC, BOOLEAN, ENUM
-	}
+public class ConfigFactory<C extends Config> extends AbstractFactory<C> {
 	
 	Class<C> c;
 	List<ConfigParam<C>> cfgparams = new ArrayList<>();
@@ -26,9 +23,10 @@ public class ConfigFactory<C extends Config> {
 	C emptyConf = null;
 	
 	public ConfigFactory(Class<C> c) {
-		this.c = c;
+		super(c);
 	}
 	
+	@Override
 	public List<C> generate(C config) throws InstantiationException, IllegalAccessException {
 		result = new ArrayList<>();
 		cfgparams = new ArrayList<>();
@@ -207,10 +205,10 @@ public class ConfigFactory<C extends Config> {
 		
 		Preconditions.checkNotNull("ConFGenerable.TYPE is required ", cf.type());
 		TYPE type = cf.type();
-		if (ConfigFactory.TYPE.ENUM == type || ConfigFactory.TYPE.BOOLEAN == type) {
-			if (ConfigFactory.TYPE.ENUM == type) {
+		if (AbstractFactory.TYPE.ENUM == type || AbstractFactory.TYPE.BOOLEAN == type) {
+			if (AbstractFactory.TYPE.ENUM == type) {
 				Preconditions.checkNotNull("ConFGenerable.eClass is required ", cf.eClass());
-				cfgparams.add(new EnumConfigParam<C>(f.getName(), type, cf, cf.eClass(), cf.excludes()));
+				cfgparams.add(new EnumConfigParam<C>(f.getName(), type, cf, cf.eClass(), cf.excludes(), null));
 			}
 		} else {
 			String min = cf.min();

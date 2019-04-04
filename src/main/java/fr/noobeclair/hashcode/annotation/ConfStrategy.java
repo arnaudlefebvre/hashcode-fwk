@@ -1,18 +1,19 @@
 package fr.noobeclair.hashcode.annotation;
 
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import fr.noobeclair.hashcode.bean.config.AbstractFactory;
-
-@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Retention(RUNTIME)
 @Target(ElementType.FIELD)
-public @interface ConfGenerable {
-	AbstractFactory.TYPE type();
-	
-	Class<? extends Enum> eClass() default Enum.class;
+@Repeatable(ConfStrategiesAnnotation.class)
+public @interface ConfStrategy {
+	String id();
 	
 	String[] excludes() default {};
 	
@@ -23,5 +24,4 @@ public @interface ConfGenerable {
 	String max() default "";
 	
 	String step() default "1";
-	
 }

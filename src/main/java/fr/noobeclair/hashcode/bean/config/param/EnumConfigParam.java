@@ -1,15 +1,16 @@
-package fr.noobeclair.hashcode.bean.config;
+package fr.noobeclair.hashcode.bean.config.param;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fr.noobeclair.hashcode.annotation.ConfGenerable;
-import fr.noobeclair.hashcode.bean.Config;
-import fr.noobeclair.hashcode.bean.ConfigFactory.TYPE;
+import fr.noobeclair.hashcode.bean.config.AbstractFactory.TYPE;
+import fr.noobeclair.hashcode.bean.config.Config;
 
 public class EnumConfigParam<C extends Config> extends ConfigParam<C> {
 	
@@ -21,12 +22,13 @@ public class EnumConfigParam<C extends Config> extends ConfigParam<C> {
 	Object[] val;
 	Class<? extends Enum> enumClass;
 	String[] excludes;
+	String[] includes;
 	
 	public EnumConfigParam() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public EnumConfigParam(String fieldname, TYPE type, ConfGenerable cf, Class<? extends Enum> enumClass, String[] excludes) {
+	public EnumConfigParam(String fieldname, TYPE type, ConfGenerable cf, Class<? extends Enum> enumClass, String[] excludes, String[] includes) {
 		super(fieldname, type, "0", "0", "1", cf);
 		this.enumClass = enumClass;
 		Field f;
@@ -44,6 +46,22 @@ public class EnumConfigParam<C extends Config> extends ConfigParam<C> {
 			e.printStackTrace();
 		}
 		this.excludes = excludes;
+		this.includes = includes;
+		//		if (ArrayUtils.isNotEmpty(this.excludes) && ArrayUtils.isNotEmpty(this.includes)) {
+		//			throw RuntimeException("Includes or Excludes")
+		//		}
+		
+		if (ArrayUtils.isNotEmpty(this.includes)) {
+			initIncludes();
+		} else if (ArrayUtils.isNotEmpty(this.excludes)) {
+			initExcludes();
+		}
+		
+		this.max = "" + (val.length);
+		init(min, max, "1");
+	}
+	
+	private void initExcludes() {
 		Object[] tmp = new Object[(val.length - (this.excludes != null ? this.excludes.length : 0))];
 		if (this.excludes != null && this.excludes.length > 0) {
 			int id = 0;
@@ -55,8 +73,20 @@ public class EnumConfigParam<C extends Config> extends ConfigParam<C> {
 			}
 			this.val = tmp;
 		}
-		this.max = "" + (val.length);
-		init(min, max, step);
+	}
+	
+	private void initIncludes() {
+		Object[] tmp = new Object[(this.includes != null ? this.includes.length : 0)];
+		if (this.includes != null && this.includes.length > 0) {
+			int id = 0;
+			for (int i = 0; i < val.length; i++) {
+				if (Arrays.asList(this.includes).contains(getValName(i))) {
+					tmp[id] = val[i];
+					id = id + 1;
+				}
+			}
+			this.val = tmp;
+		}
 	}
 	
 	private void init(String min, String max, String step) {

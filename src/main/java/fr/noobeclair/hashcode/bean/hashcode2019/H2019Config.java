@@ -3,7 +3,7 @@
  */
 package fr.noobeclair.hashcode.bean.hashcode2019;
 
-import fr.noobeclair.hashcode.bean.Config;
+import fr.noobeclair.hashcode.bean.config.Config;
 
 /**
  * @author arnaud

@@ -1,4 +1,4 @@
-package fr.noobeclair.hashcode.bean;
+package fr.noobeclair.hashcode.bean.config;
 
 import java.util.List;
 
@@ -44,7 +44,7 @@ public abstract class Config {
 	 * May be overrided if you want to write stats into a csv file indicates when
 	 * datas will be flushed to file by the worker.
 	 * 
-	 * @see fr.noobeclair.hashcode.bean.Config.FLUSH_CSV_STATS
+	 * @see fr.noobeclair.hashcode.bean.config.Config.FLUSH_CSV_STATS
 	 */
 	protected FLUSH_CSV_STATS flushOpt = FLUSH_CSV_STATS.EACH_RUN;
 	

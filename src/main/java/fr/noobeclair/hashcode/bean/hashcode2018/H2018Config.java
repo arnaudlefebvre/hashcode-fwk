@@ -7,49 +7,40 @@ import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 
 import fr.noobeclair.hashcode.annotation.ConfGenerable;
-import fr.noobeclair.hashcode.bean.Config;
-import fr.noobeclair.hashcode.bean.ConfigFactory.TYPE;
+import fr.noobeclair.hashcode.annotation.ConfStratEnabled;
+import fr.noobeclair.hashcode.annotation.ConfStrategy;
+import fr.noobeclair.hashcode.bean.config.AbstractFactory.TYPE;
+import fr.noobeclair.hashcode.bean.config.Config;
 import fr.noobeclair.hashcode.solve.StatsConstants;
 
+// ConfStrategies = { @ConfStrategies (name, fiels = {@ConfField {min, max,
+// step, excludes})}
+@ConfStratEnabled(enabled = { "LONG" })
 public class H2018Config extends Config {
 	
-	private static final List<Integer> CSV_CST = Arrays.asList(StatsConstants.CF_STRAT, StatsConstants.SCORE, StatsConstants.TIME_TOTAL, StatsConstants.ITEM0_TOTAL, StatsConstants.IN_0,
+	protected static final List<Integer> CSV_CST = Arrays.asList(StatsConstants.CF_STRAT, StatsConstants.SCORE, StatsConstants.TIME_TOTAL, StatsConstants.ITEM0_TOTAL, StatsConstants.IN_0,
 			StatsConstants.IN_1,
 			StatsConstants.CF_TTFC, StatsConstants.CF_NTFCT, StatsConstants.CF_NDFCT, StatsConstants.CF_LTFCT, StatsConstants.CF_LDFCT, StatsConstants.CF_NAT, StatsConstants.CF_NBT,
 			StatsConstants.CF_NAD, StatsConstants.CF_NBD, StatsConstants.CF_LAT, StatsConstants.CF_LBT, StatsConstants.CF_LAD, StatsConstants.CF_LBD);
-	private static final String CSV_PATH = "src/main/resources/out/2018/global-stats.csv";
+	protected static final String CSV_PATH = "src/main/resources/out/2018/global-stats.csv";
 	
-	private Double timeToFinishCoef;
+	@ConfStrategy(id = "LONG", includes = { "LONG_FIRST" })
+	@ConfGenerable(type = TYPE.DOUBLE, min = "1", max = "2", step = "1")
+	protected Double timeToFinishCoef;
 	
-	@ConfGenerable(type = TYPE.ENUM, eClass = AdjustMethod.class, excludes = { "LN", "POW" })
-	private AdjustMethod nearTravelAdjustFct;
-	//	private AdjustMethod longTravelAdjustFct;
-	@ConfGenerable(type = TYPE.ENUM, eClass = AdjustMethod.class, excludes = { "LN", "POW" })
-	private AdjustMethod nearDistAdjustFct;
-	//	private AdjustMethod longDistAdjustFct;
+	@ConfStrategy(id = "LONG")
+	@ConfGenerable(type = TYPE.BOOLEAN)
+	protected Boolean addQuickStrat = true;
 	
-	@ConfGenerable(type = TYPE.DOUBLE, min = "1", max = "16", step = "5")
-	private Double nearATravelMethodCst;
-	@ConfGenerable(type = TYPE.DOUBLE, min = "0", max = "10", step = "5")
-	private Double nearBTravelMethodCst;
-	@ConfGenerable(type = TYPE.DOUBLE, min = "1", max = "16", step = "5")
-	private Double nearADistMethodCst;
-	@ConfGenerable(type = TYPE.DOUBLE, min = "0", max = "10", step = "5")
-	private Double nearBDistMethodCst;
-	
+	@ConfStrategy(id = "NEAR", includes = { "NEAR_FIRST" })
+	@ConfStrategy(id = "NEAR_EXP", includes = { "NEAR_FIRST" })
+	@ConfStrategy(id = "LONG", includes = { "LONG_FIRST" })
+	@ConfStrategy(id = "LONG_EXP", includes = { "LONG_FIRST" })
+	@ConfStrategy(id = "QUICK", includes = { "QUICK_FIRST" })
 	@ConfGenerable(type = TYPE.ENUM, eClass = CarStrategy.class, excludes = { "AGGRESSIVE", "QUICK_FIRST" })
-	private CarStrategy strategy;
+	protected CarStrategy carStrategy;
 	
-	//	@ConfGenerable(type = TYPE.DOUBLE, min = "1", max = "3", step = "1")
-	//	private Double longATravelMethodCst;
-	//	@ConfGenerable(type = TYPE.DOUBLE, min = "0", max = "2", step = "1")
-	//	private Double longBTravelMethodCst;
-	//	@ConfGenerable(type = TYPE.DOUBLE, min = "1", max = "3", step = "1")
-	//	private Double longADistMethodCst;
-	//	@ConfGenerable(type = TYPE.DOUBLE, min = "0", max = "2", step = "1")
-	//	private Double longBDistMethodCst;
-	
-	private List<CarStrategy> carStrategies;
+	protected List<CarStrategy> carStrategies;
 	
 	public enum CarStrategy {
 		AGGRESSIVE, // all below
@@ -61,6 +52,65 @@ public class H2018Config extends Config {
 	public enum AdjustMethod {
 		EXP, LN, LINEAR, POW, INV
 	}
+	
+	@ConfStrategy(id = "NEAR", includes = { "LINEAR", "INV" })
+	@ConfStrategy(id = "NEAR_EXP", includes = { "EXP" })
+	@ConfStrategy(id = "LONG", includes = { "LINEAR", "INV" })
+	@ConfStrategy(id = "LONG_EXP", includes = { "EXP" })
+	@ConfStrategy(id = "QUICK")
+	@ConfGenerable(type = TYPE.ENUM, eClass = AdjustMethod.class, excludes = { "LN", "POW" })
+	//Méthode pour ajustement coup de transport avant le début de la course 
+	protected AdjustMethod nearTravelAdjustFct;
+	@ConfStrategy(id = "NEAR", includes = { "LINEAR", "INV" })
+	@ConfStrategy(id = "NEAR_EXP", includes = { "EXP" })
+	@ConfStrategy(id = "LONG", includes = { "LINEAR", "INV" })
+	@ConfStrategy(id = "LONG_EXP", includes = { "LINEAR", "INV" })
+	@ConfStrategy(id = "QUICK")
+	@ConfGenerable(type = TYPE.ENUM, eClass = AdjustMethod.class, excludes = { "LN", "POW" })
+	//Méthode pour ajustement gain de la course 
+	protected AdjustMethod nearDistAdjustFct;
+	
+	@ConfStrategy(id = "NEAR", min = "1", max = "31", step = "10")
+	@ConfStrategy(id = "NEAR_EXP", min = "1", max = "2", step = "1")
+	@ConfStrategy(id = "LONG", min = "1", max = "2.1", step = "0.3")
+	@ConfStrategy(id = "LONG_EXP", min = "1", max = "2", step = "1")
+	@ConfStrategy(id = "QUICK")
+	@ConfGenerable(type = TYPE.DOUBLE, min = "0", max = "1", step = "1")
+	//coef pour l'ajustement du coup de transport avant le début de la course (sauf exp, pow, ln)
+	protected Double nearATravelMethodCst;
+	//@ConfStrategy(id = "NEAR")
+	@ConfStrategy(id = "NEAR_EXP")
+	@ConfStrategy(id = "LONG")
+	@ConfStrategy(id = "LONG_EXP")
+	@ConfStrategy(id = "QUICK")
+	@ConfGenerable(type = TYPE.DOUBLE, min = "0", max = "0", step = "1")
+	//constante poru ajustement du coup de transport
+	protected Double nearBTravelMethodCst;
+	//@ConfStrategy(id = "NEAR", min = "1", max = "31", step = "10")
+	@ConfStrategy(id = "NEAR_EXP", min = "1", max = "2", step = "1")
+	@ConfStrategy(id = "LONG", min = "1", max = "2.5", step = "0.5")
+	@ConfStrategy(id = "LONG_EXP", min = "1", max = "2", step = "1")
+	@ConfStrategy(id = "QUICK")
+	@ConfGenerable(type = TYPE.DOUBLE, min = "1", max = "16", step = "5")
+	//coef pour l'ajustement du gain (sauf exp, pow, ln)
+	protected Double nearADistMethodCst;
+	//@ConfStrategy(id = "NEAR")
+	@ConfStrategy(id = "NEAR_EXP")
+	@ConfStrategy(id = "LONG")
+	@ConfStrategy(id = "LONG_EXP")
+	@ConfStrategy(id = "QUICK")
+	@ConfGenerable(type = TYPE.DOUBLE, min = "0", max = "0", step = "1")
+	//constant pour l'ajustement  du gain
+	protected Double nearBDistMethodCst;
+	
+	//	@ConfGenerable(type = TYPE.DOUBLE, min = "1", max = "3", step = "1")
+	//	protected Double longATravelMethodCst;
+	//	@ConfGenerable(type = TYPE.DOUBLE, min = "0", max = "2", step = "1")
+	//	protected Double longBTravelMethodCst;
+	//	@ConfGenerable(type = TYPE.DOUBLE, min = "1", max = "3", step = "1")
+	//	protected Double longADistMethodCst;
+	//	@ConfGenerable(type = TYPE.DOUBLE, min = "0", max = "2", step = "1")
+	//	protected Double longBDistMethodCst;
 	
 	public H2018Config() {
 		super(CSV_CST, CSV_PATH);
@@ -120,7 +170,7 @@ public class H2018Config extends Config {
 	}
 	
 	public Double adjustNearTravel(Double t) {
-		if (CollectionUtils.containsAny(carStrategies, Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.NEAR_FIRST))) {
+		if (CollectionUtils.containsAny(getCarStrategies(), Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.NEAR_FIRST))) {
 			switch (nearTravelAdjustFct) {
 			case EXP:
 				return Math.exp(t + nearBTravelMethodCst);
@@ -140,7 +190,7 @@ public class H2018Config extends Config {
 	}
 	
 	public Double adjustNearDist(Double t) {
-		if (CollectionUtils.containsAny(carStrategies, Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.NEAR_FIRST))) {
+		if (CollectionUtils.containsAny(getCarStrategies(), Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.NEAR_FIRST))) {
 			switch (nearDistAdjustFct) {
 			case EXP:
 				return Math.exp(t + nearBDistMethodCst);
@@ -160,7 +210,7 @@ public class H2018Config extends Config {
 	}
 	
 	public Double adjustLongTravel(Double t) {
-		if (CollectionUtils.containsAny(carStrategies, Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.NEAR_FIRST))) {
+		if (CollectionUtils.containsAny(getCarStrategies(), Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.NEAR_FIRST))) {
 			switch (nearTravelAdjustFct) {
 			case EXP:
 				return Math.exp(t + nearBTravelMethodCst);
@@ -180,7 +230,7 @@ public class H2018Config extends Config {
 	}
 	
 	public Double adjustLongDistance(Double t) {
-		if (CollectionUtils.containsAny(carStrategies, Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.LONG_FIRST))) {
+		if (CollectionUtils.containsAny(getCarStrategies(), Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.LONG_FIRST))) {
 			switch (nearDistAdjustFct) {
 			case EXP:
 				return Math.exp(t + nearBDistMethodCst);
@@ -201,7 +251,7 @@ public class H2018Config extends Config {
 	
 	public Double adjustTimeWhenFinishRatio(Double t, Double d, Integer turn, Integer maxturn) {
 		Double ratio = 0D;
-		if (CollectionUtils.containsAny(carStrategies, Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.LONG_FIRST))) {
+		if (CollectionUtils.containsAny(carStrategies, Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.LONG_FIRST)) || addQuickStrat) {
 			Double diff = maxturn - (t + d + turn);
 			if (diff > 0) {
 				ratio = diff * timeToFinishCoef;
@@ -239,9 +289,9 @@ public class H2018Config extends Config {
 		//		builder.append(longADistMethodCst);
 		//		builder.append(",lBd=");
 		//		builder.append(longBDistMethodCst);
-		if (CollectionUtils.isNotEmpty(this.carStrategies)) {
+		if (CollectionUtils.isNotEmpty(getCarStrategies())) {
 			builder.append(",st=");
-			builder.append(Arrays.toString(this.carStrategies.toArray()));
+			builder.append(Arrays.toString(getCarStrategies().toArray()));
 		}
 		builder.append("]");
 		return builder.toString();
@@ -300,12 +350,23 @@ public class H2018Config extends Config {
 	//	}
 	
 	public List<CarStrategy> getCarStrategies() {
-		return carStrategies;
+		List<CarStrategy> res = new ArrayList<>();
+		if (CollectionUtils.isNotEmpty(this.carStrategies)) {
+			res.addAll(this.carStrategies);
+		}
+		if (this.carStrategy != null && CollectionUtils.isNotEmpty(this.carStrategies) && !this.carStrategies.contains(this.carStrategy)) {
+			res.add(this.carStrategy);
+		}
+		return res;
 	}
 	
 	@Override
 	public boolean withProgressBar() {
 		return true;
+	}
+	
+	public CarStrategy getCarStrategy() {
+		return carStrategy;
 	}
 	
 }

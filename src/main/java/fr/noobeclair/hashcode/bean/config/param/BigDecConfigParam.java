@@ -1,4 +1,4 @@
-package fr.noobeclair.hashcode.bean.config;
+package fr.noobeclair.hashcode.bean.config.param;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -7,8 +7,8 @@ import java.math.RoundingMode;
 import org.apache.commons.lang3.StringUtils;
 
 import fr.noobeclair.hashcode.annotation.ConfGenerable;
-import fr.noobeclair.hashcode.bean.Config;
-import fr.noobeclair.hashcode.bean.ConfigFactory.TYPE;
+import fr.noobeclair.hashcode.bean.config.AbstractFactory.TYPE;
+import fr.noobeclair.hashcode.bean.config.Config;
 
 public class BigDecConfigParam<C extends Config> extends ConfigParam<C> {
 	
