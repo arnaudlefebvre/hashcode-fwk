@@ -109,10 +109,10 @@
 	
 	<target name="moveToArch">
 	
-		<delete includeemptydirs="true">
+		<delete includeemptydirs="true"  failonerror="false">
 		  <fileset dir="../hashcode-fwk-arch/src/main/resources/archetype-resources" includes="**/*"/>
 		</delete>
-		<copy todir="../hashcode-fwk-arch/src/main/resources/archetype-resources">
+		<copy todir="../hashcode-fwk-arch/src/main/resources/archetype-resources"  failonerror="false">
 			<fileset dir="src/main/resources/generate">
 			</fileset>		
 		</copy>		
