@@ -119,7 +119,7 @@ public class H2018SolverLegConf extends ConfigSolver<H2018BeanContainer, H18LegC
 		Ride selected = null;
 		int score = 0;
 		for (Ride r : arides) {
-			score = c.getScoreForRide(r, ct, bonus, maxTurn, config);
+			//score = c.getScoreForRide(r, ct, bonus, maxTurn, config);
 			
 			if (max < score) {
 				max = score;

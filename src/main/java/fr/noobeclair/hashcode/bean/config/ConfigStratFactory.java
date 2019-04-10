@@ -25,18 +25,18 @@ import fr.noobeclair.hashcode.bean.config.param.IntegerConfigParam;
 import fr.noobeclair.hashcode.bean.config.param.LongConfigParam;
 
 public class ConfigStratFactory<C extends Config> extends AbstractFactory<C> {
-	
+
 	List<ConfigParam<C>> cfgparams = new ArrayList<>();
 	ConfStrategies<C, ConfigParam<C>> strategies = new ConfStrategies<>();
-	
+
 	public ConfigStratFactory(Class<C> c) {
 		super(c);
 	}
-	
+
 	@Override
 	public List<C> generate(C config) throws InstantiationException, IllegalAccessException {
 		result = new ArrayList<>();
-		
+
 		C res = c.newInstance();
 		if (c.isAnnotationPresent(ConfStratEnabled.class)) {
 			ConfStratEnabled allowed = c.getAnnotation(ConfStratEnabled.class);
@@ -50,7 +50,7 @@ public class ConfigStratFactory<C extends Config> extends AbstractFactory<C> {
 					for (ConfStrategy cs : strats) {
 						validateAddConfStratParam(f, cf, cs);
 					}
-					//FIXME il faut peut etre quand mm faire une conf all avec tout ? mais désactivable ?
+					// FIXME il faut peut etre quand mm faire une conf all avec tout ? mais désactivable ?
 				} else {
 					validateAddConfParam(f, cf);
 				}
@@ -58,10 +58,10 @@ public class ConfigStratFactory<C extends Config> extends AbstractFactory<C> {
 		}
 		System.out.println("Nb conf " + calcAllTuples());
 		processStrategies();
-		System.out.println("Result " + result);
+		// System.out.println("Result " + result);
 		return result;
 	}
-	
+
 	private void processStrategies() throws InstantiationException, IllegalAccessException {
 		Iterator<Entry<String, List<ConfigParam<C>>>> it = strategies.getStrategies().entrySet().iterator();
 		while (it.hasNext()) {
@@ -71,14 +71,15 @@ public class ConfigStratFactory<C extends Config> extends AbstractFactory<C> {
 			result.addAll(tmp);
 		}
 	}
-	
-	private List<C> processConfigParam(List<ConfigParam<C>> params) throws InstantiationException, IllegalAccessException {
+
+	private List<C> processConfigParam(List<ConfigParam<C>> params)
+			throws InstantiationException, IllegalAccessException {
 		int resSize = calcTuples(params);
 		List<C> result = initEmptyResultList(params, resSize);
 		int size = params.size();
-		//Need to start to an index and then return one
+		// Need to start to an index and then return one
 		for (int i = 0; i < size; i++) {
-			
+
 			int nbConf = params.get(i).getNbConf();
 			int repeatEach = getPrevCfParamDim(i, params);
 			int repeatBloc = result.size() / (repeatEach * nbConf);
@@ -93,7 +94,8 @@ public class ConfigStratFactory<C extends Config> extends AbstractFactory<C> {
 						if (nb == 0 && bloc == 00 && repeat == 0) {
 							idx = 0;
 						}
-						//System.out.println("i : " + i + ",n : " + n + ", b : " + b + ", r : " + r + ",idx : " + idx + ", NB : " + nbConf + ",REPEAT : " + repeatEach + ",BLOC : " + repeatBloc);
+						// System.out.println("i : " + i + ",n : " + n + ", b : " + b + ", r : " + r + ",idx : " + idx + ", NB : " + nbConf + ",REPEAT : " + repeatEach +
+						// ",BLOC : " + repeatBloc);
 						result.set(idx, params.get(i).go(result.get(idx)));
 						params.get(i).reset("" + nb);
 					}
@@ -102,37 +104,39 @@ public class ConfigStratFactory<C extends Config> extends AbstractFactory<C> {
 		}
 		return result;
 	}
-	
-	private List<C> initEmptyResultList(List<ConfigParam<C>> params, int nb) throws InstantiationException, IllegalAccessException {
+
+	private List<C> initEmptyResultList(List<ConfigParam<C>> params, int nb)
+			throws InstantiationException, IllegalAccessException {
 		List<C> result = new ArrayList<>(nb);
 		for (int i = 0; i < nb; i++) {
 			result.add(initEmptyConfig(params));
 		}
 		return result;
 	}
-	
-	private List<C> initEmptyResultList(List<ConfigParam<C>> params) throws InstantiationException, IllegalAccessException {
+
+	private List<C> initEmptyResultList(List<ConfigParam<C>> params)
+			throws InstantiationException, IllegalAccessException {
 		return initEmptyResultList(params, calcAllTuples());
 	}
-	
+
 	private void sortConfigParams(List<ConfigParam<C>> params) {
 		Collections.sort(params);
 	}
-	
+
 	private C initEmptyConfig(List<ConfigParam<C>> params) throws InstantiationException, IllegalAccessException {
-		//if (emptyConf == null) {
+		// if (emptyConf == null) {
 		C res = c.newInstance();
 		for (int i = 0; i < params.size(); i++) {
 			res = params.get(i).go(res);
 			params.get(i).reset();
 		}
-		//			emptyConf = res;
-		//		} else {
-		//			res = new C(emptyConf);
-		//		}
+		// emptyConf = res;
+		// } else {
+		// res = new C(emptyConf);
+		// }
 		return res;
 	}
-	
+
 	private Integer calcAllTuples() {
 		int res = 0;
 		Iterator<Entry<String, List<ConfigParam<C>>>> it = strategies.getStrategies().entrySet().iterator();
@@ -141,7 +145,7 @@ public class ConfigStratFactory<C extends Config> extends AbstractFactory<C> {
 		}
 		return res;
 	}
-	
+
 	private Integer calcTuples(List<ConfigParam<C>> params) {
 		int res = 1;
 		for (int i = 0; i < params.size(); i++) {
@@ -149,7 +153,7 @@ public class ConfigStratFactory<C extends Config> extends AbstractFactory<C> {
 		}
 		return res;
 	}
-	
+
 	private Integer getPrevCfParamDim(int i, List<ConfigParam<C>> params) {
 		int res = 1;
 		if (i > 0) {
@@ -159,7 +163,7 @@ public class ConfigStratFactory<C extends Config> extends AbstractFactory<C> {
 		}
 		return res;
 	}
-	
+
 	private Integer getNextCfParamDim(int i, List<ConfigParam<C>> params) {
 		int res = 1;
 		for (int j = i + 1; j < params.size(); j++) {
@@ -167,7 +171,7 @@ public class ConfigStratFactory<C extends Config> extends AbstractFactory<C> {
 		}
 		return res;
 	}
-	
+
 	private List<C> goGenConf(ConfigParam<C> cp) throws InstantiationException, IllegalAccessException {
 		List<C> result = new ArrayList<>();
 		C res = c.newInstance();
@@ -176,7 +180,7 @@ public class ConfigStratFactory<C extends Config> extends AbstractFactory<C> {
 		}
 		return result;
 	}
-	
+
 	private C addConf(int c, C toAdd, List<ConfigParam<C>> params) {
 		if (c >= params.size()) {
 			System.out.println("End");
@@ -197,13 +201,13 @@ public class ConfigStratFactory<C extends Config> extends AbstractFactory<C> {
 				tmp = params.get(i).go(toAdd);
 			}
 			params.get(i).reset();
-			
+
 		}
 		return toAdd;
 	}
-	
+
 	private void validateAddConfParam(Field f, ConfGenerable cf) {
-		
+
 		Preconditions.checkNotNull("ConFGenerable.TYPE is required ", cf.type());
 		AbstractFactory.TYPE type = cf.type();
 		if (AbstractFactory.TYPE.ENUM == type || AbstractFactory.TYPE.BOOLEAN == type) {
@@ -236,7 +240,7 @@ public class ConfigStratFactory<C extends Config> extends AbstractFactory<C> {
 			}
 		}
 	}
-	
+
 	private void validateAddConfStratParam(Field f, ConfGenerable cf, ConfStrategy cfs) {
 		String id = cfs.id();
 		Preconditions.checkArgument(StringUtils.isNotBlank(id), "Strategy id is required");
@@ -251,14 +255,14 @@ public class ConfigStratFactory<C extends Config> extends AbstractFactory<C> {
 				strategies.addOne(id, new BooleanConfigParam<C>(f.getName(), type, cf));
 			}
 		} else {
-			//			String min = cf.min();
-			//			String max = cf.max();
-			//			String step = cf.step();
-			
+			// String min = cf.min();
+			// String max = cf.max();
+			// String step = cf.step();
+
 			String min = (StringUtils.isNotBlank(cfs.min()) ? cfs.min() : cf.min());
 			String max = (StringUtils.isNotBlank(cfs.max()) ? cfs.max() : cf.max());
 			String step = (StringUtils.isNotBlank(cfs.step()) ? cfs.step() : cf.step());
-			
+
 			Preconditions.checkNotNull("ConFGenerable.min is required ", min);
 			Preconditions.checkNotNull("ConFGenerable.max is required ", max);
 			Preconditions.checkNotNull("ConFGenerable.step is required ", step);
@@ -280,13 +284,13 @@ public class ConfigStratFactory<C extends Config> extends AbstractFactory<C> {
 			}
 		}
 	}
-	
-	//	public void addStrat(String stratId, ConfigParam<C> strat) {
-	//		List<ConfigParam<C>> strats = Arrays.asList(strat);
-	//		if (strategies.containsKey(stratId)) {
-	//			strats = strategies.get(stratId);
-	//			strats.add(strat);
-	//		}
-	//		strategies.put(stratId, strats);
-	//	}
+
+	// public void addStrat(String stratId, ConfigParam<C> strat) {
+	// List<ConfigParam<C>> strats = Arrays.asList(strat);
+	// if (strategies.containsKey(stratId)) {
+	// strats = strategies.get(stratId);
+	// strats.add(strat);
+	// }
+	// strategies.put(stratId, strats);
+	// }
 }

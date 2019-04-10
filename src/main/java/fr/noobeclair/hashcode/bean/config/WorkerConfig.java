@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
-public abstract class Config {
+public abstract class WorkerConfig {
 
 	/**
 	 * Enum for statistics flushing options :
@@ -51,7 +51,7 @@ public abstract class Config {
 	 * May be overrided if you want to write stats into a csv file indicates when
 	 * datas will be flushed to file by the worker.
 	 * 
-	 * @see fr.noobeclair.hashcode.bean.config.Config.FLUSH_CSV_STATS
+	 * @see fr.noobeclair.hashcode.bean.config.WorkerConfig.FLUSH_CSV_STATS
 	 */
 	protected FLUSH_CSV_STATS flushOpt = FLUSH_CSV_STATS.EACH_RUN;
 
@@ -59,11 +59,11 @@ public abstract class Config {
 
 	protected boolean progressBar = false;
 
-	public Config() {
+	public WorkerConfig() {
 		super();
 	}
 
-	public Config(Config c) {
+	public WorkerConfig(WorkerConfig c) {
 		this.statisticKeysToWriteToCSV = c.statisticKeysToWriteToCSV;
 		this.csvStatsPath = c.csvStatsPath;
 		this.flushOpt = c.flushOpt;
@@ -71,7 +71,7 @@ public abstract class Config {
 		this.progressBar = c.progressBar;
 	}
 
-	public Config(List<Integer> statisticKeysToWriteToCSV, String csvStatsPath, FLUSH_CSV_STATS flushOpt,
+	public WorkerConfig(List<Integer> statisticKeysToWriteToCSV, String csvStatsPath, FLUSH_CSV_STATS flushOpt,
 			String csvSeparator, boolean progressBar) {
 		super();
 		this.statisticKeysToWriteToCSV = statisticKeysToWriteToCSV;
@@ -81,20 +81,20 @@ public abstract class Config {
 		this.progressBar = progressBar;
 	}
 
-	protected Config(List<Integer> statisticKeysToWriteToCSV, String csvStatsPath) {
+	protected WorkerConfig(List<Integer> statisticKeysToWriteToCSV, String csvStatsPath) {
 		super();
 		this.statisticKeysToWriteToCSV = statisticKeysToWriteToCSV;
 		this.csvStatsPath = csvStatsPath;
 	}
 
-	protected Config(List<Integer> statisticKeysToWriteToCSV, String csvStatsPath, FLUSH_CSV_STATS flushOpt) {
+	protected WorkerConfig(List<Integer> statisticKeysToWriteToCSV, String csvStatsPath, FLUSH_CSV_STATS flushOpt) {
 		super();
 		this.statisticKeysToWriteToCSV = statisticKeysToWriteToCSV;
 		this.csvStatsPath = csvStatsPath;
 		this.flushOpt = flushOpt;
 	}
 
-	protected Config(List<Integer> statisticKeysToWriteToCSV, String csvStatsPath, FLUSH_CSV_STATS flushOpt,
+	protected WorkerConfig(List<Integer> statisticKeysToWriteToCSV, String csvStatsPath, FLUSH_CSV_STATS flushOpt,
 			String csvSeparator) {
 		super();
 		this.statisticKeysToWriteToCSV = statisticKeysToWriteToCSV;
@@ -143,15 +143,15 @@ public abstract class Config {
 		this.progressBar = progressBar;
 	}
 
-	public Config clone(Config c) throws CloneNotSupportedException {
-		Config res = (Config) c.clone();
+	public WorkerConfig clone(WorkerConfig c) throws CloneNotSupportedException {
+		WorkerConfig res = (WorkerConfig) c.clone();
 		res.statisticKeysToWriteToCSV = c.statisticKeysToWriteToCSV;
 		res.csvStatsPath = c.csvStatsPath;
 		res.flushOpt = c.flushOpt;
 		return res;
 	}
 
-	public void cloneTo(Config c) {
+	public void cloneTo(WorkerConfig c) {
 		c.csvSeparator = this.csvSeparator;
 		c.csvStatsPath = this.csvStatsPath;
 		c.flushOpt = this.flushOpt;

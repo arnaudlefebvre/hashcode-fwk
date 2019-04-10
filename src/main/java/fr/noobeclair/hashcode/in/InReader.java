@@ -1,7 +1,6 @@
 package fr.noobeclair.hashcode.in;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.HashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,43 +15,45 @@ import fr.noobeclair.hashcode.utils.Utils;
  * @author arnaud
  *
  * @param <T>
- *            BeanContainer
+ *        BeanContainer
  */
 public abstract class InReader<T extends BeanContainer> {
 	/**
 	 * Cache of in resource - BeanContainer
 	 */
-	protected Map<String, T> cache = new TreeMap<>();
+	protected HashMap<Integer, T> cache = new HashMap<>();
 	protected static final Logger logger = LogManager.getLogger(InReader.class);
-	
+
 	public InReader() {
 		// useless constructor
 	}
-	
+
 	/**
 	 * Read errors duration, and cache handler.
 	 * 
 	 * @see fr.noobeclair.hashcode.in.InReader.readFile(String)
 	 * @param in
-	 *            String in file path
+	 *           String in file path
 	 * @return <T extends BeanContainer> data from in file
 	 */
 	public T read(String in) {
 		long start = System.currentTimeMillis();
 		logger.debug("-- Read start : {}", in);
 		try {
-			if (cache.containsKey(in)) {
-				return cache.get(in);
+			if (cache.containsKey(in.hashCode())) {
+				T res = (T) cache.get(in.hashCode()).getNew();
+				return res;
 			} else {
 				T data = readFile(in);
-				cache.put(in, data);
+				cache.put(in.hashCode(), data);
 				return data;
 			}
 		} finally {
-			logger.debug("-- Read End ({}). Total Time : {}s --", in, Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
+			logger.debug("-- Read End ({}). Total Time : {}s --", in,
+					Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		}
 	}
-	
+
 	/**
 	 * Read file with path in, and load into T BeanContainer
 	 * 
@@ -60,5 +61,5 @@ public abstract class InReader<T extends BeanContainer> {
 	 * @return T extends BeanContainer
 	 */
 	protected abstract T readFile(String in);
-	
+
 }
