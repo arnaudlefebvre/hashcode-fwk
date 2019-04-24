@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
+import fr.noobeclair.hashcode.utils.ProgressBar.ProgressBarOption;
+
 public abstract class WorkerConfig {
 
 	/**
@@ -51,13 +53,21 @@ public abstract class WorkerConfig {
 	 * May be overrided if you want to write stats into a csv file indicates when
 	 * datas will be flushed to file by the worker.
 	 * 
-	 * @see fr.noobeclair.hashcode.bean.config.WorkerConfig.FLUSH_CSV_STATS
+	 * @see fr.noobeclair.hashcode.bean.config.WorkerWorkerConfig.FLUSH_CSV_STATS
 	 */
 	protected FLUSH_CSV_STATS flushOpt = FLUSH_CSV_STATS.EACH_RUN;
 
 	protected String csvSeparator = ";";
 
+	/** Flag - enable or disable progressbar display **/
 	protected boolean progressBar = false;
+
+	/** Bar options **/
+	protected List<ProgressBarOption> barOpts = Arrays.asList(ProgressBarOption.MSG, ProgressBarOption.BAR,
+			ProgressBarOption.PERCENT, ProgressBarOption.ETA);
+	protected Integer barMaxWidth = 100;
+	protected Integer barMsgWidth = 37;
+	protected Long barRefreshTime = 1000L;
 
 	public WorkerConfig() {
 		super();
@@ -188,6 +198,22 @@ public abstract class WorkerConfig {
 	protected String showGen() {
 		return ReflectionToStringBuilder.toStringExclude(this,
 				Arrays.asList("statisticKeysToWriteToCSV", "csvStatsPath", "csvSeparator", "progressBar"));
+	}
+
+	public List<ProgressBarOption> getBarOpts() {
+		return barOpts;
+	}
+
+	public Integer getBarMaxWidth() {
+		return barMaxWidth;
+	}
+
+	public Integer getBarMsgWidth() {
+		return barMsgWidth;
+	}
+
+	public Long getBarRefreshTime() {
+		return barRefreshTime;
 	}
 
 }

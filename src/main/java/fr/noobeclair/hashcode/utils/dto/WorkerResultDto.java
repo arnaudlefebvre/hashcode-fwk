@@ -35,7 +35,7 @@ public class WorkerResultDto {
 	public void displayAll() {
 		System.out.println(" ALL RESULTS : ");
 		for (SolverResultDto s : solverResults) {
-			System.out.println(s.toDetailled());
+			System.out.println(s);
 		}
 		System.out.println(" -------------------------------------- ");
 	}

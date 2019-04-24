@@ -4,7 +4,6 @@ import java.util.TreeMap;
 
 import fr.noobeclair.hashcode.bean.BeanContainer;
 import fr.noobeclair.hashcode.bean.config.Config;
-import fr.noobeclair.hashcode.utils.ProgressBar;
 
 /**
  * Abstract Configurable Solver
@@ -37,14 +36,14 @@ public abstract class ConfigSolver<T extends BeanContainer, V extends Config> ex
 	 *             ProgressBar
 	 * @return T extends BeanContainer
 	 */
-	protected abstract T runWithStat(T data, ProgressBar bar);
+	protected abstract T runWithStat(T data);
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected T run(T data, ProgressBar bar) {
-		data = runWithStat(data, bar);
+	protected T run(T data) {
+		data = runWithStat(data);
 		addConfigStats();
 		return data;
 	}

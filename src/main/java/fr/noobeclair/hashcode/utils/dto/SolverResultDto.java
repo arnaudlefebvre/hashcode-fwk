@@ -20,6 +20,7 @@ public class SolverResultDto {
 	private Config config;
 	private Long duration;
 	private Long nbItemProcessed;
+	private Long nbInputItem;
 
 	public SolverResultDto() {
 		super();
@@ -36,14 +37,15 @@ public class SolverResultDto {
 		this.nbItemProcessed = nbItemProcessed;
 	}
 
-	public SolverResultDto(BigDecimal score, String solverName, String inResource, Long duration,
-			Long nbItemProcessed) {
+	public SolverResultDto(BigDecimal score, String solverName, String inResource, Long duration, Long nbItemProcessed,
+			Long totalItem) {
 		super();
 		this.score = score;
 		this.solverName = solverName;
 		this.inResource = inResource;
 		this.duration = duration;
 		this.nbItemProcessed = nbItemProcessed;
+		this.nbInputItem = totalItem;
 	}
 
 	public SolverResultDto(BigDecimal score, String solverName, String inResource, Map<String, String> stats,
@@ -216,6 +218,14 @@ public class SolverResultDto {
 		} else if (!stats.equals(other.stats))
 			return false;
 		return true;
+	}
+
+	public Long getNbInputItem() {
+		return nbInputItem;
+	}
+
+	public void setNbInputItem(Long nbInputItem) {
+		this.nbInputItem = nbInputItem;
 	}
 
 }

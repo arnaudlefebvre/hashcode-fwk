@@ -9,6 +9,7 @@ import com.google.common.base.Preconditions;
 
 import fr.noobeclair.hashcode.bean.BeanContainer;
 import fr.noobeclair.hashcode.bean.config.Config;
+import fr.noobeclair.hashcode.bean.config.WorkerConfig;
 import fr.noobeclair.hashcode.in.InReader;
 import fr.noobeclair.hashcode.out.OutWriter;
 import fr.noobeclair.hashcode.score.ScoreCalculator;
@@ -16,7 +17,7 @@ import fr.noobeclair.hashcode.solve.ConfigSolver;
 import fr.noobeclair.hashcode.worker.AbstractMultipleWorker.WORK_ORDER;
 
 /***
- * WIP DOES NOT WORKS
+ * 
  * 
  * @author arnaud
  *
@@ -25,123 +26,140 @@ import fr.noobeclair.hashcode.worker.AbstractMultipleWorker.WORK_ORDER;
  * @param <O>
  * @param <C>
  */
-public class WorkerFactory<T extends BeanContainer, I extends InReader<T>, O extends OutWriter<T>, C extends Config, S extends ConfigSolver<T, C>, K extends ScoreCalculator<T>> {
-	
-	private Class<T> beanContainer;
-	private Class<I> reader;
-	private Class<O> writer;
-	private Class<C> config;
-	
+public class WorkerFactory<T extends BeanContainer, I extends InReader<T>, O extends OutWriter<T>, C extends Config, S extends ConfigSolver<T, C>, K extends ScoreCalculator<T>, W extends WorkerConfig> {
+
 	public WorkerFactory() {
 		super();
 	}
-	
-	public WorkerFactory(Class<T> beanContainer, Class<I> reader, Class<O> writer, Class<C> config) {
-		super();
-		this.beanContainer = beanContainer;
-		this.reader = reader;
-		this.writer = writer;
-		this.config = config;
+
+	public Builder<T, I, O, C, S, K, W> builder() {
+		return new Builder<T, I, O, C, S, K, W>(null);
 	}
-	
-	public Builder builder() {
-		return new Builder<T, I, O, C, S, K>();
+
+	public Builder<T, I, O, C, S, K, W> builder(Class<W> wcClass) {
+		return new Builder<T, I, O, C, S, K, W>(wcClass);
 	}
-	
-	public static final class Builder<T extends BeanContainer, I extends InReader<T>, O extends OutWriter<T>, C extends Config, S extends ConfigSolver<T, C>, K extends ScoreCalculator<T>> {
-		private Class<T> bc;
-		private Class<I> i;
-		private Class<O> o;
-		private Class<C> c;
-		private Class<S> S;
+
+	public static final class Builder<T extends BeanContainer, I extends InReader<T>, O extends OutWriter<T>, C extends Config, S extends ConfigSolver<T, C>, K extends ScoreCalculator<T>, W extends WorkerConfig> {
 		private T beanC;
 		private I reader;
 		private O writer;
 		private C config;
 		private K scorer;
+		private W wconfig;
+		private Class<W> wcClass;
 		private List<InOut> files = new ArrayList<InOut>();
 		private List<S> solvers = new ArrayList<>();
-		private WORK_ORDER runOrder;
-		
-		public Builder() {
-			// TODO Auto-generated constructor stub
+		private WORK_ORDER runOrder = WORK_ORDER.SOLVER;
+
+		public Builder(Class<W> wcClass) {
+			this.wcClass = wcClass;
 		}
-		
-		public Builder<T, I, O, C, S, K> readWrite(I reader, O writer) {
+
+		public Builder<T, I, O, C, S, K, W> readWrite(I reader, O writer) {
 			this.reader = reader;
 			this.writer = writer;
 			return this;
-			
+
 		}
-		
-		public Builder<T, I, O, C, S, K> score(K scorer) {
+
+		public Builder<T, I, O, C, S, K, W> score(K scorer) {
 			this.scorer = scorer;
 			return this;
 		}
-		
-		public Builder<T, I, O, C, S, K> config(C config) {
+
+		public Builder<T, I, O, C, S, K, W> solverConfig(C config) {
 			this.config = config;
 			return this;
 		}
-		
-		public Builder<T, I, O, C, S, K> csv(String path) {
-			this.config.setCsvStatsPath(path);
+
+		public Builder<T, I, O, C, S, K, W> csv(String path) {
+			initWConfig();
+			this.wconfig.setCsvStatsPath(path);
 			return this;
 		}
-		
-		public Builder<T, I, O, C, S, K> nocsv() {
-			this.config.setCsvStatsPath(null);
-			this.config.setStatisticKeysToWriteToCSV(null);
+
+		public Builder<T, I, O, C, S, K, W> nocsv() {
+			initWConfig();
+			this.wconfig.setCsvStatsPath(null);
+			this.wconfig.setStatisticKeysToWriteToCSV(null);
 			return this;
 		}
-		
-		public Builder<T, I, O, C, S, K> progressBar() {
-			this.config.setProgressBar(true);
+
+		public Builder<T, I, O, C, S, K, W> progressBar() {
+			initWConfig();
+			this.wconfig.setProgressBar(true);
 			return this;
 		}
-		
-		public Builder<T, I, O, C, S, K> csv(String path, Config.FLUSH_CSV_STATS flush) {
-			this.config.setCsvStatsPath(path);
-			this.config.setFlushOpt(flush);
+
+		public Builder<T, I, O, C, S, K, W> config(W config) {
+			this.wconfig = config;
 			return this;
 		}
-		
-		public Builder<T, I, O, C, S, K> file(InOut io) {
+
+		public Builder<T, I, O, C, S, K, W> csv(String path, WorkerConfig.FLUSH_CSV_STATS flush) {
+			initWConfig();
+			this.wconfig.setCsvStatsPath(path);
+			this.wconfig.setFlushOpt(flush);
+			return this;
+		}
+
+		public Builder<T, I, O, C, S, K, W> file(InOut io) {
 			this.files.add(io);
 			return this;
 		}
-		
-		public Builder<T, I, O, C, S, K> files(List<InOut> files) {
+
+		public Builder<T, I, O, C, S, K, W> files(List<InOut> files) {
 			this.files.addAll(files);
 			return this;
 		}
-		
-		public Builder<T, I, O, C, S, K> solver(S solver) {
+
+		public Builder<T, I, O, C, S, K, W> solver(S solver) {
 			this.solvers.add(solver);
 			return this;
 		}
-		
-		public Builder<T, I, O, C, S, K> solvers(List<S> solvers) {
+
+		public Builder<T, I, O, C, S, K, W> solvers(List<S> solvers) {
 			this.solvers.addAll(solvers);
 			return this;
 		}
-		
-		public Builder<T, I, O, C, S, K> filefirst() {
+
+		public Builder<T, I, O, C, S, K, W> filefirst() {
 			this.runOrder = WORK_ORDER.FILE;
 			return this;
 		}
-		
-		public MultipleConfFileSolverWorker<T, C, S> Build() {
-			MultipleConfFileSolverWorker<T, C, S> result = null;
+
+		public MultipleConfFileSolverWorker<T, C, S, W> Build() {
+			MultipleConfFileSolverWorker<T, C, S, W> result = null;
 			Preconditions.checkNotNull(this.reader, "Reader must be set. Builder.readwrite(...)");
 			Preconditions.checkNotNull(this.writer, "Writer must be set. Builder.readwrite(...)");
 			Preconditions.checkNotNull(this.config, "Config must be set. Builder.Config(...)");
-			Preconditions.checkArgument(CollectionUtils.isNotEmpty(files), "Set at least one file to process. Builder.file(...)/Builder.files(...)");
-			Preconditions.checkArgument(CollectionUtils.isNotEmpty(solvers), "Set at least one solver. Builder.solver(...)/Builder.solvers(...)");
-			result = new MultipleConfFileSolverWorker(reader, writer, scorer, solvers, config);
+			Preconditions.checkArgument(CollectionUtils.isNotEmpty(files),
+					"Set at least one file to process. Builder.file(...)/Builder.files(...)");
+			Preconditions.checkArgument(CollectionUtils.isNotEmpty(solvers),
+					"Set at least one solver. Builder.solver(...)/Builder.solvers(...)");
+			result = new MultipleConfFileSolverWorker<T, C, S, W>(files, reader, writer, scorer);
+			result.setWorkerConfig(wconfig);
+			result.setConfig(config);
+			result.setSolvers(solvers);
 			result.addFiles(this.files);
+			result.setExecOrder(this.runOrder);
 			return result;
 		}
+
+		private void initWConfig() {
+			if (this.wconfig == null && wcClass != null) {
+				try {
+					this.wconfig = wcClass.newInstance();
+				} catch (InstantiationException | IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else if (this.wconfig == null) {
+				throw new RuntimeException(
+						"Builder must have WorkerConfig.class to use a WorkerConfiguration. Use WorkerFactory.buider(<MyClass extends WorkerConfig>");
+			}
+		}
 	}
-	
+
 }

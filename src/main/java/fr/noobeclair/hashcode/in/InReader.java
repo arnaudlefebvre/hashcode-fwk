@@ -1,6 +1,11 @@
 package fr.noobeclair.hashcode.in;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,7 +26,7 @@ public abstract class InReader<T extends BeanContainer> {
 	/**
 	 * Cache of in resource - BeanContainer
 	 */
-	protected HashMap<Integer, T> cache = new HashMap<>();
+	protected HashMap<Integer, List<String>> cache = new HashMap<>();
 	protected static final Logger logger = LogManager.getLogger(InReader.class);
 
 	public InReader() {
@@ -40,14 +45,8 @@ public abstract class InReader<T extends BeanContainer> {
 		long start = System.currentTimeMillis();
 		logger.debug("-- Read start : {}", in);
 		try {
-			if (cache.containsKey(in.hashCode())) {
-				T res = (T) cache.get(in.hashCode()).getNew();
-				return res;
-			} else {
-				T data = readFile(in);
-				cache.put(in.hashCode(), data);
-				return data;
-			}
+			T data = readFile(getFileContent(in), in);
+			return data;
 		} finally {
 			logger.debug("-- Read End ({}). Total Time : {}s --", in,
 					Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
@@ -60,6 +59,21 @@ public abstract class InReader<T extends BeanContainer> {
 	 * @param in
 	 * @return T extends BeanContainer
 	 */
-	protected abstract T readFile(String in);
+	protected abstract T readFile(List<String> lines, String in);
 
+	private List<String> getFileContent(String in) {
+		List<String> lines = null;
+		if (!cache.containsKey(in.hashCode())) {
+			try (Stream<String> stream = Files.lines(Paths.get(in))) {
+				lines = stream.collect(Collectors.toList());
+				cache.put(in.hashCode(), lines);
+			} catch (Exception e) {
+				logger.error("Erreur lors de la lecture du fichier {}", in, e);
+				throw new RuntimeException(e);
+			}
+		} else {
+			lines = cache.get(in.hashCode());
+		}
+		return lines;
+	}
 }

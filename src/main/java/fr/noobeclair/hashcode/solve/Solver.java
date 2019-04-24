@@ -13,6 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import fr.noobeclair.hashcode.annotation.CsvExport;
+import fr.noobeclair.hashcode.annotation.CsvField;
 import fr.noobeclair.hashcode.bean.BeanContainer;
 import fr.noobeclair.hashcode.utils.ProgressBar;
 import fr.noobeclair.hashcode.utils.Utils;
@@ -34,6 +36,7 @@ import fr.noobeclair.hashcode.utils.dto.SolverResultDto;
  *
  * @param <T>
  */
+@CsvExport
 public abstract class Solver<T extends BeanContainer> {
 
 	protected static final Logger logger = LogManager.getLogger(ConfigSolver.class);
@@ -42,6 +45,7 @@ public abstract class Solver<T extends BeanContainer> {
 	protected static final String BAR_MSG_SEP = "->";
 
 	/** Name of ConfigSolver, must be unique **/
+	@CsvField
 	protected String name;
 	/** data BeanContainer **/
 	protected T data;
@@ -54,7 +58,13 @@ public abstract class Solver<T extends BeanContainer> {
 	/** Container for solver stats and scoring **/
 	protected SolverResultDto resultInfo;
 	/** Number of item processed in BeanContainer (for stats) **/
+	@CsvField
 	protected Long nbItem;
+
+	@CsvField
+	protected Long totalItem;
+
+	protected ProgressBar bar;
 
 	/**
 	 * Effectively run the computation and returns data into your <T extends
@@ -64,7 +74,7 @@ public abstract class Solver<T extends BeanContainer> {
 	 *             datas
 	 * @return data computed BeanContainer
 	 */
-	protected abstract T run(T data, ProgressBar bar);
+	protected abstract T run(T data);
 
 	/**
 	 * Change Solver timeout and init stats
@@ -136,14 +146,15 @@ public abstract class Solver<T extends BeanContainer> {
 	 * @return <T extends BeanContainer> Computed data
 	 */
 	public T solve(final T data, ProgressBar bar) {
-		init(data, bar);
+		this.bar = bar;
+		init(data);
 		final long start = System.currentTimeMillis();
 		stats.put(StatsConstants.TIME_START, "" + start);
 		logger.debug("-- Solve start : {} - timeout {} sec ({})", this.getName(), timeout,
 				Utils.formatToHHMMSS(timeout));
 		try {
 			if (data != null && this.timeout == DISABLE_TIMEOUT) {
-				return run(data, bar);
+				return run(data);
 			} else if (data != null) {
 				return solveSync(data, bar);
 			} else {
@@ -160,16 +171,6 @@ public abstract class Solver<T extends BeanContainer> {
 	}
 
 	/**
-	 * Run with no Progress bar
-	 * 
-	 * @param data
-	 * @return <T extends BeanContainer> Computed data
-	 */
-	protected T run(T data) {
-		return run(data, null);
-	}
-
-	/**
 	 * Show ProgressBar if it exists
 	 * 
 	 * @param bar
@@ -179,7 +180,7 @@ public abstract class Solver<T extends BeanContainer> {
 	 * @param msg
 	 *                 String msg to display
 	 */
-	protected void showBar(ProgressBar bar, Long progress, String msg) {
+	protected void showBar(Long progress, String msg) {
 		if (bar != null) {
 			String m = StringUtils.isNotEmpty(bar.getMsg()) ? bar.getMsg().trim() : StringUtils.EMPTY;
 			Integer pos = m.lastIndexOf(BAR_MSG_SEP);
@@ -202,7 +203,7 @@ public abstract class Solver<T extends BeanContainer> {
 	 * @param data
 	 * @param bar
 	 */
-	protected void init(final T data, ProgressBar bar) {
+	protected void init(final T data) {
 		this.nbItem = 0L;
 
 		this.resultInfo = new SolverResultDto();
@@ -222,6 +223,7 @@ public abstract class Solver<T extends BeanContainer> {
 	protected void close(Long total) {
 		this.resultInfo.setDuration(total);
 		this.resultInfo.setNbItemProcessed(getNbItems());
+		this.resultInfo.setNbInputItem(totalItem != null ? totalItem : 0L);
 		stats.put(StatsConstants.TIME_TOTAL, "" + total);
 	}
 
@@ -236,7 +238,7 @@ public abstract class Solver<T extends BeanContainer> {
 		final Callable<T> task = () -> {
 			final String threadName = Thread.currentThread().getName();
 			logger.debug("Solve Thread {} started", threadName);
-			return run(data, bar);
+			return run(data);
 
 		};
 		final ExecutorService executor = Executors.newSingleThreadExecutor();

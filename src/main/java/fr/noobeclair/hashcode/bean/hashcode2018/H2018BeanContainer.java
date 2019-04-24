@@ -37,8 +37,8 @@ public class H2018BeanContainer extends BeanContainer {
 	public Object getNew() {
 		// Add custom properties copy
 		// this.mycustom properties = o.custom;
-		H2018BeanContainer h = new H2018BeanContainer(inName, inputCars, inputRides, null);
-		return this;
+		H2018BeanContainer h = new H2018BeanContainer(inName, inputCars, inputRides, map, bonus, maxTurn);
+		return h;
 	}
 
 	public H2018BeanContainer(Object o) {
@@ -60,6 +60,19 @@ public class H2018BeanContainer extends BeanContainer {
 		this.inputRides = rides;
 		this.availableRides = rides;
 		this.map = map;
+	}
+
+	public H2018BeanContainer(String inName, Set<Car> cars, List<Ride> availableRides, CityMap map, Integer bonus,
+			Integer maxTurn) {
+		super(inName);
+		reset();
+		this.cars = cars;
+		this.inputCars = cars;
+		this.availableRides = availableRides;
+		this.inputRides = availableRides;
+		this.map = map;
+		this.bonus = bonus;
+		this.maxTurn = maxTurn;
 	}
 
 	public Set<Car> getCars() {
@@ -170,6 +183,7 @@ public class H2018BeanContainer extends BeanContainer {
 			}
 			i++;
 		}
+		res.setInputCars(res.cars);
 		return res;
 	}
 
@@ -208,6 +222,10 @@ public class H2018BeanContainer extends BeanContainer {
 
 	public void setInputRides(List<Ride> inputRides) {
 		this.inputRides = inputRides;
+	}
+
+	public void setInputCars(Set<Car> inputCars) {
+		this.inputCars = inputCars;
 	}
 
 }

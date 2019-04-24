@@ -9,32 +9,34 @@ import org.apache.commons.collections4.CollectionUtils;
 import fr.noobeclair.hashcode.solve.StatsConstants;
 
 public class H18LegConf extends H2018Config {
-	
-	private static final List<Integer> CSV_CST = Arrays.asList(StatsConstants.CF_STRAT, StatsConstants.SCORE, StatsConstants.TIME_TOTAL, StatsConstants.ITEM0_TOTAL, StatsConstants.IN_0,
-			StatsConstants.IN_1,
-			StatsConstants.CF_TTFC, StatsConstants.CF_NTFCT, StatsConstants.CF_NDFCT, StatsConstants.CF_LTFCT, StatsConstants.CF_LDFCT, StatsConstants.CF_NAT, StatsConstants.CF_NBT,
-			StatsConstants.CF_NAD, StatsConstants.CF_NBD, StatsConstants.CF_LAT, StatsConstants.CF_LBT, StatsConstants.CF_LAD, StatsConstants.CF_LBD);
+
+	private static final List<Integer> CSV_CST = Arrays.asList(StatsConstants.CF_STRAT, StatsConstants.SCORE,
+			StatsConstants.TIME_TOTAL, StatsConstants.ITEM0_TOTAL, StatsConstants.IN_0, StatsConstants.IN_1,
+			StatsConstants.CF_TTFC, StatsConstants.CF_NTFCT, StatsConstants.CF_NDFCT, StatsConstants.CF_LTFCT,
+			StatsConstants.CF_LDFCT, StatsConstants.CF_NAT, StatsConstants.CF_NBT, StatsConstants.CF_NAD,
+			StatsConstants.CF_NBD, StatsConstants.CF_LAT, StatsConstants.CF_LBT, StatsConstants.CF_LAD,
+			StatsConstants.CF_LBD);
 	private static final String CSV_PATH = "src/main/resources/out/2018/global-stats.csv";
-	
+
 	private Double timeToFinishCoef;
-	
+
 	private AdjustMethod nearTravelAdjustFct;
 	private AdjustMethod longTravelAdjustFct;
 	private AdjustMethod nearDistAdjustFct;
 	private AdjustMethod longDistAdjustFct;
-	
+
 	private Double nearATravelMethodCst;
 	private Double nearBTravelMethodCst;
 	private Double nearADistMethodCst;
 	private Double nearBDistMethodCst;
-	
+
 	private Double longATravelMethodCst;
 	private Double longBTravelMethodCst;
 	private Double longADistMethodCst;
 	private Double longBDistMethodCst;
-	
+
 	private List<CarStrategy> carStrategies;
-	
+
 	public H18LegConf(Double coefBonus, Double nearBonus, Double distanceBonus) {
 		this.timeToFinishCoef = 1D;
 		this.nearTravelAdjustFct = AdjustMethod.EXP;
@@ -51,11 +53,14 @@ public class H18LegConf extends H2018Config {
 		this.longBDistMethodCst = 0D;
 		this.carStrategies = new ArrayList<>();
 	}
-	
-	public H18LegConf(Double timeToFinishCoef, AdjustMethod nearTravelAdjustFct, AdjustMethod nearDistAdjustFct, AdjustMethod longTravelAdjustFct, AdjustMethod longDistAdjustFct,
-			Double nearATravelMethodCst, Double nearBTravelMethodCst, Double nearADistMethodCst, Double nearBDistMethodCst, Double longATravelMethodCst, Double longBTravelMethodCst,
-			Double longADistMethodCst, Double longBDistMethodCst, List<CarStrategy> carStrategies) {
-		super(timeToFinishCoef, nearTravelAdjustFct, nearDistAdjustFct, longTravelAdjustFct, longDistAdjustFct, nearATravelMethodCst, nearBTravelMethodCst, nearADistMethodCst, nearBDistMethodCst,
+
+	public H18LegConf(Double timeToFinishCoef, AdjustMethod nearTravelAdjustFct, AdjustMethod nearDistAdjustFct,
+			AdjustMethod longTravelAdjustFct, AdjustMethod longDistAdjustFct, Double nearATravelMethodCst,
+			Double nearBTravelMethodCst, Double nearADistMethodCst, Double nearBDistMethodCst,
+			Double longATravelMethodCst, Double longBTravelMethodCst, Double longADistMethodCst,
+			Double longBDistMethodCst, List<CarStrategy> carStrategies) {
+		super(timeToFinishCoef, nearTravelAdjustFct, nearDistAdjustFct, longTravelAdjustFct, longDistAdjustFct,
+				nearATravelMethodCst, nearBTravelMethodCst, nearADistMethodCst, nearBDistMethodCst,
 				longATravelMethodCst, longBTravelMethodCst, longADistMethodCst, longBDistMethodCst, carStrategies);
 		this.timeToFinishCoef = timeToFinishCoef;
 		this.nearTravelAdjustFct = nearTravelAdjustFct;
@@ -72,7 +77,7 @@ public class H18LegConf extends H2018Config {
 		this.longBDistMethodCst = longBDistMethodCst;
 		this.carStrategies = carStrategies;
 	}
-	
+
 	@Override
 	public Double adjustNearTravel(Double t) {
 		if (CollectionUtils.containsAny(carStrategies, Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.NEAR_FIRST))) {
@@ -93,7 +98,7 @@ public class H18LegConf extends H2018Config {
 		}
 		return t;
 	}
-	
+
 	@Override
 	public Double adjustNearDist(Double t) {
 		if (CollectionUtils.containsAny(carStrategies, Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.NEAR_FIRST))) {
@@ -114,7 +119,7 @@ public class H18LegConf extends H2018Config {
 		}
 		return t;
 	}
-	
+
 	@Override
 	public Double adjustLongTravel(Double t) {
 		if (CollectionUtils.containsAny(carStrategies, Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.NEAR_FIRST))) {
@@ -135,7 +140,7 @@ public class H18LegConf extends H2018Config {
 		}
 		return t;
 	}
-	
+
 	@Override
 	public Double adjustLongDistance(Double t) {
 		if (CollectionUtils.containsAny(carStrategies, Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.LONG_FIRST))) {
@@ -156,7 +161,7 @@ public class H18LegConf extends H2018Config {
 		}
 		return t;
 	}
-	
+
 	@Override
 	public Double adjustTimeWhenFinishRatio(Double t, Double d, Integer turn, Integer maxturn) {
 		Double ratio = 0D;
@@ -168,7 +173,7 @@ public class H18LegConf extends H2018Config {
 		}
 		return ratio;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -205,74 +210,69 @@ public class H18LegConf extends H2018Config {
 		builder.append("]");
 		return builder.toString();
 	}
-	
+
 	@Override
 	public Double getTimeToFinishCoef() {
 		return timeToFinishCoef;
 	}
-	
+
 	@Override
 	public AdjustMethod getNearTravelAdjustFct() {
 		return nearTravelAdjustFct;
 	}
-	
+
 	public AdjustMethod getLongTravelAdjustFct() {
 		return longTravelAdjustFct;
 	}
-	
+
 	@Override
 	public AdjustMethod getNearDistAdjustFct() {
 		return nearDistAdjustFct;
 	}
-	
+
 	public AdjustMethod getLongDistAdjustFct() {
 		return longDistAdjustFct;
 	}
-	
+
 	@Override
 	public Double getNearATravelMethodCst() {
 		return nearATravelMethodCst;
 	}
-	
+
 	@Override
 	public Double getNearBTravelMethodCst() {
 		return nearBTravelMethodCst;
 	}
-	
+
 	@Override
 	public Double getNearADistMethodCst() {
 		return nearADistMethodCst;
 	}
-	
+
 	@Override
 	public Double getNearBDistMethodCst() {
 		return nearBDistMethodCst;
 	}
-	
+
 	public Double getLongATravelMethodCst() {
 		return longATravelMethodCst;
 	}
-	
+
 	public Double getLongBTravelMethodCst() {
 		return longBTravelMethodCst;
 	}
-	
+
 	public Double getLongADistMethodCst() {
 		return longADistMethodCst;
 	}
-	
+
 	public Double getLongBDistMethodCst() {
 		return longBDistMethodCst;
 	}
-	
+
 	@Override
 	public List<CarStrategy> getCarStrategies() {
 		return carStrategies;
 	}
-	
-	@Override
-	public boolean withProgressBar() {
-		return true;
-	}
-	
+
 }

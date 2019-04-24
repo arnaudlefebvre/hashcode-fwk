@@ -18,10 +18,9 @@ import fr.noobeclair.hashcode.bean.hashcode2018.H2018BeanContainer;
 import fr.noobeclair.hashcode.bean.hashcode2018.Ride;
 import fr.noobeclair.hashcode.solve.ConfigSolver;
 import fr.noobeclair.hashcode.solve.StatsConstants;
-import fr.noobeclair.hashcode.utils.ProgressBar;
 
 public class H2018SolverLegConf extends ConfigSolver<H2018BeanContainer, H18LegConf> {
-	
+
 	public List<Ride> arides;
 	public List<Ride> drides;
 	public List<Ride> srides;
@@ -31,24 +30,25 @@ public class H2018SolverLegConf extends ConfigSolver<H2018BeanContainer, H18LegC
 	public Integer maxTurn;
 	private Integer curScore;
 	private Integer totalScore;
-	
+
 	public H2018SolverLegConf() {
 		super();
 	}
-	
+
 	public H2018SolverLegConf(String name, H18LegConf config) {
 		super(name);
 		this.config = config;
 	}
-	
+
 	public H2018SolverLegConf(String name, Long timeout, H18LegConf config) {
 		super(name, timeout);
 		this.config = config;
 	}
-	
+
 	@Override
-	public H2018BeanContainer runWithStat(H2018BeanContainer data, ProgressBar bar) {
-		logger.debug("H2018Solver START : {} cars, {} rides, {} turns {},  ({})", data.getCars().size(), data.getAvailableRides().size(), data.getMaxTurn());
+	public H2018BeanContainer runWithStat(H2018BeanContainer data) {
+		logger.debug("H2018Solver START : {} cars, {} rides, {} turns {},  ({})", data.getCars().size(),
+				data.getAvailableRides().size(), data.getMaxTurn());
 		arides = data.getAvailableRides();
 		stats.put(StatsConstants.ITEM0_TOTAL, "" + arides.size());
 		stats.put(StatsConstants.ITEM1_TOTAL, "" + data.getCars().size());
@@ -62,9 +62,9 @@ public class H2018SolverLegConf extends ConfigSolver<H2018BeanContainer, H18LegC
 		BigDecimal totalstep = new BigDecimal(arides.size());
 		for (Car c : cars) {
 			c.setStrategy(Car.STRAT_ALL);
-			
+
 		}
-		
+
 		totalScore = 0;
 		List<Car> availableCars = null;
 		int ct = 0;
@@ -72,9 +72,9 @@ public class H2018SolverLegConf extends ConfigSolver<H2018BeanContainer, H18LegC
 			if (arides.isEmpty()) {
 				break;
 			}
-			
+
 			final int i = ct;
-			
+
 			availableCars = new ArrayList<>();
 			for (Car c : cars) {
 				Integer score = c.finish(i);
@@ -83,7 +83,7 @@ public class H2018SolverLegConf extends ConfigSolver<H2018BeanContainer, H18LegC
 					totalScore = totalScore + score;
 					availableCars.add(c);
 				}
-				
+
 			}
 			// logger.info(" ----> CARSavailableCars {}", availableCars);
 			// logger.info("------------------------- CARS -----------------------");
@@ -100,10 +100,12 @@ public class H2018SolverLegConf extends ConfigSolver<H2018BeanContainer, H18LegC
 				srides.add(r);
 				idxCar = idxCar + 1;
 			}
-			BigDecimal step = totalstep.divide(new BigDecimal(maxTurn), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(ct));
-			showBar(bar, step.longValue(), "" + step.divide(totalstep, 2, RoundingMode.HALF_DOWN).multiply(new BigDecimal("100")) + "%");
+			BigDecimal step = totalstep.divide(new BigDecimal(maxTurn), 2, RoundingMode.HALF_UP)
+					.multiply(new BigDecimal(ct));
+			showBar(step.longValue(),
+					"" + step.divide(totalstep, 2, RoundingMode.HALF_DOWN).multiply(new BigDecimal("100")) + "%");
 		}
-		
+
 		this.data.score = this.totalScore;
 		this.data.selectedRides = srides;
 		this.data.cars = cars;
@@ -112,15 +114,15 @@ public class H2018SolverLegConf extends ConfigSolver<H2018BeanContainer, H18LegC
 		addConfigStats();
 		return this.data;
 	}
-	
+
 	private Ride getPerfectForCar(Car c, List<Ride> arides, int ct) {
 		curScore = 0;
 		Integer max = Integer.MIN_VALUE;
 		Ride selected = null;
 		int score = 0;
 		for (Ride r : arides) {
-			//score = c.getScoreForRide(r, ct, bonus, maxTurn, config);
-			
+			// score = c.getScoreForRide(r, ct, bonus, maxTurn, config);
+
 			if (max < score) {
 				max = score;
 				selected = r;
@@ -134,38 +136,38 @@ public class H2018SolverLegConf extends ConfigSolver<H2018BeanContainer, H18LegC
 		}
 		return selected;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "H2018Solver [totalScore=" + totalScore + ", arides=[" + arides + "]," + MainRunner.CR + " drides=[" + drides + "]," + MainRunner.CR + " srides=[" + srides + "]," + MainRunner.CR
-				+ "cars=[" + cars
+		return "H2018Solver [totalScore=" + totalScore + ", arides=[" + arides + "]," + MainRunner.CR + " drides=["
+				+ drides + "]," + MainRunner.CR + " srides=[" + srides + "]," + MainRunner.CR + "cars=[" + cars
 				+ "], map=" + map + ", bonus=" + bonus + ", maxTurn=" + maxTurn + "]";
 	}
-	
+
 	public String toSMintring() {
-		return "H2018Solver [totalScore=" + totalScore + ", arides=[" + arides.size() + "]," + MainRunner.CR + " drides=[" + drides.size() + "]," + MainRunner.CR + " srides=[" + srides.size() + "],"
-				+ MainRunner.CR
-				+ "cars=[" + cars + "], map=" + map + ", bonus=" + bonus + ", maxTurn=" + maxTurn + "]";
+		return "H2018Solver [totalScore=" + totalScore + ", arides=[" + arides.size() + "]," + MainRunner.CR
+				+ " drides=[" + drides.size() + "]," + MainRunner.CR + " srides=[" + srides.size() + "],"
+				+ MainRunner.CR + "cars=[" + cars + "], map=" + map + ", bonus=" + bonus + ", maxTurn=" + maxTurn + "]";
 	}
-	
+
 	@Override
 	protected void addConfigStats() {
 		if (CollectionUtils.isNotEmpty(config.getCarStrategies())) {
 			stats.put(StatsConstants.CF_STRAT, Arrays.toString(config.getCarStrategies().toArray()));
 			stats.put(StatsConstants.CF_TTFC, "" + config.getTimeToFinishCoef());
 			stats.put(StatsConstants.CF_NTFCT, "" + config.getNearTravelAdjustFct());
-			//			stats.put(StatsConstants.CF_LTFCT, "" + config.getLongTravelAdjustFct());
-			//			stats.put(StatsConstants.CF_NDFCT, "" + config.getNearDistAdjustFct());
-			//			stats.put(StatsConstants.CF_LDFCT, "" + config.getLongDistAdjustFct());
-			//			stats.put(StatsConstants.CF_NAT, "" + config.getNearATravelMethodCst());
-			//			stats.put(StatsConstants.CF_NBT, "" + config.getNearBTravelMethodCst());
-			//			stats.put(StatsConstants.CF_NAD, "" + config.getNearADistMethodCst());
-			//			stats.put(StatsConstants.CF_NBD, "" + config.getNearBDistMethodCst());
-			//			stats.put(StatsConstants.CF_LAT, "" + config.getLongATravelMethodCst());
-			//			stats.put(StatsConstants.CF_LBT, "" + config.getLongBTravelMethodCst());
-			//			stats.put(StatsConstants.CF_LAD, "" + config.getLongADistMethodCst());
-			//			stats.put(StatsConstants.CF_LBD, "" + config.getLongBDistMethodCst());
+			// stats.put(StatsConstants.CF_LTFCT, "" + config.getLongTravelAdjustFct());
+			// stats.put(StatsConstants.CF_NDFCT, "" + config.getNearDistAdjustFct());
+			// stats.put(StatsConstants.CF_LDFCT, "" + config.getLongDistAdjustFct());
+			// stats.put(StatsConstants.CF_NAT, "" + config.getNearATravelMethodCst());
+			// stats.put(StatsConstants.CF_NBT, "" + config.getNearBTravelMethodCst());
+			// stats.put(StatsConstants.CF_NAD, "" + config.getNearADistMethodCst());
+			// stats.put(StatsConstants.CF_NBD, "" + config.getNearBDistMethodCst());
+			// stats.put(StatsConstants.CF_LAT, "" + config.getLongATravelMethodCst());
+			// stats.put(StatsConstants.CF_LBT, "" + config.getLongBTravelMethodCst());
+			// stats.put(StatsConstants.CF_LAD, "" + config.getLongADistMethodCst());
+			// stats.put(StatsConstants.CF_LBD, "" + config.getLongBDistMethodCst());
 		}
 	}
-	
+
 }
