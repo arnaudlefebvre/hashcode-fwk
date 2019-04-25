@@ -20,17 +20,17 @@ import fr.noobeclair.hashcode.bean.config.Config;
 @ConfStratEnabled(enabled = { "LONG" })
 @CsvExport
 public class H2018Config extends Config {
-
+	
 	@ConfStrategy(id = "LONG")
 	@ConfGenerable(type = TYPE.DOUBLE, min = "1", max = "2", step = "1")
 	@CsvField
 	protected Double timeToFinishCoef;
-
+	
 	@ConfStrategy(id = "LONG")
 	// @ConfGenerable(type = TYPE.BOOLEAN)
 	@CsvField
 	protected Boolean addQuickStrat = true;
-
+	
 	@ConfStrategy(id = "NEAR", includes = { "NEAR_FIRST" })
 	@ConfStrategy(id = "NEAR_EXP", includes = { "NEAR_FIRST" })
 	@ConfStrategy(id = "LONG", includes = { "LONG_FIRST" })
@@ -39,24 +39,24 @@ public class H2018Config extends Config {
 	@ConfGenerable(type = TYPE.ENUM, eClass = CarStrategy.class, excludes = { "AGGRESSIVE", "QUICK_FIRST" })
 	@CsvField
 	protected CarStrategy carStrategy;
-
+	
 	protected List<CarStrategy> carStrategies;
-
+	
 	public enum CarStrategy {
 		AGGRESSIVE, // all below
 		NEAR_FIRST, // prefer nearest trip with longest distance
 		LONG_FIRST, // prefer longest trip with nearest distance
 		QUICK_FIRST, // may prefer trips that ends shortly when approching end
 	}
-
+	
 	public enum AdjustMethod {
 		EXP, LN, LINEAR, POW, INV
 	}
-
+	
 	@ConfStrategy(id = "NEAR", includes = { "LINEAR", "INV" })
 	@ConfStrategy(id = "NEAR_EXP", includes = { "EXP" })
-	// @ConfStrategy(id = "LONG", includes = { "LINEAR", "INV" })
-	@ConfStrategy(id = "LONG", includes = { "LINEAR" })
+	@ConfStrategy(id = "LONG", includes = { "LINEAR", "INV" })
+	//@ConfStrategy(id = "LONG", includes = { "LINEAR" })
 	@ConfStrategy(id = "LONG_EXP", includes = { "EXP" })
 	@ConfStrategy(id = "QUICK")
 	@ConfGenerable(type = TYPE.ENUM, eClass = AdjustMethod.class, excludes = { "LN", "POW" })
@@ -65,15 +65,15 @@ public class H2018Config extends Config {
 	protected AdjustMethod nearTravelAdjustFct;
 	@ConfStrategy(id = "NEAR", includes = { "LINEAR", "INV" })
 	@ConfStrategy(id = "NEAR_EXP", includes = { "EXP" })
-	// @ConfStrategy(id = "LONG", includes = { "LINEAR", "INV" })
-	@ConfStrategy(id = "LONG", includes = { "LINEAR" })
+	@ConfStrategy(id = "LONG", includes = { "LINEAR", "INV" })
+	//@ConfStrategy(id = "LONG", includes = { "LINEAR" })
 	@ConfStrategy(id = "LONG_EXP", includes = { "LINEAR", "INV" })
 	@ConfStrategy(id = "QUICK")
 	@ConfGenerable(type = TYPE.ENUM, eClass = AdjustMethod.class, excludes = { "LN", "POW" })
 	@CsvField
 	// Méthode pour ajustement gain de la course
 	protected AdjustMethod nearDistAdjustFct;
-
+	
 	@ConfStrategy(id = "NEAR", min = "1", max = "31", step = "10")
 	@ConfStrategy(id = "NEAR_EXP", min = "1", max = "2", step = "1")
 	@ConfStrategy(id = "LONG", min = "0.25", max = "1.5", step = "0.25")
@@ -110,7 +110,7 @@ public class H2018Config extends Config {
 	@CsvField
 	// constant pour l'ajustement du gain
 	protected Double nearBDistMethodCst;
-
+	
 	public H2018Config() {
 		this.timeToFinishCoef = 1D;
 		this.nearTravelAdjustFct = AdjustMethod.EXP;
@@ -121,7 +121,7 @@ public class H2018Config extends Config {
 		this.nearBDistMethodCst = 0D;
 		this.carStrategies = Arrays.asList(CarStrategy.NEAR_FIRST);
 	}
-
+	
 	public H2018Config(Double coefBonus, Double nearBonus, Double distanceBonus) {
 		this.timeToFinishCoef = 1D;
 		this.nearTravelAdjustFct = AdjustMethod.EXP;
@@ -132,7 +132,7 @@ public class H2018Config extends Config {
 		this.nearBDistMethodCst = 0D;
 		this.carStrategies = new ArrayList<>();
 	}
-
+	
 	public H2018Config(Double timeToFinishCoef, AdjustMethod nearTravelAdjustFct, AdjustMethod nearDistAdjustFct,
 			AdjustMethod longTravelAdjustFct, AdjustMethod longDistAdjustFct, Double nearATravelMethodCst,
 			Double nearBTravelMethodCst, Double nearADistMethodCst, Double nearBDistMethodCst,
@@ -147,7 +147,7 @@ public class H2018Config extends Config {
 		this.nearBDistMethodCst = nearBDistMethodCst;
 		this.carStrategies = carStrategies;
 	}
-
+	
 	public Double adjustNearTravel(Double t) {
 		if (CollectionUtils.containsAny(getCarStrategies(),
 				Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.NEAR_FIRST))) {
@@ -168,7 +168,7 @@ public class H2018Config extends Config {
 		}
 		return t;
 	}
-
+	
 	public Double adjustNearDist(Double t) {
 		if (CollectionUtils.containsAny(getCarStrategies(),
 				Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.NEAR_FIRST))) {
@@ -189,7 +189,7 @@ public class H2018Config extends Config {
 		}
 		return t;
 	}
-
+	
 	public Double adjustLongTravel(Double t) {
 		if (CollectionUtils.containsAny(getCarStrategies(),
 				Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.NEAR_FIRST))) {
@@ -210,7 +210,7 @@ public class H2018Config extends Config {
 		}
 		return t;
 	}
-
+	
 	public Double adjustLongDistance(Double t) {
 		if (CollectionUtils.containsAny(getCarStrategies(),
 				Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.LONG_FIRST))) {
@@ -231,8 +231,8 @@ public class H2018Config extends Config {
 		}
 		return t;
 	}
-
-	public Double adjustTimeWhenFinishRatio(Double t, Double d, Integer turn, Integer maxturn) {
+	
+	public Double adjustTimeWhenFinishRatio(Double t, Double d, Integer turn, Integer maxturn, Integer tripst) {
 		Double ratio = 0D;
 		if (CollectionUtils.containsAny(carStrategies, Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.LONG_FIRST))
 				|| addQuickStrat) {
@@ -240,10 +240,19 @@ public class H2018Config extends Config {
 			if (diff > 0) {
 				ratio = diff * timeToFinishCoef;
 			}
+			//			diff = tripst - (t + turn);
+			//			Double res = (t + turn);
+			//			if (diff > 0) {
+			//				if (ratio > 0) {
+			//					ratio = ratio * (1.0 - (res / maxturn));
+			//				} else {
+			//					ratio = (1.0 - (res / maxturn));
+			//				}
+			//			}
 		}
 		return ratio;
 	}
-
+	
 	public String toString2() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Conf[ttfc=");
@@ -279,19 +288,19 @@ public class H2018Config extends Config {
 		builder.append("]");
 		return builder.toString();
 	}
-
+	
 	public Double getTimeToFinishCoef() {
 		return timeToFinishCoef;
 	}
-
+	
 	public AdjustMethod getNearTravelAdjustFct() {
 		return nearTravelAdjustFct;
 	}
-
+	
 	// public AdjustMethod getLongTravelAdjustFct() {
 	// return longTravelAdjustFct;
 	// }
-
+	
 	public AdjustMethod getNearDistAdjustFct() {
 		return nearDistAdjustFct;
 	}
@@ -299,23 +308,23 @@ public class H2018Config extends Config {
 	// public AdjustMethod getLongDistAdjustFct() {
 	// return longDistAdjustFct;
 	// }
-
+	
 	public Double getNearATravelMethodCst() {
 		return nearATravelMethodCst;
 	}
-
+	
 	public Double getNearBTravelMethodCst() {
 		return nearBTravelMethodCst;
 	}
-
+	
 	public Double getNearADistMethodCst() {
 		return nearADistMethodCst;
 	}
-
+	
 	public Double getNearBDistMethodCst() {
 		return nearBDistMethodCst;
 	}
-
+	
 	public List<CarStrategy> getCarStrategies() {
 		List<CarStrategy> res = new ArrayList<>();
 		if (CollectionUtils.isNotEmpty(this.carStrategies)) {
@@ -327,15 +336,15 @@ public class H2018Config extends Config {
 		}
 		return res;
 	}
-
+	
 	@Override
 	protected String showAll() {
 		return ReflectionToStringBuilder.toStringExclude(this,
 				Arrays.asList("statisticKeysToWriteToCSV", "csvStatsPath", "csvSeparator", "progressBar"));
 	};
-
+	
 	public CarStrategy getCarStrategy() {
 		return carStrategy;
 	}
-
+	
 }
