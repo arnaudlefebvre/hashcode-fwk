@@ -9,13 +9,13 @@ import fr.noobeclair.hashcode.MainRunner;
 import fr.noobeclair.hashcode.bean.Bean;
 
 public class Car extends Bean {
-	
+
 	public static final Integer STRAT_DUMMY = 4;
 	public static final Integer STRAT_LONGDIST = 1;
 	public static final Integer STRAT_SHORTDIST = 3;
 	public static final Integer STRAT_RUSH_END = 2;
 	public static final Integer STRAT_ALL = 1000;
-	
+
 	public long id;
 	public Point pos;
 	public Ride ride;
@@ -24,18 +24,18 @@ public class Car extends Bean {
 	public Integer curScore = 0;
 	public Integer strategy = 0;
 	public List<Ride> rides = new ArrayList<>();
-	
+
 	public Car() {
 		super();
 	}
-	
+
 	public Car(long id, Point pos, boolean available) {
 		super();
 		this.id = id;
 		this.pos = pos;
 		this.available = available;
 	}
-	
+
 	public Car(Car c) {
 		super();
 		this.id = c.id;
@@ -45,18 +45,18 @@ public class Car extends Bean {
 		this.available = c.available;
 		this.curScore = c.curScore;
 	}
-	
+
 	public Car(long id, Point pos) {
 		super();
 		this.id = id;
 		this.pos = pos;
 	}
-	
+
 	@Override
 	public double realdistance(Bean b) {
 		throw new UnsupportedOperationException("Not supported yet");
 	}
-	
+
 	public int finish(Integer turn) {
 		Integer score = -1;
 		if (this.ride != null && this.finishTurn <= turn) {
@@ -67,11 +67,11 @@ public class Car extends Bean {
 			this.finishTurn = 0;
 			this.ride = null;
 			this.curScore = 0;
-			
+
 		}
 		return score;
 	}
-	
+
 	public boolean isFinish(Integer turn) {
 		boolean result = this.available || this.finishTurn <= turn;
 		if (result && this.ride != null) {
@@ -79,43 +79,43 @@ public class Car extends Bean {
 		}
 		return result;
 	}
-	
+
 	public long getId() {
 		return id;
 	}
-	
+
 	public void setId(long id) {
 		this.id = id;
 	}
-	
+
 	public Point getPos() {
 		return pos;
 	}
-	
+
 	public void setPos(Point pos) {
 		this.pos = pos;
 	}
-	
+
 	public Ride getRide() {
 		return ride;
 	}
-	
-	public void setRide(Ride ride, Integer turn, Integer score) {
+
+	public void setRide(Ride ride, Integer turn, Integer bonus) {
 		this.ride = ride;
 		int d = ride.getPoints();
 		int t = this.pos.distance(ride.getStart());
 		this.finishTurn = turn + d + t;
-		this.curScore = d;
+		this.curScore = d + (turn == ride.getTripSt() ? bonus : 0);
 	}
-	
+
 	public boolean isAvailable() {
 		return available;
 	}
-	
+
 	public void setAvailable(boolean available) {
 		this.available = available;
 	}
-	
+
 	@Override
 	public int realhashCode() {
 		final int prime = 31;
@@ -123,12 +123,12 @@ public class Car extends Bean {
 		result = prime * result + (int) (id ^ (id >>> 32));
 		return result;
 	}
-	
+
 	@Override
 	public boolean realequals(Object obj) {
 		return ((Car) obj).id == this.id;
 	}
-	
+
 	@Override
 	public int realcompareTo(Bean b) {
 		if (((Car) b).id == this.id) {
@@ -136,15 +136,15 @@ public class Car extends Bean {
 		}
 		return 1;
 	}
-	
+
 	public Integer getStrategy() {
 		return strategy;
 	}
-	
+
 	public void setStrategy(Integer strategy) {
 		this.strategy = strategy;
 	}
-	
+
 	// public int getScoreForRide(Ride r, Integer turn, Integer bonus, Integer
 	// maxTurn, H2018Config conf) {
 	// Double d = new Double(r.getPoints());
@@ -184,16 +184,16 @@ public class Car extends Bean {
 		Double score = d + t;
 		return score.intValue();
 	}
-	
+
 	public int getScoreForRide(Ride r, Integer turn, Integer bonus, Integer maxTurn, H2018Config conf, Point thisPos) {
 		Double d = new Double(r.getPoints());
 		Double t = new Double(thisPos.distance(r.getStart()));
 		Double rideTimeEnd = new Double(d + t + turn);
 		Double ratio = conf.adjustTimeWhenFinishRatio(t, d, turn, maxTurn, r.getTripSt());
-		
+
 		t = conf.adjustNearTravel(t);
 		d = conf.adjustNearDist(d);
-		
+
 		if (Car.STRAT_LONGDIST == this.strategy || Car.STRAT_ALL == this.strategy) {
 			// Improve score for long trip. we add a bonus to distance of trip and decrease
 			// time to travel to start
@@ -205,28 +205,29 @@ public class Car extends Bean {
 		int availabililty = ((d + t + turn) > (maxTurn) ? 0 : 1);
 		int abonus = (goStart.intValue() == r.getTripSt() ? 1 : 0) * (bonus);
 		Double score = (d - t + abonus) * (totalTrip) * (availabililty) * ratio.intValue();
-		
+
 		if (rideTimeEnd > r.getTripEnd()) {
 			score = 0.0;
 		}
-		//		if (goStart.intValue() < r.getTripSt()) {
-		//			int res = r.getTripSt() - goStart.intValue();
-		//			double coef = (1 - res / maxTurn);
-		//			score = score * coef;
-		//		}
+		// if (goStart.intValue() < r.getTripSt()) {
+		// int res = r.getTripSt() - goStart.intValue();
+		// double coef = (1 - res / maxTurn);
+		// score = score * coef;
+		// }
 		// logger.debug("score {}, turn {}, max turn {}, d {}, t {}, goSt {}, totalTrip
 		// {}, availability {}, bonus {}", score, turn, maxTurn, d, t, goStart,
 		// totalTrip, availabililty, abonus);
-		
+
 		return score.intValue();
-		
+
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Car [id=" + id + ", pos=" + pos + ", ride=" + ride + ", available=" + available + ", finishTurn=" + finishTurn + ",  score=" + curScore + "]" + MainRunner.CR;
+		return "Car [id=" + id + ", pos=" + pos + ", ride=" + ride + ", available=" + available + ", finishTurn="
+				+ finishTurn + ",  score=" + curScore + "]" + MainRunner.CR;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -239,7 +240,7 @@ public class Car extends Bean {
 		result = prime * result + ((ride == null) ? 0 : ride.hashCode());
 		return result;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -269,7 +270,7 @@ public class Car extends Bean {
 			return false;
 		return true;
 	}
-	
+
 	public String write() {
 		StringBuilder res = new StringBuilder();
 		if (CollectionUtils.isNotEmpty(this.rides)) {

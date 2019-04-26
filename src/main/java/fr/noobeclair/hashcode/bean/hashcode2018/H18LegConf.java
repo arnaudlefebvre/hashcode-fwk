@@ -163,7 +163,7 @@ public class H18LegConf extends H2018Config {
 	}
 
 	@Override
-	public Double adjustTimeWhenFinishRatio(Double t, Double d, Integer turn, Integer maxturn) {
+	public Double adjustTimeWhenFinishRatio(Double t, Double d, Integer turn, Integer maxturn, Integer tripst) {
 		Double ratio = 0D;
 		if (CollectionUtils.containsAny(carStrategies, Arrays.asList(CarStrategy.AGGRESSIVE, CarStrategy.LONG_FIRST))) {
 			Double diff = maxturn - (t + d + turn);
