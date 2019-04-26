@@ -3,8 +3,7 @@ package fr.noobeclair.hashcode.solve;
 import java.util.TreeMap;
 
 import fr.noobeclair.hashcode.bean.BeanContainer;
-import fr.noobeclair.hashcode.bean.Config;
-import fr.noobeclair.hashcode.utils.ProgressBar;
+import fr.noobeclair.hashcode.bean.config.Config;
 
 /**
  * Abstract Configurable Solver
@@ -20,35 +19,35 @@ import fr.noobeclair.hashcode.utils.ProgressBar;
  * @author arnaud
  *
  * @param <T>
- *            BeanContainer
+ *        BeanContainer
  * @param <V>
- *            Config
+ *        Config
  */
 public abstract class ConfigSolver<T extends BeanContainer, V extends Config> extends Solver<T> {
-	
+
 	/** Config **/
 	protected V config;
-	
+
 	/**
 	 * Run with a stat handler
 	 * 
 	 * @param data
 	 * @param bar
-	 *            ProgressBar
+	 *             ProgressBar
 	 * @return T extends BeanContainer
 	 */
-	protected abstract T runWithStat(T data, ProgressBar bar);
-	
+	protected abstract T runWithStat(T data);
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected T run(T data, ProgressBar bar) {
-		data = runWithStat(data, bar);
+	protected T run(T data) {
+		data = runWithStat(data);
 		addConfigStats();
 		return data;
 	}
-	
+
 	/**
 	 * Build a {@link ConfigSolver}
 	 * 
@@ -62,7 +61,7 @@ public abstract class ConfigSolver<T extends BeanContainer, V extends Config> ex
 		this.stats = new TreeMap<>();
 		this.name = name;
 	}
-	
+
 	/**
 	 * Build a {@link ConfigSolver}
 	 * 
@@ -73,9 +72,9 @@ public abstract class ConfigSolver<T extends BeanContainer, V extends Config> ex
 		this.timeout = timeout;
 		this.config = config;
 		this.stats = new TreeMap<>();
-		
+
 	}
-	
+
 	/**
 	 * New ConfigSolver which expires after DEFAULT_TIMEOUT seconds.
 	 * name is randomly defined
@@ -87,12 +86,12 @@ public abstract class ConfigSolver<T extends BeanContainer, V extends Config> ex
 		this.stats = new TreeMap<>();
 		this.name = "ConfigSolver" + new Double(Math.random() * 100).intValue();
 	}
-	
+
 	/**
 	 * New ConfigSolver which expires after DEFAULT_TIMEOUT seconds.
 	 * 
 	 * @param name
-	 *            String solver unique name
+	 *             String solver unique name
 	 * @see #fr.noobeclair.hashcode.solve.ConfigSolver.Solver(Long) for tiemout
 	 */
 	public ConfigSolver(String name) {
@@ -100,30 +99,30 @@ public abstract class ConfigSolver<T extends BeanContainer, V extends Config> ex
 		this.stats = new TreeMap<>();
 		this.name = name;
 	}
-	
+
 	/**
 	 * New solver wich will expire after a timeout in SECONDS
 	 * 
 	 * @param name
-	 *            String solver unique name
+	 *                String solver unique name
 	 * @param timeout
-	 *            in seconds.
+	 *                in seconds.
 	 */
 	public ConfigSolver(String name, final Long timeout) {
 		this.timeout = timeout;
 		this.stats = new TreeMap<>();
 		this.name = name;
 	}
-	
+
 	/**
 	 * New solver wich will expire after a timeout in SECONDS
 	 * 
 	 * @param name
-	 *            String solver unique name
+	 *                String solver unique name
 	 * @param timeout
-	 *            in seconds.
+	 *                in seconds.
 	 * @param V
-	 *            conf config
+	 *                conf config
 	 */
 	public ConfigSolver(String name, final V conf, final Long timeout) {
 		this.timeout = timeout;
@@ -131,14 +130,20 @@ public abstract class ConfigSolver<T extends BeanContainer, V extends Config> ex
 		this.stats = new TreeMap<>();
 		this.name = name;
 	}
-	
+
+	@Override
+	protected void close(Long total) {
+		super.close(total);
+		this.resultInfo.setConfig(this.config);
+	}
+
 	public V getConfig() {
 		return config;
 	}
-	
+
 	/**
 	 * Add statistics in stats map.
 	 */
 	protected abstract void addConfigStats();
-	
+
 }

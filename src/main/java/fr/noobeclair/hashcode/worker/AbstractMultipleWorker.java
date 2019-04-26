@@ -8,7 +8,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import fr.noobeclair.hashcode.bean.BeanContainer;
-import fr.noobeclair.hashcode.constants.GlobalConstants;
 import fr.noobeclair.hashcode.in.InReader;
 import fr.noobeclair.hashcode.out.OutWriter;
 import fr.noobeclair.hashcode.score.ScoreCalculator;
@@ -30,7 +29,6 @@ public abstract class AbstractMultipleWorker<T extends BeanContainer> {
 	protected OutWriter<T> writer;
 	protected InReader<T> reader;
 	protected ScoreCalculator<T> scorer;
-	protected Class<? extends GlobalConstants> globalConstantsClass = GlobalConstants.class;
 	/**
 	 * execOrder, 0 : apply each solver and move to next file 1 : run each file and
 	 * move next solver
@@ -45,6 +43,15 @@ public abstract class AbstractMultipleWorker<T extends BeanContainer> {
 	protected abstract void prepare();
 	
 	protected abstract WorkerResultDto solve();
+	
+	public AbstractMultipleWorker(List<InOut> files, InReader<T> reader, OutWriter<T> writer,
+			ScoreCalculator<T> scorer) {
+		super();
+		this.files = files;
+		this.reader = reader;
+		this.writer = writer;
+		this.scorer = scorer;
+	}
 	
 	public AbstractMultipleWorker() {
 		// TODO Auto-generated constructor stub
@@ -83,12 +90,19 @@ public abstract class AbstractMultipleWorker<T extends BeanContainer> {
 	
 	protected SolverResultDto runSolverForFile(final Solver<T> solver, final InOut io) {
 		T d = this.reader.read(io.in);
+		Long start = bar.getStep();
 		d = solver.solve(d, bar);
 		SolverResultDto score = solver.getResultInfo();
 		if (scorer != null) {
 			score = scorer.score(d, score);
 		} else {
 			score.setScore(BigDecimal.ZERO);
+		}
+		if (bar != null) {
+			if (bar.getStep() == start) {
+				bar.show(System.out, bar.getStep() + score.getNbInputItem());
+			}
+			this.total = start + score.getNbInputItem();
 		}
 		writer.write(d, getOut(solver, io));
 		return score;
@@ -98,23 +112,12 @@ public abstract class AbstractMultipleWorker<T extends BeanContainer> {
 		if (StringUtils.isNotEmpty(io.out)) {
 			return io.out + "#" + solver.getName() + ".out";
 		}
-		return "src/main/resources/out/" + io.in.substring(io.in.lastIndexOf("/"), io.in.length()) + "#" + solver.getName() + ".out";
+		return "src/main/resources/out/" + io.in.substring(io.in.lastIndexOf("/"), io.in.length()) + "#"
+				+ solver.getName() + ".out";
 		
 	}
 	
-	protected Builder addbarOpt(Builder b) {
-		try {
-			return b.withMaxWidth(globalConstantsClass.newInstance().BAR_MAX_WIDTH).withOptions(GlobalConstants.BAR_OPTS).withBarMsgSize(GlobalConstants.BAR_MSG_WIDTH)
-					.withRefreshTime(GlobalConstants.BAR_REFRESH_TIME);
-		} catch (InstantiationException | IllegalAccessException e) {
-			logger.error("Cannot access global constants class");
-		}
-		return null;
-	}
-	
-	public void setGlobalConstantsClass(Class globalConstantsClass) {
-		this.globalConstantsClass = globalConstantsClass;
-	}
+	protected abstract Builder addbarOpt(Builder b);
 	
 	public void setExecOrder(WORK_ORDER execOrder) {
 		this.execOrder = execOrder;

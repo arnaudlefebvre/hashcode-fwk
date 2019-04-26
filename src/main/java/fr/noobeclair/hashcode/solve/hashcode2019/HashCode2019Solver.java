@@ -13,26 +13,27 @@ import fr.noobeclair.hashcode.bean.hashcode2019.Slide;
 import fr.noobeclair.hashcode.bean.hashcode2019.SlideShow;
 import fr.noobeclair.hashcode.solve.ConfigSolver;
 import fr.noobeclair.hashcode.utils.AlgoUtils;
-import fr.noobeclair.hashcode.utils.ProgressBar;
 import fr.noobeclair.hashcode.utils.Utils;
 import fr.noobeclair.hashcode.utils.dto.DistanceResultDto;
 
 public class HashCode2019Solver extends ConfigSolver<HashCode2019BeanContainer, H2019Config> {
-	
+
 	public HashCode2019Solver() {
 		super();
 	}
-	
+
 	@Override
-	protected HashCode2019BeanContainer runWithStat(HashCode2019BeanContainer data, ProgressBar bar) {
+	protected HashCode2019BeanContainer runWithStat(HashCode2019BeanContainer data) {
 		HashCode2019BeanContainer datas = data;
 		// 1 - Extraction des photos verticales pour les positionner ensembles
 		long start = System.currentTimeMillis();
 		logger.info("-- Solve sep 1 start");
-		List<Photo> listPhotosVertical = datas.getPhotos().stream().filter(photo -> photo.getSens().equalsIgnoreCase("V")).collect(Collectors.toList());
+		List<Photo> listPhotosVertical = datas.getPhotos().stream()
+				.filter(photo -> photo.getSens().equalsIgnoreCase("V")).collect(Collectors.toList());
 		HashMap<Integer, Photo> processed = new HashMap<Integer, Photo>();
 		List<Slide> allSlides = new ArrayList<Slide>();
-		logger.info("-- Solve sep 1 End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
+		logger.info("-- Solve sep 1 End. Total Time : {}s --",
+				Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		// AbstractStep 1 - Regroupement des photos verticales - On regroupe les photos
 		// les plus
 		// �loign�s
@@ -51,15 +52,18 @@ public class HashCode2019Solver extends ConfigSolver<HashCode2019BeanContainer, 
 				allSlides.add(s);
 			}
 		}
-		logger.info("-- Solve sep 2 End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
+		logger.info("-- Solve sep 2 End. Total Time : {}s --",
+				Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		start = System.currentTimeMillis();
 		logger.info("-- Solve sep 3 start");
 		HashMap<Integer, Slide> processedslide = new HashMap<Integer, Slide>();
 		// AbstractStep 2 - cr�ation des slides horizontales -> A voir si on ne pourrait
 		// pas
 		// faire �a direct au chargement du fichier... �a �viterait des boucles
-		allSlides.addAll(datas.getPhotos().stream().filter(photo -> photo.getSens().equalsIgnoreCase("H")).map(p -> new Slide(p, null)).collect(Collectors.toList()));
-		logger.info("-- Solve sep 3 End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
+		allSlides.addAll(datas.getPhotos().stream().filter(photo -> photo.getSens().equalsIgnoreCase("H"))
+				.map(p -> new Slide(p, null)).collect(Collectors.toList()));
+		logger.info("-- Solve sep 3 End. Total Time : {}s --",
+				Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		start = System.currentTimeMillis();
 		logger.info("-- Solve sep 4 start");
 		// AbstractStep 3 - tri
@@ -75,14 +79,15 @@ public class HashCode2019Solver extends ConfigSolver<HashCode2019BeanContainer, 
 				slideshow.add(res.getObject());
 			}
 		}
-		logger.info("-- Solve sep 4 End. Total Time : {}s --", Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
+		logger.info("-- Solve sep 4 End. Total Time : {}s --",
+				Utils.roundMiliTime((System.currentTimeMillis() - start), 3));
 		datas.setSlideshow(new SlideShow(slideshow));
 		return datas;
 	}
-	
+
 	@Override
 	protected void addConfigStats() {
 		return;
 	}
-	
+
 }

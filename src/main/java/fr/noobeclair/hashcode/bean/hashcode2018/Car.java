@@ -178,11 +178,18 @@ public class Car extends Bean {
 	// return score.intValue();
 	//
 	// }
-	
-	public int getScoreForRide(Ride r, Integer turn, Integer bonus, Integer maxTurn, H2018Config conf) {
+	public int getSimpleScore(Ride r, Integer turn, Integer bonus, Integer maxTurn, H2018Config conf) {
 		Double d = new Double(r.getPoints());
 		Double t = new Double(this.pos.distance(r.getStart()));
-		Double ratio = conf.adjustTimeWhenFinishRatio(t, d, turn, maxTurn);
+		Double score = d + t;
+		return score.intValue();
+	}
+	
+	public int getScoreForRide(Ride r, Integer turn, Integer bonus, Integer maxTurn, H2018Config conf, Point thisPos) {
+		Double d = new Double(r.getPoints());
+		Double t = new Double(thisPos.distance(r.getStart()));
+		Double rideTimeEnd = new Double(d + t + turn);
+		Double ratio = conf.adjustTimeWhenFinishRatio(t, d, turn, maxTurn, r.getTripSt());
 		
 		t = conf.adjustNearTravel(t);
 		d = conf.adjustNearDist(d);
@@ -198,9 +205,19 @@ public class Car extends Bean {
 		int availabililty = ((d + t + turn) > (maxTurn) ? 0 : 1);
 		int abonus = (goStart.intValue() == r.getTripSt() ? 1 : 0) * (bonus);
 		Double score = (d - t + abonus) * (totalTrip) * (availabililty) * ratio.intValue();
+		
+		if (rideTimeEnd > r.getTripEnd()) {
+			score = 0.0;
+		}
+		//		if (goStart.intValue() < r.getTripSt()) {
+		//			int res = r.getTripSt() - goStart.intValue();
+		//			double coef = (1 - res / maxTurn);
+		//			score = score * coef;
+		//		}
 		// logger.debug("score {}, turn {}, max turn {}, d {}, t {}, goSt {}, totalTrip
 		// {}, availability {}, bonus {}", score, turn, maxTurn, d, t, goStart,
 		// totalTrip, availabililty, abonus);
+		
 		return score.intValue();
 		
 	}

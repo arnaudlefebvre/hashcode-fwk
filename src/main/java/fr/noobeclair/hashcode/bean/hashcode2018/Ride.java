@@ -13,9 +13,13 @@ public class Ride extends Bean {
 	public Integer points;
 	public Integer tripSt;
 	public Integer tripEnd;
+	public Integer score;
+	public Integer simpleScore;
 	
 	public Ride() {
 		super();
+		this.score = 0;
+		this.simpleScore = 0;
 	}
 	
 	public Ride(Integer id, Point start, Point end, Integer points, Integer tripSt, Integer tripEnd) {
@@ -116,7 +120,13 @@ public class Ride extends Bean {
 	
 	@Override
 	public int realcompareTo(Bean b) {
-		throw new UnsupportedOperationException("Not supported yet");
+		Ride r = (Ride) b;
+		if (this.score < r.score) {
+			return -1;
+		} else if (this.score > r.score) {
+			return 1;
+		}
+		return 0;
 	}
 	
 	public Integer getId() {
@@ -225,6 +235,23 @@ public class Ride extends Bean {
 	@Override
 	public String toString() {
 		return "Ride [id=" + id + ", start=" + start + ", end=" + end + ", points=" + getPoints() + ", tripSt=" + tripSt + ", tripEnd=" + tripEnd + "]" + MainRunner.CR;
+	}
+	
+	public Integer getScore() {
+		return score;
+	}
+	
+	public void setScore(Integer score) {
+		this.score = score;
+	}
+	
+	public void reset() {
+		this.score = 0;
+		this.simpleScore = 0;
+	}
+	
+	public Integer getSimpleScore() {
+		return simpleScore;
 	}
 	
 }

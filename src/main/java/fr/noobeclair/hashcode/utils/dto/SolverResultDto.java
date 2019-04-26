@@ -3,6 +3,8 @@ package fr.noobeclair.hashcode.utils.dto;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import fr.noobeclair.hashcode.bean.config.Config;
+
 /**
  * Solver result dto that encapsulate a solver results and stats :
  * 
@@ -10,19 +12,22 @@ import java.util.Map;
  *
  */
 public class SolverResultDto {
-	
+
 	private BigDecimal score;
 	private String solverName;
 	private String inResource;
 	private Map<String, String> stats;
+	private Config config;
 	private Long duration;
 	private Long nbItemProcessed;
-	
+	private Long nbInputItem;
+
 	public SolverResultDto() {
 		super();
 	}
-	
-	public SolverResultDto(BigDecimal score, String solverName, String inResource, Long duration, Long nbItemProcessed, Map<String, String> stats) {
+
+	public SolverResultDto(BigDecimal score, String solverName, String inResource, Long duration, Long nbItemProcessed,
+			Map<String, String> stats) {
 		super();
 		this.score = score;
 		this.solverName = solverName;
@@ -31,66 +36,95 @@ public class SolverResultDto {
 		this.duration = duration;
 		this.nbItemProcessed = nbItemProcessed;
 	}
-	
-	public SolverResultDto(BigDecimal score, String solverName, String inResource, Long duration, Long nbItemProcessed) {
+
+	public SolverResultDto(BigDecimal score, String solverName, String inResource, Long duration, Long nbItemProcessed,
+			Long totalItem) {
 		super();
 		this.score = score;
 		this.solverName = solverName;
 		this.inResource = inResource;
 		this.duration = duration;
 		this.nbItemProcessed = nbItemProcessed;
+		this.nbInputItem = totalItem;
 	}
-	
+
+	public SolverResultDto(BigDecimal score, String solverName, String inResource, Map<String, String> stats,
+			Config config, Long duration, Long nbItemProcessed) {
+		super();
+		this.score = score;
+		this.solverName = solverName;
+		this.inResource = inResource;
+		this.stats = stats;
+		this.config = config;
+		this.duration = duration;
+		this.nbItemProcessed = nbItemProcessed;
+	}
+
 	public BigDecimal getScore() {
 		return score;
 	}
-	
+
 	public void setScore(BigDecimal score) {
 		this.score = score;
 	}
-	
+
 	public String getSolverName() {
 		return solverName;
 	}
-	
+
 	public void setSolverName(String solverName) {
 		this.solverName = solverName;
 	}
-	
+
 	public String getInResource() {
 		return inResource;
 	}
-	
+
 	public void setInResource(String inResource) {
 		this.inResource = inResource;
 	}
-	
+
 	public Map<String, String> getStats() {
 		return stats;
 	}
-	
+
 	public void setStats(Map<String, String> stats) {
 		this.stats = stats;
 	}
-	
+
 	public Long getDuration() {
 		return duration;
 	}
-	
+
 	public void setDuration(Long duration) {
 		this.duration = duration;
 	}
-	
+
 	public Long getNbItemProcessed() {
 		return nbItemProcessed;
 	}
-	
+
 	public void setNbItemProcessed(Long nbItemProcessed) {
 		this.nbItemProcessed = nbItemProcessed;
 	}
-	
-	@Override
-	public String toString() {
+
+	public Config getConfig() {
+		return config;
+	}
+
+	public void setConfig(Config config) {
+		this.config = config;
+	}
+
+	public String toDetailled() {
+		StringBuilder sb = toStringSb();
+		if (this.config != null) {
+			sb.append("\r\n").append("Conf [").append(this.config.show(Config.SHOW_OPT.ALL)).append("]");
+		}
+		return sb.toString();
+	}
+
+	private StringBuilder toStringSb() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("SolverResultDto [");
 		if (inResource != null) {
@@ -123,9 +157,14 @@ public class SolverResultDto {
 			builder.append(stats);
 		}
 		builder.append("]");
-		return builder.toString();
+		return builder;
 	}
-	
+
+	@Override
+	public String toString() {
+		return toStringSb().toString();
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -138,7 +177,7 @@ public class SolverResultDto {
 		result = prime * result + ((stats == null) ? 0 : stats.hashCode());
 		return result;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -180,5 +219,13 @@ public class SolverResultDto {
 			return false;
 		return true;
 	}
-	
+
+	public Long getNbInputItem() {
+		return nbInputItem;
+	}
+
+	public void setNbInputItem(Long nbInputItem) {
+		this.nbInputItem = nbInputItem;
+	}
+
 }

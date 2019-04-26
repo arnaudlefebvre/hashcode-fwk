@@ -19,19 +19,19 @@ import fr.noobeclair.hashcode.utils.RandomIterator;
 import fr.noobeclair.hashcode.utils.dto.DistanceResultDto;
 
 public class HashCode2019RandomStepSolver extends ConfigSolver<HashCode2019BeanContainer, H2019Config> {
-	
+
 	private static final Long WAIT = 0L;
-	
+
 	public HashCode2019RandomStepSolver() {
 		super();
 	}
-	
+
 	public HashCode2019RandomStepSolver(String name, final Long timeout) {
 		super(name, timeout);
 	}
-	
+
 	@Override
-	protected HashCode2019BeanContainer runWithStat(final HashCode2019BeanContainer data, ProgressBar bar) {
+	protected HashCode2019BeanContainer runWithStat(final HashCode2019BeanContainer data) {
 		final List<AbstractStep<HashCode2019BeanContainer>> steps = new ArrayList<>();
 		this.data = data;
 		steps.add(step1());
@@ -43,43 +43,44 @@ public class HashCode2019RandomStepSolver extends ConfigSolver<HashCode2019BeanC
 		}
 		return this.data;
 	}
-	
+
 	private AbstractStep<HashCode2019BeanContainer> step1() {
 		return new Step1("1", this.data);
 	}
-	
+
 	private AbstractStep<HashCode2019BeanContainer> step2() {
 		return new Step2("2", this.data);
 	}
-	
+
 	private AbstractStep<HashCode2019BeanContainer> step3() {
 		return new Step3("3", this.data);
 	}
-	
+
 	private AbstractStep<HashCode2019BeanContainer> step4() {
 		return new Step4("4", this.data);
 	}
-	
+
 	private class Step1 extends AbstractStep<HashCode2019BeanContainer> {
-		
+
 		public Step1(final String id, final HashCode2019BeanContainer solver) {
 			super(id, solver);
 		}
-		
+
 		@Override
 		protected HashCode2019BeanContainer runStep(final HashCode2019BeanContainer datas) {
-			final List<Photo> listPhotosVertical = datas.getPhotos().stream().filter(photo -> photo.getSens().equalsIgnoreCase("V")).collect(Collectors.toList());
+			final List<Photo> listPhotosVertical = datas.getPhotos().stream()
+					.filter(photo -> photo.getSens().equalsIgnoreCase("V")).collect(Collectors.toList());
 			datas.setListVerticalPhoto(listPhotosVertical);
 			return datas;
 		}
 	}
-	
+
 	private class Step2 extends AbstractStep<HashCode2019BeanContainer> {
-		
+
 		public Step2(final String id, final HashCode2019BeanContainer solver) {
 			super(id, solver);
 		}
-		
+
 		@Override
 		protected HashCode2019BeanContainer runStep(final HashCode2019BeanContainer datas) {
 			final HashMap<Integer, Photo> processed = new HashMap<>();
@@ -101,26 +102,26 @@ public class HashCode2019RandomStepSolver extends ConfigSolver<HashCode2019BeanC
 			return datas;
 		}
 	}
-	
+
 	private class Step3 extends AbstractStep<HashCode2019BeanContainer> {
-		
+
 		public Step3(final String id, final HashCode2019BeanContainer solver) {
 			super(id, solver);
 		}
-		
+
 		@Override
 		protected HashCode2019BeanContainer runStep(final HashCode2019BeanContainer datas) {
 			// Nothing to do here
 			return datas;
 		}
 	}
-	
+
 	private class Step4 extends AbstractStep<HashCode2019BeanContainer> {
-		
+
 		public Step4(final String id, final HashCode2019BeanContainer solver) {
 			super(id, solver);
 		}
-		
+
 		@Override
 		protected HashCode2019BeanContainer runStep(final HashCode2019BeanContainer datas) {
 			final HashMap<Integer, Slide> processed = new HashMap<>();
@@ -156,10 +157,10 @@ public class HashCode2019RandomStepSolver extends ConfigSolver<HashCode2019BeanC
 			return datas;
 		}
 	}
-	
+
 	@Override
 	protected void addConfigStats() {
 		return;
 	}
-	
+
 }
