@@ -95,7 +95,7 @@ public class H2018SolverLegConf extends ConfigSolver<H2018BeanContainer, H18LegC
 				Ride r = getPerfectForCar(car, arides, ct);
 				arides.remove(r);
 				car.setAvailable(false);
-				car.setRide(r, ct, curScore);
+				car.setRide(r, ct, bonus);
 				cars.add(car);
 				srides.add(r);
 				idxCar = idxCar + 1;
