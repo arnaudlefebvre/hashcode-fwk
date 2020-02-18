@@ -1,7 +1,9 @@
 package fr.noobeclair.hashcode.bean.hashcode2020;
 
 import fr.noobeclair.hashcode.bean.BeanContainer;
+import lombok.Data;
 
+@Data
 public class HashCode2020BeanContainer extends BeanContainer {
 	
 	// TODO 2020 : ajouter les propriétés nécessaires au traitement des données

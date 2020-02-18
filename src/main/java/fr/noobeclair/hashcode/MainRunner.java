@@ -47,8 +47,6 @@ public class MainRunner {
 		logger.info("--                        Hashcode Noobeclair                          --");
 		logger.info("------------------------------------------------------------------------");
 
-		final Long timeout = TimeUnit.MINUTES.toSeconds(2);
-		final Long timeout2020 = TimeUnit.SECONDS.toSeconds(5);
 		WorkerResultDto scores = null;
 		try {
 			final Hashcode2020Reader reader = new Hashcode2020Reader();
@@ -61,8 +59,8 @@ public class MainRunner {
 			// TODO 2020 : ajouter les solvers
 			solvers.add(new HashCode2020Solver());
 
-			final MultipleConfFileSolverWorker<HashCode2020BeanContainer, H2020Config, HashCode2020Solver, H2020WorkerConfig> mfsw = new MultipleConfFileSolverWorker<>(
-					reader, writer, scorer, solvers, cfg2020, wcfg2020);
+			final MultipleConfFileSolverWorker<HashCode2020BeanContainer, H2020Config, HashCode2020Solver, H2020WorkerConfig> mfsw 
+				= new MultipleConfFileSolverWorker<>(reader, writer, scorer, solvers, cfg2020, wcfg2020);
 			final List<InOut> files = new ArrayList<>();
 			// TODO 2020 : ajouter les fichiers d'entrées dans files
 			mfsw.addFiles(files);
@@ -74,8 +72,7 @@ public class MainRunner {
 			logger.error("Erreur : ", e);
 		} finally {
 			logger.info("------------------------------------------------------------------------");
-			logger.info(
-					"-- End. Total Time : " + Utils.roundMiliTime((System.currentTimeMillis() - start), 3) + "s --");
+			logger.info("-- End. Total Time : " + Utils.roundMiliTime((System.currentTimeMillis() - start), 3) + "s --");
 			logger.info("------------------------------------------------------------------------");
 		}
 		return;
