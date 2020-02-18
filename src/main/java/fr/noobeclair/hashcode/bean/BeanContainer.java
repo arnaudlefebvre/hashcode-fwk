@@ -3,9 +3,9 @@ package fr.noobeclair.hashcode.bean;
 /**
  * Bean Container for your bean \o/
  * 
- * Aims to store any data in your solving process. From input readed data to
+ * Aims to store any data in your solving process. From input read data to
  * calculate solution to write out.
- * It transit trhough all layer of worker process and must be extended
+ * It transit through all layer of worker process and must be extended
  * 
  * @author arnaud
  *
