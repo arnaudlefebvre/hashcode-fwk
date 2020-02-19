@@ -21,7 +21,8 @@ public class Hashcode2020Reader extends InReader<HashCode2020BeanContainer> {
 
 		String[] conf = FileUtils.getTabFromLineSpace(lines, 0);
 		// TODO 2020 : récupérer les éléments d'une ligne et balancer le bouzin dans les propriétés de HashCode2020BeanContainer
-
+//		result.setIn
+		
 		return result;
 	}
 

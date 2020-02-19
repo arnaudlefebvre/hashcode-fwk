@@ -2,9 +2,7 @@ package fr.noobeclair.hashcode;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.collections4.MapUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,9 +11,7 @@ import fr.noobeclair.hashcode.bean.hashcode2020.H2020WorkerConfig;
 import fr.noobeclair.hashcode.bean.hashcode2020.HashCode2020BeanContainer;
 import fr.noobeclair.hashcode.in.hashcode2020.Hashcode2020Reader;
 import fr.noobeclair.hashcode.out.hashcode2020.Hashcode2020Writer;
-import fr.noobeclair.hashcode.score.hashcode2019.Hashcode2019ScoreCalculator;
 import fr.noobeclair.hashcode.score.hashcode2020.Hashcode2020ScoreCalculator;
-import fr.noobeclair.hashcode.solve.Solver;
 import fr.noobeclair.hashcode.solve.hashcode2020.HashCode2020Solver;
 import fr.noobeclair.hashcode.utils.Utils;
 import fr.noobeclair.hashcode.utils.dto.WorkerResultDto;
@@ -33,7 +29,7 @@ public class MainRunner {
 	// 3 - worker use � solver which provide � solution
 	// 4 - worker use � writer to write out
 	// 5 - Eventually provide stats informations
-
+	
 	// TODO - Ajouter un test unitaire pour la distance ? si ce calcul est faux et
 	// utilis�, c'est chaud...
 	// TODO - Voir pour creer une tache maven Zipator (ie : prends les sources, les
@@ -46,7 +42,7 @@ public class MainRunner {
 		logger.info("------------------------------------------------------------------------");
 		logger.info("--                        Hashcode Noobeclair                          --");
 		logger.info("------------------------------------------------------------------------");
-
+		
 		WorkerResultDto scores = null;
 		try {
 			final Hashcode2020Reader reader = new Hashcode2020Reader();
@@ -58,16 +54,20 @@ public class MainRunner {
 			List<HashCode2020Solver> solvers = new ArrayList<>();
 			// TODO 2020 : ajouter les solvers
 			solvers.add(new HashCode2020Solver());
-
-			final MultipleConfFileSolverWorker<HashCode2020BeanContainer, H2020Config, HashCode2020Solver, H2020WorkerConfig> mfsw 
-				= new MultipleConfFileSolverWorker<>(reader, writer, scorer, solvers, cfg2020, wcfg2020);
+			
+			final MultipleConfFileSolverWorker<HashCode2020BeanContainer, H2020Config, HashCode2020Solver, H2020WorkerConfig> mfsw = new MultipleConfFileSolverWorker<>(reader, writer, scorer, solvers,
+					cfg2020, wcfg2020);
 			final List<InOut> files = new ArrayList<>();
+			
+			InOut io = new InOut("C:/Users/arndl/OneDrive/Documents/a_example.in");
+			files.add(io);
+			
 			// TODO 2020 : ajouter les fichiers d'entrées dans files
 			mfsw.addFiles(files);
 			scores = mfsw.run();
-
+			
 			scores.displayBest();
-
+			
 		} catch (Throwable e) {
 			logger.error("Erreur : ", e);
 		} finally {
@@ -77,5 +77,5 @@ public class MainRunner {
 		}
 		return;
 	}
-
+	
 }
