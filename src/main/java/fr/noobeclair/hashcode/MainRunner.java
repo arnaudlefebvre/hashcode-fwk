@@ -59,8 +59,12 @@ public class MainRunner {
 					cfg2020, wcfg2020);
 			final List<InOut> files = new ArrayList<>();
 			
-			InOut io = new InOut("src/main/resources/in/<todo>");
-			files.add(io);
+			files.add(new InOut("src/main/resources/in/a_example.txt"));
+			files.add(new InOut("src/main/resources/in/b_read_on.txt"));
+			files.add(new InOut("src/main/resources/in/c_incunabula.txt"));
+			files.add(new InOut("src/main/resources/in/d_tough_choices.txt"));
+			files.add(new InOut("src/main/resources/in/e_so_many_books.txt"));
+			files.add(new InOut("src/main/resources/in/f_libraries_of_the_world.txt"));
 			
 			// TODO 2020 : ajouter les fichiers d'entrées dans files
 			mfsw.addFiles(files);

@@ -1,5 +1,6 @@
-4
-H 3 cat beach sun
-V 2 selfie smile
-V 2 garden selfie
-H 2 garden cat
+6 2 7
+1 2 3 6 5 4
+5 2 2
+0 1 2 3 4
+4 3 1
+0 2 3 5
