@@ -29,7 +29,6 @@ public class Hashcode2020ScoreCalculator extends ScoreCalculator<HashCode2020Bea
         in.getIn().getLibraries().stream().filter(Library::isFlag).forEach(bibli -> {
             Set<Book> listBookThisBibli = new HashSet<>();
             for (Pair<Integer, Boolean> idAndFlagBook : bibli.getIdAndFlagBooks()) {
-
                 // On prends tous les livres de cette bibli
                 Book bookGet = in.getIn().getBooks().stream().filter(book -> book.getId() == idAndFlagBook.getLeft()).findFirst().get();
                 if (idAndFlagBook.getRight()) 

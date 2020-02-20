@@ -13,6 +13,7 @@ import fr.noobeclair.hashcode.in.hashcode2020.Hashcode2020Reader;
 import fr.noobeclair.hashcode.out.hashcode2020.Hashcode2020Writer;
 import fr.noobeclair.hashcode.score.hashcode2020.Hashcode2020ScoreCalculator;
 import fr.noobeclair.hashcode.solve.hashcode2020.AbstractHashCode2020Solver;
+import fr.noobeclair.hashcode.solve.hashcode2020.HashCode2020AmandineDumpSolver;
 import fr.noobeclair.hashcode.solve.hashcode2020.HashCode2020BenjaminDumpSolver;
 import fr.noobeclair.hashcode.utils.Utils;
 import fr.noobeclair.hashcode.utils.dto.WorkerResultDto;
@@ -54,14 +55,15 @@ public class MainRunner {
 			
 			List<AbstractHashCode2020Solver> solvers = new ArrayList<>();
 			// TODO 2020 : ajouter les solvers
-			solvers.add(new HashCode2020BenjaminDumpSolver());
+            solvers.add(new HashCode2020AmandineDumpSolver());
+//			solvers.add(new HashCode2020BenjaminDumpSolver());
 			
 			final MultipleConfFileSolverWorker<HashCode2020BeanContainer, H2020Config, AbstractHashCode2020Solver, H2020WorkerConfig> mfsw = new MultipleConfFileSolverWorker<>(reader, writer, scorer, solvers,
 					cfg2020, wcfg2020);
 			final List<InOut> files = new ArrayList<>();
 			
-			files.add(new InOut("src/main/resources/in/a_example.txt"));
-//			files.add(new InOut("src/main/resources/in/b_read_on.txt"));
+//			files.add(new InOut("src/main/resources/in/a_example.txt"));
+			files.add(new InOut("src/main/resources/in/b_read_on.txt"));
 //			files.add(new InOut("src/main/resources/in/c_incunabula.txt"));
 //			files.add(new InOut("src/main/resources/in/d_tough_choices.txt"));
 //			files.add(new InOut("src/main/resources/in/e_so_many_books.txt"));
