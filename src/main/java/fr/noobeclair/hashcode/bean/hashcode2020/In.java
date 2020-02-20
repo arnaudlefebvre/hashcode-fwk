@@ -7,6 +7,8 @@ public class In {
     private Integer days;
     
     private List<Library> libraries;
+    
+    private List<Book> books;
 
     public Integer getDays() {
         return days;
@@ -24,4 +26,12 @@ public class In {
         this.libraries = libraries;
     }
 
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
+    }
+    
 }

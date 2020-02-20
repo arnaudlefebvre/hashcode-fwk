@@ -10,7 +10,7 @@ public class Library {
     
     private Integer shippingNumber;
     
-    private List<Book> books;
+    private List<Integer> idBooks;
 
     public Integer getId() {
         return id;
@@ -36,13 +36,12 @@ public class Library {
         this.shippingNumber = shippingNumber;
     }
 
-    public List<Book> getBooks() {
-        return books;
+    public List<Integer> getIdBooks() {
+        return idBooks;
     }
 
-    public void setBooks(List<Book> books) {
-        this.books = books;
+    public void setIdBooks(List<Integer> idBooks) {
+        this.idBooks = idBooks;
     }
-    
-    
+
 }
