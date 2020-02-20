@@ -4,7 +4,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import fr.noobeclair.hashcode.bean.hashcode2020.HashCode2020BeanContainer;
 import fr.noobeclair.hashcode.bean.hashcode2020.Out;
@@ -21,7 +20,7 @@ public class Hashcode2020Writer extends OutWriter<HashCode2020BeanContainer> {
 	@Override
 	protected void writeFile(HashCode2020BeanContainer out, String path) {
 	    
-		try (FileWriter writer = new FileWriter(path.replaceFirst("\\.txt", ".out"))) {
+		try (FileWriter writer = new FileWriter(path.replaceFirst("\\.txt", ".out"))) { 
 		    Out outrealy = out.getOut();
 		    writer.write(outrealy.getOrderedSignupLibrairiesWithScannedBooks().size() + LINE);
             for (Map.Entry<Integer, List<Integer>> entry : outrealy.getOrderedSignupLibrairiesWithScannedBooks().entrySet()) {

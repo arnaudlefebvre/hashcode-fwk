@@ -12,7 +12,8 @@ import fr.noobeclair.hashcode.bean.hashcode2020.HashCode2020BeanContainer;
 import fr.noobeclair.hashcode.in.hashcode2020.Hashcode2020Reader;
 import fr.noobeclair.hashcode.out.hashcode2020.Hashcode2020Writer;
 import fr.noobeclair.hashcode.score.hashcode2020.Hashcode2020ScoreCalculator;
-import fr.noobeclair.hashcode.solve.hashcode2020.HashCode2020Solver;
+import fr.noobeclair.hashcode.solve.hashcode2020.AbstractHashCode2020Solver;
+import fr.noobeclair.hashcode.solve.hashcode2020.HashCode2020BenjaminDumpSolver;
 import fr.noobeclair.hashcode.utils.Utils;
 import fr.noobeclair.hashcode.utils.dto.WorkerResultDto;
 import fr.noobeclair.hashcode.worker.InOut;
@@ -51,11 +52,11 @@ public class MainRunner {
 			final Hashcode2020Writer writer = new Hashcode2020Writer();
 			final Hashcode2020ScoreCalculator scorer = new Hashcode2020ScoreCalculator();
 			
-			List<HashCode2020Solver> solvers = new ArrayList<>();
+			List<AbstractHashCode2020Solver> solvers = new ArrayList<>();
 			// TODO 2020 : ajouter les solvers
-			solvers.add(new HashCode2020Solver());
+			solvers.add(new HashCode2020BenjaminDumpSolver());
 			
-			final MultipleConfFileSolverWorker<HashCode2020BeanContainer, H2020Config, HashCode2020Solver, H2020WorkerConfig> mfsw = new MultipleConfFileSolverWorker<>(reader, writer, scorer, solvers,
+			final MultipleConfFileSolverWorker<HashCode2020BeanContainer, H2020Config, AbstractHashCode2020Solver, H2020WorkerConfig> mfsw = new MultipleConfFileSolverWorker<>(reader, writer, scorer, solvers,
 					cfg2020, wcfg2020);
 			final List<InOut> files = new ArrayList<>();
 			
