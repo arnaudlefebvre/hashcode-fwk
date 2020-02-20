@@ -59,7 +59,7 @@ public class MainRunner {
 					cfg2020, wcfg2020);
 			final List<InOut> files = new ArrayList<>();
 			
-			InOut io = new InOut("C:/Users/arndl/OneDrive/Documents/a_example.in");
+			InOut io = new InOut("src/main/resources/in/<todo>");
 			files.add(io);
 			
 			// TODO 2020 : ajouter les fichiers d'entrées dans files
