@@ -2,6 +2,8 @@ package fr.noobeclair.hashcode.bean.hashcode2020;
 
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 public class Library {
     
     private Integer id;
@@ -10,7 +12,7 @@ public class Library {
     
     private Integer shippingNumber;
     
-    private List<Integer> idBooks;
+    private List<Pair<Integer, Boolean>> idAndFlagBooks;
     
     private boolean flag = false;
 
@@ -38,12 +40,14 @@ public class Library {
         this.shippingNumber = shippingNumber;
     }
 
-    public List<Integer> getIdBooks() {
-        return idBooks;
+    
+
+    public List<Pair<Integer, Boolean>> getIdAndFlagBooks() {
+        return idAndFlagBooks;
     }
 
-    public void setIdBooks(List<Integer> idBooks) {
-        this.idBooks = idBooks;
+    public void setIdAndFlagBooks(List<Pair<Integer, Boolean>> idAndFlagBooks) {
+        this.idAndFlagBooks = idAndFlagBooks;
     }
 
     public boolean isFlag() {

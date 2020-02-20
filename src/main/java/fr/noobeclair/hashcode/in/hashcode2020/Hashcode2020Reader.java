@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import fr.noobeclair.hashcode.bean.hashcode2020.Book;
 import fr.noobeclair.hashcode.bean.hashcode2020.HashCode2020BeanContainer;
 import fr.noobeclair.hashcode.bean.hashcode2020.In;
@@ -51,7 +53,9 @@ public class Hashcode2020Reader extends InReader<HashCode2020BeanContainer> {
 		    library.setShippingNumber(Integer.parseInt(uglyLibrary[2]));
 		    
 		    String[] uglyBooksOfLibrary = FileUtils.getTabFromLineSpace(lines, i * 2 + 3);
-		    library.setIdBooks(Stream.of(uglyBooksOfLibrary).map(Integer::parseInt).collect(Collectors.toList()));
+		    library.setIdAndFlagBooks(Stream.of(uglyBooksOfLibrary).map(idBook -> {
+		        return Pair.of(Integer.parseInt(idBook), false);
+		    }).collect(Collectors.toList()));
 		    
 		    libraries.add(library);
 		}
