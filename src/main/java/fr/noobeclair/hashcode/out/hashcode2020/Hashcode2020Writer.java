@@ -2,8 +2,12 @@ package fr.noobeclair.hashcode.out.hashcode2020;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
 import fr.noobeclair.hashcode.bean.hashcode2020.HashCode2020BeanContainer;
+import fr.noobeclair.hashcode.bean.hashcode2020.Out;
 import fr.noobeclair.hashcode.out.OutWriter;
 
 public class Hashcode2020Writer extends OutWriter<HashCode2020BeanContainer> {
@@ -14,8 +18,19 @@ public class Hashcode2020Writer extends OutWriter<HashCode2020BeanContainer> {
 	
 	@Override
 	protected void writeFile(HashCode2020BeanContainer out, String path) {
+	    
 		try (FileWriter writer = new FileWriter(path.replaceFirst("\\.txt", ".out"))) {
 			// TODO 2020 : écrire le fichier
+		    Out outrealy = out.getOut();
+		    writer.write(outrealy.getOrderedSignupLibrairiesWithScannedBooks().size());
+            for (Map.Entry<Integer, List<Integer>> entry : outrealy.getOrderedSignupLibrairiesWithScannedBooks().entrySet()) {
+                System.out.println(entry.getKey() + ":" + entry.getValue());
+                writer.write(entry.getKey() + " " + entry.getValue().size());
+                for(Integer idBook : entry.getValue()) {
+                    writer.write(idBook + " ");
+                }
+                System.out.println( writer.toString());
+            }
 		} catch (IOException e) {
 			logger.error("Erreur lors de l'écriture du fichier {}", path, e);
 		}
