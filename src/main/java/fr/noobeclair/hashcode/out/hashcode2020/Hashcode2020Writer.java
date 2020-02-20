@@ -12,7 +12,9 @@ import fr.noobeclair.hashcode.out.OutWriter;
 
 public class Hashcode2020Writer extends OutWriter<HashCode2020BeanContainer> {
 	
-	public Hashcode2020Writer() {
+	private static final String LINE = "\n";
+
+    public Hashcode2020Writer() {
 		
 	}
 	
@@ -20,15 +22,15 @@ public class Hashcode2020Writer extends OutWriter<HashCode2020BeanContainer> {
 	protected void writeFile(HashCode2020BeanContainer out, String path) {
 	    
 		try (FileWriter writer = new FileWriter(path.replaceFirst("\\.txt", ".out"))) {
-			// TODO 2020 : écrire le fichier
 		    Out outrealy = out.getOut();
-		    writer.write(outrealy.getOrderedSignupLibrairiesWithScannedBooks().size());
+		    writer.write(outrealy.getOrderedSignupLibrairiesWithScannedBooks().size() + LINE);
             for (Map.Entry<Integer, List<Integer>> entry : outrealy.getOrderedSignupLibrairiesWithScannedBooks().entrySet()) {
                 System.out.println(entry.getKey() + ":" + entry.getValue());
-                writer.write(entry.getKey() + " " + entry.getValue().size());
+                writer.write(entry.getKey() + " " + entry.getValue().size() + LINE);
                 for(Integer idBook : entry.getValue()) {
                     writer.write(idBook + " ");
                 }
+                writer.write(LINE);
                 System.out.println( writer.toString());
             }
 		} catch (IOException e) {
