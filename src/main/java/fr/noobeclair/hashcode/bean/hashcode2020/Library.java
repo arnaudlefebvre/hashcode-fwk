@@ -11,6 +11,8 @@ public class Library {
     private Integer shippingNumber;
     
     private List<Integer> idBooks;
+    
+    private boolean flag = false;
 
     public Integer getId() {
         return id;
@@ -44,4 +46,14 @@ public class Library {
         this.idBooks = idBooks;
     }
 
+    public boolean isFlag() {
+        return flag;
+    }
+
+    public void setFlag(boolean flag) {
+        this.flag = flag;
+    }
+    
+    
+    
 }

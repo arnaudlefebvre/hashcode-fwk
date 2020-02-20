@@ -14,7 +14,6 @@ public class Hashcode2020ScoreCalculator extends ScoreCalculator<HashCode2020Bea
 	
 	@Override
 	protected SolverResultDto run(HashCode2020BeanContainer in, SolverResultDto currentResult) {
-		BigDecimal result = new BigDecimal("0");
 		// TODO : calculer le score
 		currentResult.setScore(result);
 		return currentResult;

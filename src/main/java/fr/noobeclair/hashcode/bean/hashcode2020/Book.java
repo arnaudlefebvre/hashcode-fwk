@@ -5,6 +5,8 @@ public class Book {
     private Integer id;
     
     private Integer score;
+    
+    private boolean flag = false;
 
     public Integer getId() {
         return id;
@@ -21,6 +23,15 @@ public class Book {
     public void setScore(Integer score) {
         this.score = score;
     }
+
+    public boolean isFlag() {
+        return flag;
+    }
+
+    public void setFlag(boolean flag) {
+        this.flag = flag;
+    }
+    
     
     
 }

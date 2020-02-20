@@ -6,6 +6,8 @@ public class HashCode2020BeanContainer extends BeanContainer {
     
     private In in;
     
+    private Temp temp;
+    
     private Out out;
 
 	public HashCode2020BeanContainer(String inName) {
@@ -25,6 +27,15 @@ public class HashCode2020BeanContainer extends BeanContainer {
 
     public void setIn(In in) {
         this.in = in;
+    }
+
+    
+    public Temp getTemp() {
+        return temp;
+    }
+
+    public void setTemp(Temp temp) {
+        this.temp = temp;
     }
 
     public Out getOut() {
