@@ -15,6 +15,8 @@ public class Library {
     private List<Pair<Integer, Boolean>> idAndFlagBooks;
     
     private boolean flag = false;
+    
+    private int maxScoreLicorne;
 
     public Integer getId() {
         return id;
@@ -57,7 +59,13 @@ public class Library {
     public void setFlag(boolean flag) {
         this.flag = flag;
     }
-    
-    
+
+    public int getMaxScoreLicorne() {
+        return maxScoreLicorne;
+    }
+
+    public void setMaxScoreLicorne(int maxScoreLicorne) {
+        this.maxScoreLicorne = maxScoreLicorne;
+    }
     
 }
